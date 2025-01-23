@@ -13,6 +13,8 @@ fastapi = {extras = ["standard"], version = "^0.115.6"}
 logger = "^1.4"
 sqlalchemy = "^2.0.36"
 psycopg2-binary = "^2.9.10"
+redis = "^5.2.1"
+asyncpg = "^0.30.0"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -22,3 +24,9 @@ ruff = "^0.8.6"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+
+[tool.taskipy.tasks]
+format = "ruff format"
+lint = "ruff check"
+
