@@ -1,6 +1,7 @@
-from sqlalchemy.orm import registry, Mapped, mapped_column
-from sqlalchemy import ForeignKey
 from datetime import date
+
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, registry
 
 reg = registry()
 

@@ -1,7 +1,6 @@
-from fastapi_mail import MessageSchema, ConnectionConfig, FastMail
-from pydantic import EmailStr
+from fastapi_mail import ConnectionConfig, FastMail, MessageSchema
 from jinja2 import Environment, FileSystemLoader
-from asyncio import run
+from pydantic import EmailStr
 
 html_template_env = Environment(
     loader=FileSystemLoader(searchpath="./Html_Templates/Email/"), enable_async=True
@@ -19,13 +18,12 @@ connection = ConnectionConfig(
     MAIL_FROM_NAME="FitTude Team",
 )
 
+
 async def send_verification_mail(dest_email: EmailStr, protocol: str, username: str):
     message = MessageSchema(
         recipients=[dest_email],
         subject="Confirme seu cadastro na FitTude!",
-        body=await template.render_async(
-            nome=username, prot=protocol
-        ),
+        body=await template.render_async(nome=username, prot=protocol),
         subtype="html",
     )
 

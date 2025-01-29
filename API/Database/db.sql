@@ -14,13 +14,17 @@ DROP TABLE IF EXISTS usuario;
 CREATE TABLE usuario(
     id_usuario    INTEGER        GENERATED ALWAYS AS IDENTITY,
     username      VARCHAR(40)    NOT NULL,
-    senha         VARCHAR(512)   NOT NULL,
+    email         VARCHAR(100)   NOT NULL,
+    password      VARCHAR(512)   NOT NULL,
     
     CONSTRAINT pk_usuario
         PRIMARY KEY (id_usuario),
     
-    CONSTRAINT uq_usuario
-        UNIQUE (username)
+    CONSTRAINT uq_usuario_username
+        UNIQUE (username),
+    
+    CONSTRAINT uq_usuario_email
+        UNIQUE (email)
     );
     
     
@@ -184,6 +188,10 @@ CREATE TABLE serie_relatorio(
     CONSTRAINT fk_serie_relatorio_relatorio_treino
         FOREIGN KEY (id_relatorio_treino) REFERENCES relatorio_treino(id_relatorio_treino)
 );
+
+CREATE INDEX id_username_usuario ON usuario(username);
+
+CREATE INDEX id_email_usuario ON usuario(email);
 
 CREATE INDEX idx_id_usuario_id_musculo_exercicio ON exercicio(id_usuario, id_musculo);
 
