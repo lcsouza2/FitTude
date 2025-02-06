@@ -1,11 +1,14 @@
-from datetime import timedelta
-from pydantic import EmailStr
+from datetime import datetime, timedelta, timezone
 
 import jwt
+from Database import db_mapping as tables
+from fastapi import HTTPException, Request
+from pydantic import EmailStr
 from redis import Redis
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.exc import NoResultFound
 
 JWT_REFRESH_KEY = "hlNDvdGkE69LAuM"
 JWT_SESSION_KEY = "6TjFvAtLBhKOMoF"
@@ -26,17 +29,70 @@ def redis_pool():
     return Redis(decode_responses=True)
 
 
-def generate_refresh_token(id: int) -> str:
+async def get_user_id_by_email(user_email: EmailStr):
+
+    async with AsyncSession() as session:
+        result = await session.scalars(
+            select(tables.Usuario.id_usuario).where(tables.Usuario.email == user_email)
+        )
+        try:
+            return result.one()
+        except NoResultFound:
+            raise HTTPException(404, "Não existe usuário com esse email")
+
+
+async def generate_refresh_token(id_or_email: int | EmailStr) -> str:
     """Retorna um token JWT válido por 7 dias"""
-    return jwt.encode(payload={"sub": id, "exp": timedelta(7)}, key=JWT_REFRESH_KEY)
+    now = datetime.now(timezone.utc)
+
+    if isinstance(id_or_email, EmailStr):
+        user_id = await get_user_id_by_email(id_or_email)
+
+    return jwt.encode(
+        payload={"sub": id_or_email, "exp": now + timedelta(days=7)},
+        key=JWT_REFRESH_KEY,
+    )
 
 
-def generate_session_token(id_or_email: int | EmailStr, expire_in_a_day: bool = False) -> str:
+async def generate_session_token(id_or_email: int | EmailStr) -> str:
     """Retorna um token JWT válido pelo tempo definido"""
+
+    if isinstance(id_or_email, EmailStr):
+        id_or_email = await get_user_id_by_email(id_or_email)
+
+    now = datetime.now(timezone.utc)
     return jwt.encode(
         payload={
-            "sub": id,
-            "exp": timedelta(days=1) if expire_in_a_day else timedelta(minutes=30),
+            "sub": id_or_email,
+            "exp": now + timedelta(minutes=30),
         },
         key=JWT_SESSION_KEY,
     )
+
+async def generate_register_token(email: EmailStr):
+    now = datetime.now(timezone.utc)
+    return jwt.encode(
+        payload={
+            "sub": email,
+            "exp": now + timedelta(days=1),
+        },
+        key=JWT_SESSION_KEY,
+    )
+
+def validate_token(request: Request):
+    try:
+        token = request.headers.get("authorization")
+        assert token is not None
+    except AssertionError:
+        raise HTTPException(400, "Token não recebido")
+
+    try:
+        jwt.decode(token, JWT_SESSION_KEY)
+    except jwt.exceptions.ExpiredSignatureError:
+        raise HTTPException(401, "Token expirado")
+    except jwt.exceptions.InvalidTokenError:
+        raise HTTPException(400, "Token inválido")
+    except jwt.DecodeError:
+        raise HTTPException(500, "Erro desconhecido validando token")
+    else:
+        return True
