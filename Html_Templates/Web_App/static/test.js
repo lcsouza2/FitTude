@@ -1,3 +1,15 @@
+function sendNewTokenRequest() {
+    fetch("http://localhost:8000/user/renew_token", 
+        {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({"refresh_token": localStorage.getItem("refresh_token")}
+        )
+    }).then(response => response.json())
+    .then(sessionStorage.setItem("session_token", response.session_token))
+}
+
+
 document.getElementById("aparelho").addEventListener("submit", (event) => {
     event.preventDefault();
     fetch(
@@ -9,17 +21,22 @@ document.getElementById("aparelho").addEventListener("submit", (event) => {
             method: "POST",
             body: JSON.stringify(
                 {
-                "group_name": document.getElementById("nome-grupamento").value,
-                "equipment_name": document.getElementById("nome-aparelho").value
+                "nome_grupamento": document.getElementById("nome-grupamento").value,
+                "nome_aparelho": document.getElementById("nome-aparelho").value
             })
         }
-    )
-})
+    ).then(response => response.json())
+    .then(response => {
+        if (response.detail.includes("Token expirado")) {
+            sendNewTokenRequest()
+        }
+    }
+)})
 
 document.getElementById("login").addEventListener("submit", (event) => {
     event.preventDefault();
     fetch(
-        "http://localhost:8000/main/login", {
+        "http://localhost:8000/user/login", {
             headers: {
                 "Content-type": "application/json",
             },
@@ -28,16 +45,24 @@ document.getElementById("login").addEventListener("submit", (event) => {
                 {
                 "login_key": document.getElementById("username-email").value,
                 "password": document.getElementById("senha-login").value,
-                "keep_login": false
+                "keep_login": document.getElementById("keep-login").checked
             })
         }
     )
+    .then(response => response.json())
+    .then(data => {
+        sessionStorage.setItem("session_token", data.session_token)
+
+        if (data.refresh_token) {
+            localStorage.setItem("refresh_token", data.refresh_token)
+        }
+    })
 })
 
 document.getElementById("registro").addEventListener("submit", (event) => {
     event.preventDefault();
     fetch(
-        "http://localhost:8000/main/register", {
+        "http://localhost:8000/teste/register", {
             headers: {
                 "Content-type": "application/json",
             },
