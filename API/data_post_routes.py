@@ -1,59 +1,62 @@
-from Database.utils import validate_token
-from fastapi import FastAPI, Request, Depends
-import schemas
-from fastapi.templating import Jinja2Templates
-from fastapi.staticfiles import StaticFiles
-from user_routes import POST_APP
-from fastapi.middleware import cors
-from Database.utils import AsyncSession
-from sqlalchemy import insert
 import Database.db_mapping as tables
-
+import schemas
+from Database.utils import AsyncSession, validate_token
+from fastapi import Depends, FastAPI, HTTPException
+from sqlalchemy import insert
+from sqlalchemy.exc import IntegrityError
+from user_routes import POST_APP
 
 DATA_POST_API = FastAPI(title="Requisitar criação de dados")
 
-templates = Jinja2Templates("./Html_Templates/Web_App")
-
-DATA_POST_API.mount(
-    "/static", StaticFiles(directory="./Html_Templates/Web_App/static"), "static"
-)
-
-DATA_POST_API.mount("/user", POST_APP, "O outro post lá")
-
-DATA_POST_API.add_middleware(
-    cors.CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-
-@DATA_POST_API.get("/")
-def teste(request: Request):
-    return templates.TemplateResponse(request, "test.html")
-
+DATA_POST_API.mount("/user", POST_APP, "Rotas de gerenciamento de usuários")
 
 @DATA_POST_API.post("/equipment/new")
-async def adicionar_novo_aparelho(
-    aparelho: schemas.Aparelho, user: str = Depends(validate_token)
+async def criar_novo_aparelho(
+    aparelho: schemas.Aparelho, id_usuario: int = Depends(validate_token)
 ):
     async with AsyncSession() as session:
-        await session.scalars(
-            insert(tables.Aparelho).values(
-                {**aparelho.model_dump(), "id_usuario": int(user)}
+        try:
+            await session.scalars(
+                insert(tables.Aparelho).values(
+                    {**aparelho.model_dump(), "id_usuario": id_usuario}
+                )
             )
-        )
-        await session.commit()
+            await session.commit()
+        except IntegrityError as e:
+            if "uq_aparelho" in str(e):
+                raise HTTPException(409, "Esse aparelho já existe")
 
 
-@DATA_POST_API.post("/exercises/new")
-def add_custom_exercise(http_request: Request): ...
+@DATA_POST_API.post("/muscle/new")
+async def criar_novo_musculo(
+    musculo: schemas.Musculo, id_usuario: int = Depends(validate_token)
+):
+    async with AsyncSession() as session:
+        try:
+            await session.scalars(
+                insert(tables.Musculo).values(
+                    {**musculo.model_dump(), "id_usuario": id_usuario}
+                )
+            )
+            await session.commit()
+        except IntegrityError as e:
+            if "uq_musculo" in str(e):
+                raise HTTPException(409, "Esse musculo já existe")
 
 
-@DATA_POST_API.post("/exercises/new")
-def add_custom_muscle(http_request: Request): ...
-
-
-@DATA_POST_API.post("/exercises/new")
-def create_training_sheet(http_request: Request): ...
+@DATA_POST_API.post("/exercise/new")
+async def criar_novo_exercicio(
+    exercicio: schemas.Exercicio, id_usuario: int = Depends(validate_token)
+):
+    async with AsyncSession() as session:
+        try:
+            await session.scalars(
+                insert(tables.Exercicio).values(
+                    {**exercicio.model_dump(), "id_usuario": id_usuario}
+                )
+            )
+            await session.commit()
+        except IntegrityError as e:
+            if "uq_exercicio" in str(e):
+                raise HTTPException(409, "Esse exercicio já existe")
+            

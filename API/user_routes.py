@@ -6,12 +6,12 @@ import schemas
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 from Database.utils import (
+    JWT_REFRESH_KEY,
     AsyncSession,
     generate_refresh_token,
     generate_register_token,
     generate_session_token,
     redis_pool,
-    JWT_REFRESH_KEY
 )
 from Email.email_verify import send_verification_mail
 from fastapi import BackgroundTasks, FastAPI, HTTPException
@@ -133,6 +133,7 @@ async def login_user(user: schemas.UserLogin):
 
     except jwt.exceptions.PyJWTError as e:
         raise HTTPException(500, f"Erro desconhecido gerando token, {e}")
+
 
 @POST_APP.post("/renew_token")
 async def renew_token(token: schemas.TokenRenew):

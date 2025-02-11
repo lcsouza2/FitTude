@@ -85,7 +85,7 @@ def generate_register_token(email: EmailStr):
     )
 
 
-def validate_token(token: str = Depends(oauth2_scheme)):
+def validate_token(token: str = Depends(oauth2_scheme)) -> int:
     try:
         decoded = jwt.decode(token, JWT_SESSION_KEY, algorithms="HS256")
     except jwt.exceptions.ExpiredSignatureError as e:
@@ -95,4 +95,4 @@ def validate_token(token: str = Depends(oauth2_scheme)):
     except jwt.DecodeError as e:
         raise HTTPException(500, f"Erro desconhecido validando token, msg: {e}")
     else:
-        return decoded["sub"]
+        return int(decoded["sub"])
