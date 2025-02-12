@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, timezone
+from http.client import BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, UNAUTHORIZED
 
 import jwt
 from Database import db_mapping as tables
@@ -39,7 +40,7 @@ async def get_user_id_by_email(user_email: EmailStr):
         try:
             return str(result.one())
         except NoResultFound:
-            raise HTTPException(404, "Não existe usuário com esse email")
+            raise HTTPException(NOT_FOUND, "Não existe usuário com esse email")
 
 
 async def generate_refresh_token(id_or_email: str | EmailStr) -> str:
@@ -89,10 +90,12 @@ def validate_token(token: str = Depends(oauth2_scheme)) -> int:
     try:
         decoded = jwt.decode(token, JWT_SESSION_KEY, algorithms="HS256")
     except jwt.exceptions.ExpiredSignatureError as e:
-        raise HTTPException(401, f"Token expirado, msg: {e}")
+        raise HTTPException(UNAUTHORIZED, f"Token expirado, msg: {e}")
     except jwt.exceptions.InvalidTokenError as e:
-        raise HTTPException(400, f"Token inválido, msg: {e}")
+        raise HTTPException(BAD_REQUEST, f"Token inválido, msg: {e}")
     except jwt.DecodeError as e:
-        raise HTTPException(500, f"Erro desconhecido validando token, msg: {e}")
+        raise HTTPException(
+            INTERNAL_SERVER_ERROR, f"Erro desconhecido validando token, msg: {e}"
+        )
     else:
         return int(decoded["sub"])

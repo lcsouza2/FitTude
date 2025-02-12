@@ -1,3 +1,11 @@
+from http.client import (
+    BAD_REQUEST,
+    CONFLICT,
+    INTERNAL_SERVER_ERROR,
+    NOT_FOUND,
+    UNAUTHORIZED,
+    UNPROCESSABLE_ENTITY,
+)
 from uuid import UUID, uuid4
 
 import Database.db_mapping as tables
@@ -26,14 +34,14 @@ POST_APP = FastAPI(title="Main API POST Routes")
 @POST_APP.post("/register")  # Rota para começar o registro do usuário.
 async def begin_register(user: schemas.UserRegister, bg_tasks: BackgroundTasks):
     """Envia um email de confirmação do cadastro para o email fornecido,
-    depois armazena os dados fornecidos em um cache para validar o cadastro"""
+    depois armazena os dados fornecidos no redis para validar o cadastro"""
 
     try:
         validate_email(
             user.email
         )  # Começa validando o email, ser for inválido já encerra a função.
     except PydanticCustomError:
-        raise HTTPException(422, "Email Inválido")
+        raise HTTPException(UNPROCESSABLE_ENTITY, "Email Inválido")
 
     # Envia o email assíncronamente
     request_protocol = uuid4()
@@ -43,7 +51,7 @@ async def begin_register(user: schemas.UserRegister, bg_tasks: BackgroundTasks):
         )
     )
 
-    # Armazena os dados do usuário em cache
+    # Armazena os dados do usuário
     with redis_pool() as cache_storage:
         cache_storage.hset(f"protocol:{request_protocol}", mapping=user.model_dump())
         cache_storage.expire(
@@ -56,12 +64,14 @@ async def create_register(protocol: UUID):
     """Efetiva o registro no banco
     recebendo uma requisição referente ao protocolo gerado"""
 
-    # Obtem os dados do usuário no cache
+    # Obtem os dados do usuário no redis
     with redis_pool() as cache_storage:
         user_data = cache_storage.hgetall(f"protocol:{protocol}")
 
         if not user_data:
-            raise HTTPException(404, "Protocolo inválido, já finalizado, ou expirado")
+            raise HTTPException(
+                NOT_FOUND, "Protocolo inválido, já finalizado, ou expirado"
+            )
 
         user_data["password"] = hasher.hash(user_data.get("password"))
 
@@ -73,14 +83,18 @@ async def create_register(protocol: UUID):
         # Tratamento para duplicidade
         except exc.IntegrityError as e:
             if "uq_usuario_username" in str(e):
-                raise HTTPException(409, "Esse nome de usuário já está sendo usado!")
+                raise HTTPException(
+                    CONFLICT, "Esse nome de usuário já está sendo usado!"
+                )
             if "uq_usuario_email" in str(e):
-                raise HTTPException(409, "Esse email já está sendo usado!")
+                raise HTTPException(CONFLICT, "Esse email já está sendo usado!")
         else:
             try:
                 token = await generate_register_token(email=user_data.get("email"))
             except jwt.exceptions.PyJWTError:
-                raise HTTPException(500, "Erro desconhecido gerando token")
+                raise HTTPException(
+                    INTERNAL_SERVER_ERROR, "Erro desconhecido gerando token"
+                )
             else:
                 await session.flush()
                 await session.commit()
@@ -108,13 +122,13 @@ async def login_user(user: schemas.UserLogin):
 
     # Verifica se existe
     if found is None:
-        raise HTTPException(404, "Usuário não encontrado")
+        raise HTTPException(NOT_FOUND, "Usuário não encontrado")
 
     # Verifica a senha se o usuário existir
     try:
         hasher.verify(found.password, user.password)
     except VerifyMismatchError:
-        raise HTTPException(401, "Senha incorreta")
+        raise HTTPException(NOT_FOUND, "Senha incorreta")
 
     # Se não houverem erros retorna os tokens
     try:
@@ -132,16 +146,33 @@ async def login_user(user: schemas.UserLogin):
         }
 
     except jwt.exceptions.PyJWTError as e:
-        raise HTTPException(500, f"Erro desconhecido gerando token, {e}")
+        raise HTTPException(
+            INTERNAL_SERVER_ERROR, f"Erro desconhecido gerando token, {e}"
+        )
 
 
-@POST_APP.post("/renew_token")
-async def renew_token(token: schemas.TokenRenew):
+@POST_APP.post(
+    "/renew_token"
+)  # Rota para requisitar um novo token de sessão caso expire
+async def renew_token(token: schemas.TokenRenew) -> str:
+    """
+    Decodifica o token de sessão do usuário e tenta gerar um token de sessão com ele
+    Returns:
+        token em formato str
+    """
+
+    # Tenta decodificar o token
     try:
         decoded = jwt.decode(token.refresh_token, JWT_REFRESH_KEY, algorithms=["HS256"])
+
+        # Se o reresh token estiver expirado ele levanta erro 401()
     except jwt.exceptions.ExpiredSignatureError:
-        raise HTTPException(401, "Token de renovação expirado")
+        raise HTTPException(UNAUTHORIZED, "Token de renovação expirado")
+
+        # Se o token extiver inválido (alterado no cliente) levanda o erro 400
     except jwt.exceptions.InvalidTokenError as e:
-        raise HTTPException(400, f"Token inválido recebido, msg {e}")
+        raise HTTPException(BAD_REQUEST, f"Token inválido recebido, msg {e}")
+
+        # Se não ocorrerem errosretorna um novo token de sessão
     else:
         return await generate_refresh_token(decoded["sub"])
