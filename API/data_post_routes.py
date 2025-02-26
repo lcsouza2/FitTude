@@ -7,15 +7,10 @@ from Database.utils import AsyncSession, validate_token
 from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy import insert
 from sqlalchemy.exc import IntegrityError
-from user_routes import POST_APP
 
-DATA_POST_API = FastAPI(title="Requisitar criação de dados")
+DATA_API_POST = FastAPI(title="Rotas POST para serviços de treinos")
 
-# Monta a aplicação de gerenciamentos de usuário nessa apolicação, usando a rota /user/
-DATA_POST_API.mount("/user", POST_APP, "Rotas de gerenciamento de usuários")
-
-
-@DATA_POST_API.post("/equipment/new")
+@DATA_API_POST.post("/equipment/new")
 async def criar_novo_aparelho(
     aparelho: schemas.Aparelho,
     id_usuario: int = Depends(validate_token),  # Valida o token JWT
@@ -41,7 +36,7 @@ async def criar_novo_aparelho(
                 raise HTTPException(CONFLICT, "Esse aparelho já existe")
 
 
-@DATA_POST_API.post("/muscle/new")
+@DATA_API_POST.post("/muscle/new")
 async def criar_novo_musculo(
     musculo: schemas.Musculo, id_usuario: int = Depends(validate_token)
 ):
@@ -60,7 +55,7 @@ async def criar_novo_musculo(
                 raise HTTPException(CONFLICT, "Esse musculo já existe")
 
 
-@DATA_POST_API.post("/exercise/new")
+@DATA_API_POST.post("/exercise/new")
 async def criar_novo_exercicio(
     exercicio: schemas.Exercicio, id_usuario: int = Depends(validate_token)
 ):
@@ -79,9 +74,7 @@ async def criar_novo_exercicio(
                 raise HTTPException(CONFLICT, "Esse exercicio já existe")
 
 
-@DATA_POST_API.post("/workout/sheet/new")
-
-
+@DATA_API_POST.post("/workout/sheet/new")
 async def criar_nova_ficha_treino(
     ficha_treino: schemas.FichaTreino, id_usuario: int = Depends(validate_token)
 ):
@@ -100,9 +93,7 @@ async def criar_nova_ficha_treino(
                 raise HTTPException(CONFLICT, "Essa ficha de treino já existe")
 
 
-@DATA_POST_API.post("/workout/division/new")
-
-
+@DATA_API_POST.post("/workout/division/new")
 async def criar_nova_divisao_treino(divisao: schemas.DivisaoTreino):
     """Adiciona uma nova divisão de treino a uma ficha de treino"""
 
@@ -119,9 +110,7 @@ async def criar_nova_divisao_treino(divisao: schemas.DivisaoTreino):
                 raise HTTPException(CONFLICT, "Essa divisao de treino já existe")
 
 
-@DATA_POST_API.post("/workout/division/add_exercise")
-
-
+@DATA_API_POST.post("/workout/division/add_exercise")
 async def adicionar_exercicio_divisao(exercicios: List[schemas.DivisaoExercicio]):
     """Adiciona uma lista de exercícios a uma divisão de treino"""
 
@@ -141,9 +130,7 @@ async def adicionar_exercicio_divisao(exercicios: List[schemas.DivisaoExercicio]
                 )
 
 
-@DATA_POST_API.post("/workout/report/new_report")
-
-
+@DATA_API_POST.post("/workout/report/new_report")
 async def criar_novo_relatorio(relatorio: schemas.RelatorioTreino):
     """Cria um relatório de treino"""
 
@@ -160,7 +147,7 @@ async def criar_novo_relatorio(relatorio: schemas.RelatorioTreino):
                 raise HTTPException(CONFLICT, "Esse relatório já existe")
 
 
-@DATA_POST_API.post("/workout/report/add_exercise")
+@DATA_API_POST.post("/workout/report/add_exercise")
 async def adicionar_exercicio_relatorio(exercicios: List[schemas.SerieRelatorio]):
     """Adiciona uma lista de exercícios feitos a um relatório de treino"""
 

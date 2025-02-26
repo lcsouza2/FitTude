@@ -1,9 +1,10 @@
 [tool.poetry]
-name = "FitTude"
+name = "FortiFy"
 version = "0.1.0"
 description = "App para acompanhar a rotina de treinos"
 authors = ["Luiz <lcsouzagarcia@gmail.com>"]
 readme = "README.md"
+package_mode = "false"
 
 [tool.poetry.dependencies]
 python = "^3.12"
@@ -15,6 +16,7 @@ asyncpg = "^0.30.0"
 argon2-cffi = "^23.1.0"
 pyjwt = "^2.10.1"
 psycopg2-binary = "^2.9.10"
+fastapi-mail = "^1.4.2"
 
  
 [tool.poetry.group.dev.dependencies]

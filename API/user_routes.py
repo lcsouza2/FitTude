@@ -28,10 +28,10 @@ from pydantic_core import PydanticCustomError
 from sqlalchemy import exc, insert, or_, select
 
 hasher = PasswordHasher()
-POST_APP = FastAPI(title="Main API POST Routes")
 
+USER_API_POST = FastAPI(title="Rotas POST para serivços de usuários")
 
-@POST_APP.post("/register")  # Rota para começar o registro do usuário.
+@USER_API_POST.post("/register")  # Rota para começar o registro do usuário.
 async def begin_register(user: schemas.UserRegister, bg_tasks: BackgroundTasks):
     """Envia um email de confirmação do cadastro para o email fornecido,
     depois armazena os dados fornecidos no redis para validar o cadastro"""
@@ -46,9 +46,7 @@ async def begin_register(user: schemas.UserRegister, bg_tasks: BackgroundTasks):
     # Envia o email assíncronamente
     request_protocol = uuid4()
     bg_tasks.add_task(
-        send_verification_mail(
-            user.email, protocol=request_protocol, username=user.username
-        )
+        send_verification_mail, user.email, protocol=request_protocol, username=user.username
     )
 
     # Armazena os dados do usuário
@@ -59,7 +57,7 @@ async def begin_register(user: schemas.UserRegister, bg_tasks: BackgroundTasks):
         )  # 1800 segundos == 30 min
 
 
-@POST_APP.get("/register/confirm/{protocol}")
+@USER_API_POST.get("/register/confirm/{protocol}")
 async def create_register(protocol: UUID):
     """Efetiva o registro no banco
     recebendo uma requisição referente ao protocolo gerado"""
@@ -90,7 +88,7 @@ async def create_register(protocol: UUID):
                 raise HTTPException(CONFLICT, "Esse email já está sendo usado!")
         else:
             try:
-                token = await generate_register_token(email=user_data.get("email"))
+                token = generate_register_token(email=user_data.get("email"))
             except jwt.exceptions.PyJWTError:
                 raise HTTPException(
                     INTERNAL_SERVER_ERROR, "Erro desconhecido gerando token"
@@ -102,7 +100,7 @@ async def create_register(protocol: UUID):
                 return {"token": token}
 
 
-@POST_APP.post("/login")
+@USER_API_POST.post("/login")
 async def login_user(user: schemas.UserLogin):
     """Procura o usuário no banco e valida a senha,
     se válida retorna 2 tokens, senão, levanta erro"""
@@ -151,7 +149,7 @@ async def login_user(user: schemas.UserLogin):
         )
 
 
-@POST_APP.post(
+@USER_API_POST.post(
     "/renew_token"
 )  # Rota para requisitar um novo token de sessão caso expire
 async def renew_token(token: schemas.TokenRenew) -> str:

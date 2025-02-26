@@ -15,12 +15,14 @@ from sqlalchemy.orm import sessionmaker
 JWT_REFRESH_KEY = "hlNDvdGkE69LAuM"
 JWT_SESSION_KEY = "6TjFvAtLBhKOMoF"
 
-oauth2_scheme = OAuth2PasswordBearer("login")
+oauth2_scheme = OAuth2PasswordBearer("/user/login")
 
-ENGINE = create_engine("postgresql://lcsouza:Souza_0134@localhost/treino")
+ENGINE = create_engine(
+    "postgresql://fortify_user:sXw8PMhZV0IPVgujiqI0LtlDgY7qTaXt@dpg-cuv5vs5umphs73f8qg00-a.oregon-postgres.render.com/fortify"
+)
 
 ASYNC_ENGINE = create_async_engine(
-    "postgresql+asyncpg://lcsouza:Souza_0134@localhost/treino"
+    "postgresql+asyncpg://fortify_user:sXw8PMhZV0IPVgujiqI0LtlDgY7qTaXt@dpg-cuv5vs5umphs73f8qg00-a.oregon-postgres.render.com/fortify"
 )
 
 Session = sessionmaker(ENGINE, autoflush=False)
@@ -29,7 +31,13 @@ AsyncSession = async_sessionmaker(ASYNC_ENGINE, autoflush=False)
 
 
 def redis_pool():
-    return Redis(decode_responses=True)
+    return Redis(
+    host='redis-19517.c308.sa-east-1-1.ec2.redns.redis-cloud.com',
+    port=19517,
+    decode_responses=True,
+    username="default",
+    password="zkrynW67tEbFKRvvDQQc60UlPJz1kvwu",
+)
 
 
 async def get_user_id_by_email(user_email: EmailStr):
