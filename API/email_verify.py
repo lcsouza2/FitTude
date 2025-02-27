@@ -3,9 +3,9 @@ from jinja2 import Environment, FileSystemLoader
 from pydantic import EmailStr
 
 html_template_env = Environment(
-    loader=FileSystemLoader(searchpath="./Html_Templates/Email/"), enable_async=True
+    loader=FileSystemLoader(searchpath="./Html_Templates/"), enable_async=True
 )
-template = html_template_env.get_template(name="email_template.html")
+template = html_template_env.get_template(name="verify_email.html")
 
 connection = ConnectionConfig(
     MAIL_USERNAME="fittude.gym@gmail.com",

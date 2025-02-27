@@ -10,7 +10,7 @@ from uuid import UUID, uuid4
 
 import Database.db_mapping as tables
 import jwt
-import schemas
+from Database import schemas
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 from Database.utils import (
@@ -21,17 +21,18 @@ from Database.utils import (
     generate_session_token,
     redis_pool,
 )
-from Email.email_verify import send_verification_mail
-from fastapi import BackgroundTasks, FastAPI, HTTPException
-from pydantic import validate_email
+from email_verify import send_verification_mail
+from fastapi import BackgroundTasks, FastAPI, HTTPException, Request
+from pydantic import validate_email, EmailStr
 from pydantic_core import PydanticCustomError
 from sqlalchemy import exc, insert, or_, select
+from fastapi.templating import Jinja2Templates
 
 hasher = PasswordHasher()
 
-USER_API_POST = FastAPI(title="Rotas POST para serivços de usuários")
+USER_API = FastAPI(title="Rotas POST para serivços de usuários")
 
-@USER_API_POST.post("/register")  # Rota para começar o registro do usuário.
+@USER_API.post("/register")  # Rota para começar o registro do usuário.
 async def begin_register(user: schemas.UserRegister, bg_tasks: BackgroundTasks):
     """Envia um email de confirmação do cadastro para o email fornecido,
     depois armazena os dados fornecidos no redis para validar o cadastro"""
@@ -57,8 +58,8 @@ async def begin_register(user: schemas.UserRegister, bg_tasks: BackgroundTasks):
         )  # 1800 segundos == 30 min
 
 
-@USER_API_POST.get("/register/confirm/{protocol}")
-async def create_register(protocol: UUID):
+@USER_API.get("/register/confirm/{protocol}")
+async def create_register(protocol: UUID, http_request: Request):
     """Efetiva o registro no banco
     recebendo uma requisição referente ao protocolo gerado"""
 
@@ -97,10 +98,33 @@ async def create_register(protocol: UUID):
                 await session.flush()
                 await session.commit()
                 redis_pool().delete(f"protocol:{protocol}")
-                return {"token": token}
+                return Jinja2Templates("./Html_Templates").TemplateResponse(
+                    "confirm_register.html",
+                    {"request": http_request, "jwt": token}
+                )
 
+@USER_API.post("/find_user")
+async def search_for_user(credentials: str | EmailStr):
+    async with AsyncSession() as session:
+        user = await session.scalars(
+            select(tables.Usuario).where(
+                or_(
+                    tables.Usuario.username == credentials,
+                    tables.Usuario.email == credentials,
+                )
+            )
+        )
 
-@USER_API_POST.post("/login")
+    user = user.one_or_none()
+
+    if user is None:
+        return {"status" : "available"}
+    elif user.username == credentials:
+        raise HTTPException(CONFLICT, "Username já está sendo usado")
+    elif user.email == credentials:
+        raise HTTPException(CONFLICT, "Email já está sendo usado")
+
+@USER_API.post("/login")
 async def login_user(user: schemas.UserLogin):
     """Procura o usuário no banco e valida a senha,
     se válida retorna 2 tokens, senão, levanta erro"""
@@ -149,9 +173,8 @@ async def login_user(user: schemas.UserLogin):
         )
 
 
-@USER_API_POST.post(
-    "/renew_token"
-)  # Rota para requisitar um novo token de sessão caso expire
+# Rota para requisitar um novo token de sessão caso expire
+@USER_API.post("/renew_token") 
 async def renew_token(token: schemas.TokenRenew) -> str:
     """
     Decodifica o token de sessão do usuário e tenta gerar um token de sessão com ele
