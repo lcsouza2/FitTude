@@ -1,0 +1,32 @@
+body {
+    margin: 0;
+    padding: 0;
+
+    background-color: #212529;
+}
+
+
+@media (min-width: 768px) {
+    #options-sidebar {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+
+        width: fit-content;
+        min-height: 100%;
+
+        overflow: hidden;
+        
+        font-size: 130%;
+
+        background-color: #495057;
+    }
+
+    #options-sidebar a {
+        margin: 3vw;
+        margin-inline: 5vw;
+
+        color: #DEE2E6;
+    }
+
+}
