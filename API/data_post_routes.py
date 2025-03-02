@@ -3,21 +3,24 @@ from typing import List
 
 import Database.db_mapping as tables
 from Database import schemas
-from Database.utils import AsyncSession, validate_token
-from fastapi import Depends, FastAPI, HTTPException
+from Database.utils import (
+    AsyncSession,
+    validate_token,
+)
+from fastapi import FastAPI, HTTPException, Request, Response
 from sqlalchemy import insert
 from sqlalchemy.exc import IntegrityError
 
 DATA_API = FastAPI(title="Rotas POST para serviços de treinos")
 
+
 @DATA_API.post("/equipment/new")
-async def criar_novo_aparelho(
-    aparelho: schemas.Aparelho,
-    id_usuario: int = Depends(validate_token),  # Valida o token JWT
-):
+async def criar_novo_aparelho(aparelho: schemas.Aparelho, request: Request, response: Response):
     """
     Tenta criar o aparelho enviado pelo usuário no banco de dados
     """
+
+    id_usuario = await validate_token(request, response)
 
     async with AsyncSession() as session:
         try:
@@ -37,10 +40,10 @@ async def criar_novo_aparelho(
 
 
 @DATA_API.post("/muscle/new")
-async def criar_novo_musculo(
-    musculo: schemas.Musculo, id_usuario: int = Depends(validate_token)
-):
+async def criar_novo_musculo(musculo: schemas.Musculo, request: Request, response: Response):
     """Adiciona um novo músculo personalizado pelo usuário ao banco de dados"""
+
+    id_usuario = await validate_token(request, response)
 
     async with AsyncSession() as session:
         try:
@@ -56,10 +59,10 @@ async def criar_novo_musculo(
 
 
 @DATA_API.post("/exercise/new")
-async def criar_novo_exercicio(
-    exercicio: schemas.Exercicio, id_usuario: int = Depends(validate_token)
-):
+async def criar_novo_exercicio(exercicio: schemas.Exercicio, request: Request, response: Response):
     """Adiciona um exercício personalizado pelo usuário ao banco de dados"""
+
+    id_usuario = await validate_token(request, response)
 
     async with AsyncSession() as session:
         try:
@@ -75,10 +78,10 @@ async def criar_novo_exercicio(
 
 
 @DATA_API.post("/workout/sheet/new")
-async def criar_nova_ficha_treino(
-    ficha_treino: schemas.FichaTreino, id_usuario: int = Depends(validate_token)
-):
+async def criar_nova_ficha_treino(ficha_treino: schemas.FichaTreino, request: Request, response: Response):
     """Cria uma nova ficha de treino"""
+
+    id_usuario = await validate_token(request, response)
 
     async with AsyncSession() as session:
         try:
@@ -94,10 +97,10 @@ async def criar_nova_ficha_treino(
 
 
 @DATA_API.post("/workout/division/new")
-async def criar_nova_divisao_treino(divisao: schemas.DivisaoTreino):
+async def criar_nova_divisao_treino(divisao: schemas.DivisaoTreino, request: Request, response: Response):
     """Adiciona uma nova divisão de treino a uma ficha de treino"""
 
-    validate_token()
+    await validate_token(request, response)
 
     async with AsyncSession() as session:
         try:
@@ -111,10 +114,12 @@ async def criar_nova_divisao_treino(divisao: schemas.DivisaoTreino):
 
 
 @DATA_API.post("/workout/division/add_exercise")
-async def adicionar_exercicio_divisao(exercicios: List[schemas.DivisaoExercicio]):
+async def adicionar_exercicio_divisao(
+    exercicios: List[schemas.DivisaoExercicio], request: Request, response: Response
+):
     """Adiciona uma lista de exercícios a uma divisão de treino"""
 
-    validate_token()
+    await validate_token(request, response)
 
     async with AsyncSession() as session:
         try:
@@ -131,10 +136,10 @@ async def adicionar_exercicio_divisao(exercicios: List[schemas.DivisaoExercicio]
 
 
 @DATA_API.post("/workout/report/new_report")
-async def criar_novo_relatorio(relatorio: schemas.RelatorioTreino):
+async def criar_novo_relatorio(relatorio: schemas.RelatorioTreino, request: Request, response: Response):
     """Cria um relatório de treino"""
 
-    validate_token()
+    await validate_token(request, response)
 
     async with AsyncSession() as session:
         try:
@@ -148,10 +153,12 @@ async def criar_novo_relatorio(relatorio: schemas.RelatorioTreino):
 
 
 @DATA_API.post("/workout/report/add_exercise")
-async def adicionar_exercicio_relatorio(exercicios: List[schemas.SerieRelatorio]):
+async def adicionar_exercicio_relatorio(
+    exercicios: List[schemas.SerieRelatorio], request: Request, response: Response
+):
     """Adiciona uma lista de exercícios feitos a um relatório de treino"""
 
-    validate_token()
+    await validate_token(request, response)
 
     async with AsyncSession() as session:
         try:

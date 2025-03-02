@@ -23,7 +23,7 @@ async def send_verification_mail(dest_email: EmailStr, protocol: str, username: 
     message = MessageSchema(
         recipients=[dest_email],
         subject="Confirme seu cadastro na FitTude!",
-        body= await template.render_async(nome=username, prot=protocol),
+        body=await template.render_async(nome=username, prot=protocol),
         subtype="html",
     )
 

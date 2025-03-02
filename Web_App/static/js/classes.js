@@ -1,4 +1,5 @@
-import { getSessionToken } from "./utils";
+import { calcRemainingBodySpace } from "./utils.js";
+
 export class Exercise {
     constructor(exerciseId, exerciseName, exerciseDesc, equipmentId, muscleId) {
         this.exerciseId = exerciseId;
@@ -10,8 +11,8 @@ export class Exercise {
     requestCreation() {
         fetch("/data/exercise/new", {
             method: "POST",
+            credentials: "same-origin",
             headers: {
-                "Authorization": `Bearer ${getSessionToken()}`,
                 "Content-type": "application/json"
             },
             body: JSON.stringify({
@@ -28,11 +29,13 @@ export class Muscle {
         this.groupName = groupName;
         this.muscleName = muscleName;
     }
-    requestCreation() {
+
+    requestCreation(event) {
+        event.preventDefault();
         fetch("/data/muscle/new", {
             method: "POST",
+            credentials: "same-origin",
             headers: {
-                "Authorization": `Bearer ${getSessionToken()}`,
                 "Content-type": "application/json"
             },
             body: JSON.stringify({
@@ -40,6 +43,22 @@ export class Muscle {
                 "nome_musculo": this.muscleName
             })
         });
+    }
+
+    mountView() {
+        const view = document.createElement("div")
+        view.id = `muscle-${this.muscleId}`
+        view.className = "view-muscle"
+
+        view.style.width = calcRemainingBodySpace() * 0.35 + "px"
+        view.style.height = calcRemainingBodySpace() * 0.2 + "px"
+
+        view.innerHTML = `
+            <h1>${this.muscleName}</h1>
+            <h2>${this.groupName}</h2>
+        `
+
+        document.getElementById("display-data").appendChild(view)
     }
 }
 export class Equipment {
@@ -51,8 +70,8 @@ export class Equipment {
     requestCreation() {
         fetch("/data/equipment/new", {
             method: "POST",
+            credentials: "same-origin",
             headers: {
-                "Authorization": `Bearer ${getSessionToken()}`,
                 "Content-type": "application/json"
             },
             body: JSON.stringify({
