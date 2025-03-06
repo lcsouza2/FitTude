@@ -1,32 +1,111 @@
 /* styles.css */
 body {
-    background-image: url('images/backgroud_image.jpg'); 
-    background-size: cover; 
-    background-position: center; 
-    margin: 0; 
-    height: 100vh; 
+  background-image: url('images/background_image.png'); 
+  font-family: "Kanit", sans-serif;
+  background-size: cover; 
+  background-position: center; 
+  margin: 0; 
+  height: 100vh; 
+  position: relative;
+  overflow: hidden;
 }
 
-.botao {
-  background-color: #4caf4f00;
-  border: 2px solid #ffffff;
-  color: #ffffff; 
-  padding: 15px 32px; 
-  text-align: center; 
-  text-decoration: none; 
-  display: inline-block; 
-  font-size: 16px; 
-  margin: 4px 2px;
-  cursor: pointer; 
-  border-radius: 15px; 
-  transition: background-color 0.3s; 
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+body::after {
+content: "";
+position: absolute;
+bottom: 0;
+left: 0;
+width: 100%;
+height: 90px; 
+background: linear-gradient(to top, rgb(59, 59, 59) 50%, rgba(0, 0, 0, 0) 100%);
+}
+.kanit-semibold {
+font-family: "Kanit", sans-serif;
+font-weight: 600;
+font-style: normal;
 }
 
-.botao:hover {
-    background-color: #ffffff; 
-    color: #000000;
-  }
+.kanit-bold {
+font-family: "Kanit", sans-serif;
+font-weight: 700;
+font-style: normal;
+}
+
+.inter {
+font-family: "Inter", sans-serif;
+font-optical-sizing: auto;
+font-weight: 600;
+font-style: normal;
+}
+
+h1 {
+position: absolute; 
+top: 0;         
+left: 1%;   
+margin: 0;     
+color: #CED4DA;
+font-size: 50px;
+}
+
+h2 {
+position: absolute; 
+top: 50px;         
+left: 50%;        
+transform: translateX(-50%);
+text-align: center;
+color: #ADB5BD;
+text-decoration: underline;
+font-size: 40px;
+max-width: 90%;
+}
+
+h3 {
+position: absolute; 
+top: 200px;         
+left: 50%;        
+transform: translateX(-50%);
+text-align: center;
+color: #ADB5BD;
+font-size: 25px;
+max-width: 90%;
+
+}
+
+.button-style {
+background-color: #4caf4f00;
+border: 2px solid #DEE2E6;
+font-family: "Kanit", sans-serif;
+font-weight: 450;
+width: 280px;
+color: #DEE2E6; 
+padding: 15px 32px; 
+text-align: center; 
+text-decoration: none; 
+display: inline-block; 
+font-size: 16px; 
+margin: 4px 2px;
+cursor: pointer; 
+border-radius: 15px; 
+transition: background-color 0.3s; 
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+}
+
+.button-style:hover {
+  background-color: #DEE2E6; 
+  color: #000000;
+}
+
+.button1-position {
+position: absolute;
+transform: translateX(-50%);
+top: 350px; 
+}
+
+.button2-position {
+position: absolute;
+transform: translateX(-50%);
+top: 500px; 
+}
+
