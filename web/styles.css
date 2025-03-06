@@ -18,7 +18,9 @@ left: 0;
 width: 100%;
 height: 90px; 
 background: linear-gradient(to top, rgb(59, 59, 59) 50%, rgba(0, 0, 0, 0) 100%);
+z-index: -1;
 }
+
 .kanit-semibold {
 font-family: "Kanit", sans-serif;
 font-weight: 600;
@@ -71,6 +73,17 @@ max-width: 90%;
 
 }
 
+p {
+position: absolute; 
+top: 380px;         
+left: 50%;        
+transform: translateX(-50%);
+text-align: center;
+color: #ADB5BD;
+font-size: 35px;
+max-width: 90%;
+}
+
 .button-style {
 background-color: #4caf4f00;
 border: 2px solid #DEE2E6;
@@ -106,6 +119,15 @@ top: 350px;
 .button2-position {
 position: absolute;
 transform: translateX(-50%);
-top: 500px; 
+top: 468px; 
+}
+
+.fale-conosco {
+position: absolute; 
+top: 595px;         
+left: 2%;   
+margin: 0;     
+color: #CED4DA;
+font-size: 15px;
 }
 
