@@ -114,44 +114,44 @@ async def renew_token(request: Request, response: Response):
 
         # Se não ocorrerem erros cria um novo token de sessão
     else:
-        set_session_token_cookie(response, await generate_refresh_token(decoded["sub"]))
+        token = await generate_session_token(decoded["sub"])
+        await set_session_token_cookie(response, token)
+        return token
 
 
 async def get_session_token(request: Request, response: Response):
     token = request.cookies.get("session_token")
 
-    if token:
-        return token.encode()
-    else:
-        return token, request.cookies
-        await renew_token(request, response)
+    # if token is not None:
+    #     return token
+    # else:
+    return await renew_token(request, response)
 
 
 def get_refresh_token(request: Request):
     token = request.cookies.get("refresh_token")
 
     if token:
-        return token.encode()
+        return token
     else:
         raise HTTPException(UNAUTHORIZED, "Usuário não autenticado")
 
 
 async def validate_token(request: Request, response: Response) -> int:
-    
     try:
-        # token = await 
         token = await get_session_token(request, response)
 
         decoded = jwt.decode(token, JWT_SESSION_KEY, algorithms="HS256")
+
     except jwt.exceptions.ExpiredSignatureError as e:
         raise HTTPException(UNAUTHORIZED, f"Token expirado, msg: {e}")
 
-    except jwt.exceptions.InvalidTokenError as e:
-        raise HTTPException(BAD_REQUEST, f"Token inválido, msg: {e}")
+    # except jwt.exceptions.InvalidTokenError as e:
+    #     raise HTTPException(BAD_REQUEST, f"Token inválido, msg: {e}")
 
-    except jwt.DecodeError as e:
-        raise HTTPException(
-            INTERNAL_SERVER_ERROR, f"Erro desconhecido validando token, msg: {e}"
-        )
+    # except jwt.DecodeError as e:
+    #     raise HTTPException(
+    #         INTERNAL_SERVER_ERROR, f"Erro desconhecido validando token, msg: {e}"
+    # )
     else:
         return int(decoded["sub"])

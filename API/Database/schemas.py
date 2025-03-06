@@ -34,6 +34,7 @@ class Musculo(BaseModel):
 
 class Exercicio(BaseModel):
     nome_exercicio: str
+    id_musculo: int
     id_aparelho: Optional[int]
     descricao: Optional[str]
 
@@ -52,8 +53,9 @@ class DivisaoExercicio(BaseModel):
     divisao: str
     id_ficha_treino: int
     id_exercicio: int
+    ordem_execucao: int
     series: int
-    repeticoes: int
+    repeticoes: str | int
     tecnica_avancada: Optional[str]
     descanso: int
 

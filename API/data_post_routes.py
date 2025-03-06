@@ -10,12 +10,15 @@ from Database.utils import (
 from fastapi import FastAPI, HTTPException, Request, Response
 from sqlalchemy import insert
 from sqlalchemy.exc import IntegrityError
+from Database import utils 
 
 DATA_API = FastAPI(title="Rotas POST para serviços de treinos")
 
 
 @DATA_API.post("/equipment/new")
-async def criar_novo_aparelho(aparelho: schemas.Aparelho, request: Request, response: Response):
+async def criar_novo_aparelho(
+    aparelho: schemas.Aparelho, request: Request, response: Response
+):
     """
     Tenta criar o aparelho enviado pelo usuário no banco de dados
     """
@@ -25,7 +28,7 @@ async def criar_novo_aparelho(aparelho: schemas.Aparelho, request: Request, resp
     async with AsyncSession() as session:
         try:
             # Executa o insert
-            await session.scalars(
+            await session.execute(
                 insert(tables.Aparelho).values(
                     # Desempacota o aparelho num dicionário e acrescenta o id_usuário
                     {**aparelho.model_dump(), "id_usuario": id_usuario}
@@ -40,14 +43,16 @@ async def criar_novo_aparelho(aparelho: schemas.Aparelho, request: Request, resp
 
 
 @DATA_API.post("/muscle/new")
-async def criar_novo_musculo(musculo: schemas.Musculo, request: Request, response: Response):
+async def criar_novo_musculo(
+    musculo: schemas.Musculo, request: Request, response: Response
+):
     """Adiciona um novo músculo personalizado pelo usuário ao banco de dados"""
 
     id_usuario = await validate_token(request, response)
 
     async with AsyncSession() as session:
         try:
-            await session.scalars(
+            await session.execute(
                 insert(tables.Musculo).values(
                     {**musculo.model_dump(), "id_usuario": id_usuario}
                 )
@@ -59,14 +64,16 @@ async def criar_novo_musculo(musculo: schemas.Musculo, request: Request, respons
 
 
 @DATA_API.post("/exercise/new")
-async def criar_novo_exercicio(exercicio: schemas.Exercicio, request: Request, response: Response):
+async def criar_novo_exercicio(
+    exercicio: schemas.Exercicio, request: Request, response: Response
+):
     """Adiciona um exercício personalizado pelo usuário ao banco de dados"""
 
     id_usuario = await validate_token(request, response)
 
     async with AsyncSession() as session:
         try:
-            await session.scalars(
+            await session.execute(
                 insert(tables.Exercicio).values(
                     {**exercicio.model_dump(), "id_usuario": id_usuario}
                 )
@@ -78,14 +85,16 @@ async def criar_novo_exercicio(exercicio: schemas.Exercicio, request: Request, r
 
 
 @DATA_API.post("/workout/sheet/new")
-async def criar_nova_ficha_treino(ficha_treino: schemas.FichaTreino, request: Request, response: Response):
+async def criar_nova_ficha_treino(
+    ficha_treino: schemas.FichaTreino, request: Request, response: Response
+):
     """Cria uma nova ficha de treino"""
 
     id_usuario = await validate_token(request, response)
 
     async with AsyncSession() as session:
         try:
-            await session.scalars(
+            await session.execute(
                 insert(tables.FichaTreino).values(
                     {**ficha_treino.model_dump(), "id_usuario": id_usuario}
                 )
@@ -97,14 +106,16 @@ async def criar_nova_ficha_treino(ficha_treino: schemas.FichaTreino, request: Re
 
 
 @DATA_API.post("/workout/division/new")
-async def criar_nova_divisao_treino(divisao: schemas.DivisaoTreino, request: Request, response: Response):
+async def criar_nova_divisao_treino(
+    divisao: schemas.DivisaoTreino, request: Request, response: Response
+):
     """Adiciona uma nova divisão de treino a uma ficha de treino"""
 
     await validate_token(request, response)
 
     async with AsyncSession() as session:
         try:
-            await session.scalars(
+            await session.execute(
                 insert(tables.DivisaoTreino).values(divisao.model_dump())
             )
             await session.commit()
@@ -123,10 +134,8 @@ async def adicionar_exercicio_divisao(
 
     async with AsyncSession() as session:
         try:
-            for i in exercicios:
-                await session.scalars(
-                    insert(tables.DivisaoExercicio).values(i.model_dump())
-                )
+            valores = [i.model_dump() for i in exercicios]
+            await session.execute(insert(tables.DivisaoExercicio).values(valores))
             await session.commit()
         except IntegrityError as e:
             if "pk_divisao_exercicio" in str(e):
@@ -136,14 +145,18 @@ async def adicionar_exercicio_divisao(
 
 
 @DATA_API.post("/workout/report/new_report")
-async def criar_novo_relatorio(relatorio: schemas.RelatorioTreino, request: Request, response: Response):
+async def criar_novo_relatorio(
+    relatorio: schemas.RelatorioTreino, request: Request, response: Response
+):
     """Cria um relatório de treino"""
 
+    
+    
     await validate_token(request, response)
 
     async with AsyncSession() as session:
         try:
-            await session.scalars(
+            await session.execute(
                 insert(tables.DivisaoExercicio).values(relatorio.model_dump())
             )
             await session.commit()
@@ -163,7 +176,7 @@ async def adicionar_exercicio_relatorio(
     async with AsyncSession() as session:
         try:
             for i in exercicios:
-                await session.scalars(
+                await session.execute(
                     insert(tables.SerieRelatorio).values(i.model_dump())
                 )
                 await session.commit()

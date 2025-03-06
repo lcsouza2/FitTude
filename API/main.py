@@ -4,6 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from user_post_routes import USER_API
 
+
 MAIN_APP = FastAPI(debug=True)
 
 templates = Jinja2Templates(directory="./Web_App/html/")

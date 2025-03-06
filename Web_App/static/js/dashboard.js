@@ -21,6 +21,33 @@ function mountCreatingButton(type) {
     }
 }
 
+function displayAllEquipments(data) {
+    let musclesArray = []
+    let shownMusclesArray = []
+
+
+    document.querySelectorAll('[id^="muscle-"]').forEach(item => {
+        shownMusclesArray.push(item.id.split("-")[1])
+    } )
+
+    data.forEach(instance => {
+        let equipmentArray = []
+        let shownEquipmentsArray = []
+
+
+        document.querySelectorAll('[id^="equipment-"]').forEach(item => {
+            shownEquipmentsArray.push(item.id.split("-")[1])
+        } )
+
+        if (!shownEquipmentsArray.includes(String(instance.id_aparelho))) {
+            equipmentArray.push(new Equipment(
+                instance.id_aparelho, instance.nome_grupamento, instance.nome_aparelho
+            ).mountView())
+        }
+    })
+
+}
+
 function displayAllMuscles(data) {
     let musclesArray = []
     let shownMusclesArray = []
@@ -41,11 +68,38 @@ function displayAllMuscles(data) {
     })
 }
 
-document.getElementById("display-muscles").addEventListener("click", () => {
-    fetch("/data/muscle/get", {credentials: "same-origin"})
+document.getElementById("display-equipments").addEventListener("click", () => {
+    fetch("/data/equipment/get", {credentials: "same-origin"})
     .then(response => response.json())
-    .then(data => {mountCreatingButton(); displayAllMuscles(data);      
+    .then(data => {mountCreatingButton(); displayAllEquipments(data);      
     })
 })
 
 
+fetch("/data/workout/division/add_exercise", {
+    method: "POST",
+    credentials: "same-origin",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify([
+        {
+            "divisao": "B",
+            "id_ficha_treino": 1,
+            "id_exercicio": 1,
+            "ordem_execucao": 1,
+            "series": 4,
+            "repeticoes": "até a falha",
+            "tecnica_avancada": "drop set",
+            "descanso": 1800
+        },
+        {
+            "divisao": "B",
+            "id_ficha_treino": 1,
+            "id_exercicio": 1,
+            "ordem_execucao": 2,
+            "series": 4,
+            "repeticoes": "até a falha",
+            "tecnica_avancada": "drop set",
+            "descanso": 1800
+        },
+    ])
+})

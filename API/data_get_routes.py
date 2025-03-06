@@ -28,7 +28,7 @@ async def buscar_todos_os_exercicios(request: Request, response: Response):
 async def buscar_todos_os_musculos(request: Request, response: Response):
     """Busca os músuclos referentes a um usuário e retorna eles"""
     # id_usuario = await
-    
+
     id_usuario = await validate_token(request, response)
 
     async with AsyncSession() as session:
@@ -42,3 +42,23 @@ async def buscar_todos_os_musculos(request: Request, response: Response):
         )
 
     return musculos.fetchall()
+
+
+@DATA_API.get("/equipment/get")
+async def buscar_todos_os_musculos(request: Request, response: Response):
+    """Busca os músuclos referentes a um usuário e retorna eles"""
+    # id_usuario = await
+
+    id_usuario = await validate_token(request, response)
+
+    async with AsyncSession() as session:
+        aparelhos = await session.scalars(
+            select(tables.Aparelho).where(
+                or_(
+                    tables.Aparelho.id_usuario == id_usuario,
+                    tables.Aparelho.id_usuario == None,
+                )
+            )
+        )
+
+    return aparelhos.fetchall()
