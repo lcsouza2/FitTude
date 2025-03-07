@@ -39,12 +39,12 @@ position: absolute;
 top: 0;         
 left: 1%;   
 margin: 0;     
-color: #9b9b9b;
+color: #ffffff;
 font-size: 50px;
 }
 
 .h1-highlighted {
-  color: #ffffff;
+  color: #510feb;
 }
 
 h2 {
@@ -53,7 +53,7 @@ top: 50px;
 left: 50%;        
 transform: translateX(-50%);
 text-align: center;
-color: #cbd2d8;
+color: #ececec;
 text-decoration: underline;
 font-size: 40px;
 max-width: 90%;
@@ -66,7 +66,7 @@ left: 50%;
 transform: translateX(-50%);
 text-align: center;
 text-shadow: 2px 2px 4px rgb(0, 0, 0);
-color: #cbd2d8;
+color: #ececec;
 font-size: 25px;
 max-width: 90%;
 }
@@ -106,8 +106,9 @@ transition: all 0.3s ease;
 }
 
 .button-style:hover {
-background-color: #DEE2E6;
-color: #000000;
+border-color: #510feb;
+background-color: #510feb;
+color: #cbd2d8;
 font-size: 1.1em;
 }
 
@@ -129,7 +130,7 @@ color: #ADB5BD;
 }
 
 .links-style:hover {
-color: #ebeef1;
+color: #ae8bff;
 font-size: 1.2em;
 }
 
