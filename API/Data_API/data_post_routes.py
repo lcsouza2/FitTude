@@ -10,7 +10,7 @@ from Database.utils import (
 from fastapi import FastAPI, HTTPException, Request, Response
 from sqlalchemy import insert
 from sqlalchemy.exc import IntegrityError
-from Database import utils 
+from Database import utils
 
 DATA_API = FastAPI(title="Rotas POST para serviços de treinos")
 
@@ -133,15 +133,15 @@ async def adicionar_exercicio_divisao(
     await validate_token(request, response)
 
     async with AsyncSession() as session:
-        try:
-            valores = [i.model_dump() for i in exercicios]
-            await session.execute(insert(tables.DivisaoExercicio).values(valores))
-            await session.commit()
-        except IntegrityError as e:
-            if "pk_divisao_exercicio" in str(e):
-                raise HTTPException(
-                    CONFLICT, "Esse exercicio já foi adicionado a essa divisão"
-                )
+        # try:
+        valores = [i.model_dump() for i in exercicios]
+        await session.execute(insert(tables.DivisaoExercicio).values(valores))
+        await session.commit()
+    # except IntegrityError as e:
+    #     if "pk_divisao_exercicio" in str(e):
+    #         raise HTTPException(
+    #             CONFLICT, "Esse exercicio já foi adicionado a essa divisão"
+    # )
 
 
 @DATA_API.post("/workout/report/new_report")
@@ -150,8 +150,6 @@ async def criar_novo_relatorio(
 ):
     """Cria um relatório de treino"""
 
-    
-    
     await validate_token(request, response)
 
     async with AsyncSession() as session:

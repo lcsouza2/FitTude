@@ -139,6 +139,6 @@ class SerieRelatorio:
         ForeignKey("divisao_exercicio.id_ficha_treino"), primary_key=True
     )
     numero_serie: Mapped[int] = mapped_column(primary_key=True)
-    reps: Mapped[int]
+    repeticoes: Mapped[str]
     carga: Mapped[int]
     observacao: Mapped[str] = mapped_column(nullable=True)

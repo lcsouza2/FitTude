@@ -76,30 +76,14 @@ document.getElementById("display-equipments").addEventListener("click", () => {
 })
 
 
-fetch("/data/workout/division/add_exercise", {
+fetch("/data/muscle/new", {
     method: "POST",
     credentials: "same-origin",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify([
         {
-            "divisao": "B",
-            "id_ficha_treino": 1,
-            "id_exercicio": 1,
-            "ordem_execucao": 1,
-            "series": 4,
-            "repeticoes": "até a falha",
-            "tecnica_avancada": "drop set",
-            "descanso": 1800
-        },
-        {
-            "divisao": "B",
-            "id_ficha_treino": 1,
-            "id_exercicio": 1,
-            "ordem_execucao": 2,
-            "series": 4,
-            "repeticoes": "até a falha",
-            "tecnica_avancada": "drop set",
-            "descanso": 1800
-        },
+            "nome_grupamento": "Costas",
+            "nome_musculo": "Dorsais"
+        }
     ])
 })

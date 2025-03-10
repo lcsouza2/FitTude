@@ -122,10 +122,10 @@ async def renew_token(request: Request, response: Response):
 async def get_session_token(request: Request, response: Response):
     token = request.cookies.get("session_token")
 
-    # if token is not None:
-    #     return token
-    # else:
-    return await renew_token(request, response)
+    if token is not None:
+        return token
+    else:
+        return await renew_token(request, response)
 
 
 def get_refresh_token(request: Request):
@@ -146,12 +146,12 @@ async def validate_token(request: Request, response: Response) -> int:
     except jwt.exceptions.ExpiredSignatureError as e:
         raise HTTPException(UNAUTHORIZED, f"Token expirado, msg: {e}")
 
-    # except jwt.exceptions.InvalidTokenError as e:
-    #     raise HTTPException(BAD_REQUEST, f"Token inválido, msg: {e}")
+    except jwt.exceptions.InvalidTokenError as e:
+        raise HTTPException(BAD_REQUEST, f"Token inválido, msg: {e}")
 
-    # except jwt.DecodeError as e:
-    #     raise HTTPException(
-    #         INTERNAL_SERVER_ERROR, f"Erro desconhecido validando token, msg: {e}"
-    # )
+    except jwt.DecodeError as e:
+        raise HTTPException(
+            INTERNAL_SERVER_ERROR, f"Erro desconhecido validando token, msg: {e}"
+        )
     else:
         return int(decoded["sub"])
