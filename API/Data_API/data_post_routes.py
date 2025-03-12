@@ -2,17 +2,15 @@ from http.client import CONFLICT
 from typing import List
 
 import Database.db_mapping as tables
+from Data_API.data_get_routes import DATA_API
 from Database import schemas
 from Database.utils import (
     AsyncSession,
-    validate_token,
+    validar_token,
 )
-from fastapi import FastAPI, HTTPException, Request, Response
+from fastapi import HTTPException, Request, Response
 from sqlalchemy import insert
 from sqlalchemy.exc import IntegrityError
-from Database import utils
-
-DATA_API = FastAPI(title="Rotas POST para serviços de treinos")
 
 
 @DATA_API.post("/equipment/new")
@@ -23,20 +21,17 @@ async def criar_novo_aparelho(
     Tenta criar o aparelho enviado pelo usuário no banco de dados
     """
 
-    id_usuario = await validate_token(request, response)
+    id_usuario = await validar_token(request, response)
 
     async with AsyncSession() as session:
         try:
-            # Executa o insert
             await session.execute(
                 insert(tables.Aparelho).values(
-                    # Desempacota o aparelho num dicionário e acrescenta o id_usuário
                     {**aparelho.model_dump(), "id_usuario": id_usuario}
                 )
             )
             await session.commit()
 
-        # Tratamento para duplicidade
         except IntegrityError as e:
             if "uq_aparelho" in str(e):
                 raise HTTPException(CONFLICT, "Esse aparelho já existe")
@@ -48,7 +43,7 @@ async def criar_novo_musculo(
 ):
     """Adiciona um novo músculo personalizado pelo usuário ao banco de dados"""
 
-    id_usuario = await validate_token(request, response)
+    id_usuario = await validar_token(request, response)
 
     async with AsyncSession() as session:
         try:
@@ -69,7 +64,7 @@ async def criar_novo_exercicio(
 ):
     """Adiciona um exercício personalizado pelo usuário ao banco de dados"""
 
-    id_usuario = await validate_token(request, response)
+    id_usuario = await validar_token(request, response)
 
     async with AsyncSession() as session:
         try:
@@ -90,7 +85,7 @@ async def criar_nova_ficha_treino(
 ):
     """Cria uma nova ficha de treino"""
 
-    id_usuario = await validate_token(request, response)
+    id_usuario = await validar_token(request, response)
 
     async with AsyncSession() as session:
         try:
@@ -111,7 +106,7 @@ async def criar_nova_divisao_treino(
 ):
     """Adiciona uma nova divisão de treino a uma ficha de treino"""
 
-    await validate_token(request, response)
+    await validar_token(request, response)
 
     async with AsyncSession() as session:
         try:
@@ -130,7 +125,7 @@ async def adicionar_exercicio_divisao(
 ):
     """Adiciona uma lista de exercícios a uma divisão de treino"""
 
-    await validate_token(request, response)
+    await validar_token(request, response)
 
     async with AsyncSession() as session:
         # try:
@@ -150,7 +145,7 @@ async def criar_novo_relatorio(
 ):
     """Cria um relatório de treino"""
 
-    await validate_token(request, response)
+    await validar_token(request, response)
 
     async with AsyncSession() as session:
         try:
@@ -169,7 +164,7 @@ async def adicionar_exercicio_relatorio(
 ):
     """Adiciona uma lista de exercícios feitos a um relatório de treino"""
 
-    await validate_token(request, response)
+    await validar_token(request, response)
 
     async with AsyncSession() as session:
         try:

@@ -2,17 +2,16 @@ from typing import Optional
 
 from pydantic import BaseModel, EmailStr
 
+class BaseSchema(BaseModel):
+    class Config:
+        extra="forbid"
 
-class TokenRenew(BaseModel):
-    refresh_token: str
-
-
-class User(BaseModel):
+class User(BaseSchema):
     login_key: str | EmailStr
     password: str
 
 
-class UserRegister(BaseModel):
+class UserRegistro(BaseSchema):
     username: str
     email: EmailStr
     password: str
@@ -22,34 +21,34 @@ class UserLogin(User):
     keep_login: bool
 
 
-class Aparelho(BaseModel):
+class Aparelho(BaseSchema):
     nome_grupamento: str
     nome_aparelho: str
 
 
-class Musculo(BaseModel):
+class Musculo(BaseSchema):
     nome_grupamento: str
     nome_musculo: str
 
 
-class Exercicio(BaseModel):
+class Exercicio(BaseSchema):
     nome_exercicio: str
     id_musculo: int
     id_aparelho: Optional[int]
     descricao: Optional[str]
 
 
-class FichaTreino(BaseModel):
+class FichaTreino(BaseSchema):
     nome_ficha_treino: str
     objetivo_ficha_treino: str
 
 
-class DivisaoTreino(BaseModel):
+class DivisaoTreino(BaseSchema):
     divisao: str
     id_ficha_treino: int
 
 
-class DivisaoExercicio(BaseModel):
+class DivisaoExercicio(BaseSchema):
     divisao: str
     id_ficha_treino: int
     id_exercicio: int
@@ -60,12 +59,12 @@ class DivisaoExercicio(BaseModel):
     descanso: int
 
 
-class RelatorioTreino(BaseModel):
+class RelatorioTreino(BaseSchema):
     divisao: str
     id_ficha_treino: int
 
 
-class SerieRelatorio(BaseModel):
+class SerieRelatorio(BaseSchema):
     divisao: str
     id_ficha_treino: int
     id_exercicio: int
@@ -74,3 +73,8 @@ class SerieRelatorio(BaseModel):
     repeticoes: str
     carga: int
     observacao: str
+
+
+class MusculoAlterar(BaseSchema):
+    nome_grupamento: Optional[str] = None
+    nome_musculo: Optional[str] = None

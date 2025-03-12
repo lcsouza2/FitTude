@@ -19,7 +19,7 @@ connection = ConnectionConfig(
 )
 
 
-async def send_verification_mail(dest_email: EmailStr, protocol: str, username: str):
+async def enviar_email_verificacao(dest_email: EmailStr, protocol: str, username: str):
     message = MessageSchema(
         recipients=[dest_email],
         subject="Confirme seu cadastro na FitTude!",
