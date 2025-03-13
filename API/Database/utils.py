@@ -157,3 +157,7 @@ async def validar_token(requisicao: Request, resposta: Response) -> int:
         )
     else:
         return int(decoded["sub"])
+
+
+def excluir_falsy_dict(payload: dict):
+    return {key: value for key, value in payload.items() if value}
