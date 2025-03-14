@@ -100,3 +100,23 @@ async def alterar_exercicio(id_exercicio: int, alteracoes: schemas.ExercicioAlte
 
         else:
             await sessao.commit()
+
+@DATA_API.put("workout/sheet/update/{id_ficha_treino}")
+async def alterar_ficha_treino(id_ficha_treino:int, alteracoes: schemas.FichaTreinoAlterar):
+    async with AsyncSession() as sessao:
+        try:
+            await sessao.begin()
+            await sessao.execute(
+                update(tables.FichaTreino)
+                .where(tables.FichaTreino.id_ficha_treino == id_ficha_treino)
+                .values(excluir_falsy_dict(alteracoes.model_dump(exclude_none=True)))
+            )
+        except IntegrityError as erro:
+            if "uq_ficha_treino" in str(erro):
+                await sessao.rollback()
+                raise HTTPException(
+                    CONFLICT,
+                    "Os dados recebidos conflitam com algum registro existente!",
+                )
+        else:
+            await sessao.commit()
