@@ -30,6 +30,7 @@ hasher = PasswordHasher()
 
 USER_API = FastAPI(title="Rotas POST para serivços de usuários")
 
+
 async def search_for_user(username: str, email: EmailStr):
     async with AsyncSession() as session:
         try:
@@ -49,6 +50,7 @@ async def search_for_user(username: str, email: EmailStr):
         else:
             transaction.rollback()
             return True
+
 
 @USER_API.post("/register")
 async def begin_register(user: schemas.UserRegistro, bg_tasks: BackgroundTasks):

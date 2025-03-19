@@ -5,7 +5,7 @@ from Database.utils import AsyncSession, validar_token, excluir_falsy_dict
 from sqlalchemy import update, and_
 from sqlalchemy.exc import IntegrityError
 
-from fastapi import Request, Response, HTTPException, Depends
+from fastapi import HTTPException, Depends, Query
 
 from http.client import CONFLICT, NOT_FOUND
 
@@ -145,3 +145,11 @@ async def alterar_ficha_treino(
                 )
         else:
             await sessao.commit()
+
+
+@DATA_API.put("/workout/division/update/{division}")
+async def update_workout_division(
+    division: str,
+    new_division_name: str = Query(),
+    user_id: int = Depends(validar_token),
+): ...
