@@ -30,6 +30,25 @@ hasher = PasswordHasher()
 
 USER_API = FastAPI(title="Rotas POST para serivços de usuários")
 
+async def search_for_user(username: str, email: EmailStr):
+    async with AsyncSession() as session:
+        try:
+            transaction = session.begin()
+            await session.scalars(
+                insert(tables.Usuario).values(
+                    username=username, email=email, password="abc"
+                )
+            )
+        except exc.IntegrityError as e:
+            if "uq_usuario_username" in str(e):
+                raise HTTPException(
+                    CONFLICT, "Esse nome de usuário já está sendo usado!"
+                )
+            if "uq_usuario_email" in str(e):
+                raise HTTPException(CONFLICT, "Esse email já está sendo usado!")
+        else:
+            transaction.rollback()
+            return True
 
 @USER_API.post("/register")
 async def begin_register(user: schemas.UserRegistro, bg_tasks: BackgroundTasks):
@@ -40,6 +59,8 @@ async def begin_register(user: schemas.UserRegistro, bg_tasks: BackgroundTasks):
         validate_email(user.email)
     except PydanticCustomError:
         raise HTTPException(UNPROCESSABLE_ENTITY, "Email Inválido")
+
+    search_for_user()
 
     protocolo_usuario = uuid4()
     bg_tasks.add_task(
@@ -100,28 +121,6 @@ async def create_register(
                 return Jinja2Templates("./Html_Templates").TemplateResponse(
                     http_request, "confirm_register.html"
                 )
-
-
-@USER_API.post("/find_user")
-async def search_for_user(credentials: str | EmailStr = Body(embed=True)):
-    async with AsyncSession() as session:
-        try:
-            transaction = session.begin()
-            await session.scalars(
-                insert(tables.Usuario).values(
-                    username=credentials, email=credentials, password="abc"
-                )
-            )
-        except exc.IntegrityError as e:
-            if "uq_usuario_username" in str(e):
-                raise HTTPException(
-                    CONFLICT, "Esse nome de usuário já está sendo usado!"
-                )
-            if "uq_usuario_email" in str(e):
-                raise HTTPException(CONFLICT, "Esse email já está sendo usado!")
-        else:
-            transaction.rollback()
-            return {"status": "available"}
 
 
 @USER_API.post("/login")

@@ -93,6 +93,7 @@ class ExercicioAlterar(BaseSchema):
     id_aparelho: Optional[int]
     descricao: Optional[str]
 
+
 class FichaTreinoAlterar(BaseSchema):
     nome_ficha_treino: Optional[str]
     objetivo_ficha_treino: Optional[str]

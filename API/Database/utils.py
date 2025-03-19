@@ -23,12 +23,12 @@ AsyncSession = async_sessionmaker(ASYNC_ENGINE, autoflush=False)
 
 def redis_pool():
     return Redis(
-    host='redis-19517.c308.sa-east-1-1.ec2.redns.redis-cloud.com',
-    port=19517,
-    decode_responses=True,
-    username="default",
-    password="zkrynW67tEbFKRvvDQQc60UlPJz1kvwu",
-)
+        host="redis-19517.c308.sa-east-1-1.ec2.redns.redis-cloud.com",
+        port=19517,
+        decode_responses=True,
+        username="default",
+        password="zkrynW67tEbFKRvvDQQc60UlPJz1kvwu",
+    )
 
 
 async def obter_user_id_pelo_email(email_usuario: EmailStr):
