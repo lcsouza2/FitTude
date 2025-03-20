@@ -1,4 +1,4 @@
-from http.client import CONFLICT
+from http.client import CONFLICT, NOT_FOUND
 from typing import List
 
 import Database.db_mapping as tables
@@ -6,28 +6,27 @@ from Data_API.data_get_routes import DATA_API
 from Database import schemas
 from Database.utils import (
     AsyncSession,
-    validar_token,
+    validate_token,
 )
-from fastapi import HTTPException, Request, Response
+from fastapi import HTTPException, Request, Response, Depends
 from sqlalchemy import insert
 from sqlalchemy.exc import IntegrityError
 
 
 @DATA_API.post("/equipment/new")
-async def criar_novo_aparelho(
-    aparelho: schemas.Aparelho, request: Request, response: Response
+async def create_new_equipment(
+    equipment: schemas.Aparelho, user_id: int = Depends(validate_token)
 ):
     """
     Tenta criar o aparelho enviado pelo usuário no banco de dados
     """
 
-    id_usuario = await validar_token(request, response)
 
     async with AsyncSession() as session:
         try:
             await session.execute(
                 insert(tables.Aparelho).values(
-                    {**aparelho.model_dump(), "id_usuario": id_usuario}
+                    {**equipment.model_dump(), "id_usuario": user_id}
                 )
             )
             await session.commit()
@@ -38,18 +37,17 @@ async def criar_novo_aparelho(
 
 
 @DATA_API.post("/muscle/new")
-async def criar_novo_musculo(
-    musculo: schemas.Musculo, request: Request, response: Response
+async def create_new_muscle(
+    muscle: schemas.Musculo, user_id: int = Depends(validate_token)
 ):
     """Adiciona um novo músculo personalizado pelo usuário ao banco de dados"""
 
-    id_usuario = await validar_token(request, response)
 
     async with AsyncSession() as session:
         try:
             await session.execute(
                 insert(tables.Musculo).values(
-                    {**musculo.model_dump(), "id_usuario": id_usuario}
+                    {**muscle.model_dump(), "id_usuario": user_id}
                 )
             )
             await session.commit()
@@ -59,18 +57,17 @@ async def criar_novo_musculo(
 
 
 @DATA_API.post("/exercise/new")
-async def criar_novo_exercicio(
-    exercicio: schemas.Exercicio, request: Request, response: Response
+async def create_new_exercise(
+    exercise: schemas.Exercicio, user_id: int = Depends(validate_token)
 ):
     """Adiciona um exercício personalizado pelo usuário ao banco de dados"""
-
-    id_usuario = await validar_token(request, response)
+    
 
     async with AsyncSession() as session:
         try:
             await session.execute(
                 insert(tables.Exercicio).values(
-                    {**exercicio.model_dump(), "id_usuario": id_usuario}
+                    {**exercise.model_dump(), "id_usuario": user_id}
                 )
             )
             await session.commit()
@@ -80,18 +77,18 @@ async def criar_novo_exercicio(
 
 
 @DATA_API.post("/workout/sheet/new")
-async def criar_nova_ficha_treino(
-    ficha_treino: schemas.FichaTreino, request: Request, response: Response
+async def create_new_workout_sheet(
+    sheet: schemas.FichaTreino, user_id: int = Depends(validate_token)
 ):
     """Cria uma nova ficha de treino"""
 
-    id_usuario = await validar_token(request, response)
+    
 
     async with AsyncSession() as session:
         try:
             await session.execute(
                 insert(tables.FichaTreino).values(
-                    {**ficha_treino.model_dump(), "id_usuario": id_usuario}
+                    {**sheet.model_dump(), "id_usuario": user_id}
                 )
             )
             await session.commit()
@@ -102,16 +99,14 @@ async def criar_nova_ficha_treino(
 
 @DATA_API.post("/workout/division/new")
 async def criar_nova_divisao_treino(
-    divisao: schemas.DivisaoTreino, request: Request, response: Response
+    division: schemas.DivisaoTreino, user_id: int = Depends(validate_token)
 ):
     """Adiciona uma nova divisão de treino a uma ficha de treino"""
-
-    await validar_token(request, response)
 
     async with AsyncSession() as session:
         try:
             await session.execute(
-                insert(tables.DivisaoTreino).values(divisao.model_dump())
+                insert(tables.DivisaoTreino).values(division.model_dump())
             )
             await session.commit()
         except IntegrityError as e:
@@ -120,61 +115,75 @@ async def criar_nova_divisao_treino(
 
 
 @DATA_API.post("/workout/division/add_exercise")
-async def adicionar_exercicio_divisao(
-    exercicios: List[schemas.DivisaoExercicio], request: Request, response: Response
+async def add_exercise_to_division(
+    exercises: List[schemas.DivisaoExercicio], user_id: int = Depends(validate_token)
 ):
     """Adiciona uma lista de exercícios a uma divisão de treino"""
 
-    await validar_token(request, response)
-
     async with AsyncSession() as session:
-        # try:
-        valores = [i.model_dump() for i in exercicios]
-        await session.execute(insert(tables.DivisaoExercicio).values(valores))
-        await session.commit()
-    # except IntegrityError as e:
-    #     if "pk_divisao_exercicio" in str(e):
-    #         raise HTTPException(
-    #             CONFLICT, "Esse exercicio já foi adicionado a essa divisão"
-    # )
+        try:
+            valores = [i.model_dump() for i in exercises]
+            await session.execute(insert(tables.DivisaoExercicio).values(valores))
+            await session.commit()
 
+        except IntegrityError as exc:
+            if "pk_divisao_exercicio" in str(exc):
+                raise HTTPException(
+                    CONFLICT, "Esse exercicio já foi adicionado a essa divisão"
+                )
+            
+            if "fk_divisao_exercicio_divisao_treino" in str(exc):
+                raise HTTPException(
+                    NOT_FOUND, "A divisão de treino referenciada não existe"
+                )
 
+            if "fk_divisao_exercicio_exercicio" in str(exc):
+                raise HTTPException(
+                    NOT_FOUND, "O exercício referenciado não existe"
+                )
+            
 @DATA_API.post("/workout/report/new_report")
-async def criar_novo_relatorio(
-    relatorio: schemas.RelatorioTreino, request: Request, response: Response
+async def create_new_report(
+    report: schemas.RelatorioTreino, user_id: int = Depends(validate_token)
 ):
     """Cria um relatório de treino"""
-
-    await validar_token(request, response)
 
     async with AsyncSession() as session:
         try:
             await session.execute(
-                insert(tables.DivisaoExercicio).values(relatorio.model_dump())
+                insert(tables.DivisaoExercicio).values(report.model_dump())
             )
             await session.commit()
-        except IntegrityError as e:
-            if "pk_relatorio_treino" in str(e):
+
+        except IntegrityError as exc:
+            if "pk_relatorio_treino" in str(exc):
                 raise HTTPException(CONFLICT, "Esse relatório já existe")
+            
+            if "fk_relatorio_treino_divisao_treino" in str(exc):
+                raise HTTPException(NOT_FOUND, "A divisão de treino referenciada não existe")
 
 
 @DATA_API.post("/workout/report/add_exercise")
-async def adicionar_exercicio_relatorio(
-    exercicios: List[schemas.SerieRelatorio], request: Request, response: Response
+async def add_exercise_to_report(
+    exercises: List[schemas.SerieRelatorio], user_id: int = Depends(validate_token)
 ):
     """Adiciona uma lista de exercícios feitos a um relatório de treino"""
 
-    await validar_token(request, response)
-
     async with AsyncSession() as session:
         try:
-            for i in exercicios:
+            for i in exercises:
                 await session.execute(
                     insert(tables.SerieRelatorio).values(i.model_dump())
                 )
                 await session.commit()
-        except IntegrityError as e:
-            if "pk_series_relatorio" in str(e):
+        except IntegrityError as exc:
+            if "pk_series_relatorio" in str(exc):
                 raise HTTPException(
                     CONFLICT, "Essa série já foi adicionada a esse relatório"
                 )
+            
+            if "fk_serie_relatorio_divisao_exercicio" in str(exc):
+                raise HTTPException(NOT_FOUND, "O exercício referenciado não existe na divisão")
+            
+            if "fk_serie_relatorio_relatorio_treino" in str(exc):
+                raise HTTPException(NOT_FOUND, "O relatório de treino referenciado não existe")

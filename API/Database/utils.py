@@ -31,7 +31,7 @@ def redis_pool():
     )
 
 
-async def obter_user_id_pelo_email(email_usuario: EmailStr):
+async def get_user_id_by_email(email_usuario: EmailStr):
     async with AsyncSession() as session:
         result = await session.scalars(
             select(tables.Usuario.id_usuario).where(
@@ -44,30 +44,30 @@ async def obter_user_id_pelo_email(email_usuario: EmailStr):
             raise HTTPException(NOT_FOUND, "Não existe usuário com esse email")
 
 
-async def gerar_refresh_token(id_ou_email: str | EmailStr) -> str:
+async def generate_refresh_token(id_or_email: str | EmailStr) -> str:
     """Retorna um token JWT válido por 7 dias"""
     now = datetime.now(timezone.utc)
 
-    if isinstance(id_ou_email, EmailStr):
-        id_ou_email = await obter_user_id_pelo_email(id_ou_email)
+    if isinstance(id_or_email, EmailStr):
+        id_or_email = await get_user_id_by_email(id_or_email)
 
     return jwt.encode(
-        payload={"sub": str(id_ou_email), "exp": now + timedelta(days=7)},
+        payload={"sub": str(id_or_email), "exp": now + timedelta(days=7)},
         key=JWT_REFRESH_KEY,
         algorithm="HS256",
     )
 
 
-async def gerar_session_token(id_ou_email: str | EmailStr) -> str:
+async def generate_session_token(id_or_email: str | EmailStr) -> str:
     """Retorna um token JWT válido pelo tempo definido"""
 
-    if isinstance(id_ou_email, EmailStr):
-        id_ou_email = await obter_user_id_pelo_email(id_ou_email)
+    if isinstance(id_or_email, EmailStr):
+        id_or_email = await get_user_id_by_email(id_or_email)
 
     now = datetime.now(timezone.utc)
     return jwt.encode(
         payload={
-            "sub": str(id_ou_email),
+            "sub": str(id_or_email),
             "exp": now + timedelta(minutes=60),
         },
         key=JWT_SESSION_KEY,
@@ -75,9 +75,9 @@ async def gerar_session_token(id_ou_email: str | EmailStr) -> str:
     )
 
 
-async def set_session_token_cookie(resposta: Response, token: str):
+async def set_session_token_cookie(response: Response, token: str):
     exp = datetime.now(timezone.utc) + timedelta(hours=1)
-    resposta.set_cookie(
+    response.set_cookie(
         key="session_token",
         value=token,
         max_age=3600,  # 1 hora em segundos
@@ -87,9 +87,9 @@ async def set_session_token_cookie(resposta: Response, token: str):
     )
 
 
-async def set_refresh_token_cookie(resposta: Response, token: str):
+async def set_refresh_token_cookie(response: Response, token: str):
     exp = datetime.now(timezone.utc) + timedelta(days=7)
-    resposta.set_cookie(
+    response.set_cookie(
         key="refresh_token",
         value=token,
         max_age=604800,  # 7 dias em segundos
@@ -99,9 +99,9 @@ async def set_refresh_token_cookie(resposta: Response, token: str):
     )
 
 
-async def renew_token(requisicao: Request, resposta: Response):
+async def renew_token(request: Request, response: Response):
     # Tenta decodificar o token
-    token = obter_refresh_token(requisicao)
+    token = get_refresh_token(request)
 
     try:
         decoded = jwt.decode(token, JWT_REFRESH_KEY, algorithms=["HS256"])
@@ -116,22 +116,22 @@ async def renew_token(requisicao: Request, resposta: Response):
 
         # Se não ocorrerem erros cria um novo token de sessão
     else:
-        token = await gerar_session_token(decoded["sub"])
-        await set_session_token_cookie(resposta, token)
+        token = await generate_session_token(decoded["sub"])
+        await set_session_token_cookie(response, token)
         return token
 
 
-async def obter_session_token(requisicao: Request, resposta: Response):
-    token = requisicao.cookies.get("session_token")
+async def get_session_token(request: Request, response: Response):
+    token = request.cookies.get("session_token")
 
     if token is not None:
         return token
     else:
-        return await renew_token(requisicao, resposta)
+        return await renew_token(request, response)
 
 
-def obter_refresh_token(requisicao: Request):
-    token = requisicao.cookies.get("refresh_token")
+def get_refresh_token(request: Request):
+    token = request.cookies.get("refresh_token")
 
     if token:
         return token
@@ -139,10 +139,9 @@ def obter_refresh_token(requisicao: Request):
         raise HTTPException(UNAUTHORIZED, "Usuário não autenticado")
 
 
-async def validar_token(requisicao: Request, resposta: Response) -> int:
+async def validate_token(request: Request, response: Response) -> int:
     try:
-        token = await obter_session_token(requisicao, resposta)
-
+        token = await get_session_token(request, response)
         decoded = jwt.decode(token, JWT_SESSION_KEY, algorithms="HS256")
 
     except jwt.exceptions.ExpiredSignatureError as e:
@@ -159,5 +158,5 @@ async def validar_token(requisicao: Request, resposta: Response) -> int:
         return int(decoded["sub"])
 
 
-def excluir_falsy_dict(payload: dict):
+def exclude_falsy_from_dict(payload: dict):
     return {key: value for key, value in payload.items() if value}

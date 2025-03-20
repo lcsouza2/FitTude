@@ -13,13 +13,13 @@ from argon2.exceptions import VerifyMismatchError
 from Database import schemas
 from Database.utils import (
     AsyncSession,
-    gerar_refresh_token,
-    gerar_session_token,
+    generate_refresh_token,
+    generate_session_token,
     redis_pool,
     set_refresh_token_cookie,
     set_session_token_cookie,
 )
-from email_verify import enviar_email_verificacao
+from email_verify import send_verification_mail
 from fastapi import BackgroundTasks, Body, FastAPI, HTTPException, Request, Response
 from fastapi.templating import Jinja2Templates
 from pydantic import EmailStr, validate_email
@@ -64,18 +64,18 @@ async def begin_register(user: schemas.UserRegistro, bg_tasks: BackgroundTasks):
 
     await search_for_user(user.username, user.email)
 
-    protocolo_usuario = uuid4()
+    user_protocol = uuid4()
     bg_tasks.add_task(
-        enviar_email_verificacao,
+        send_verification_mail,
         user.email,
-        protocol=protocolo_usuario,
+        protocol=user_protocol,
         username=user.username,
     )
 
     with redis_pool() as cache_storage:
-        cache_storage.hset(f"protocol:{protocolo_usuario}", mapping=user.model_dump())
+        cache_storage.hset(f"protocol:{user_protocol}", mapping=user.model_dump())
         cache_storage.expire(
-            f"protocol:{protocolo_usuario}", 1800
+            f"protocol:{user_protocol}", 1800
         )  # 1800 segundos == 30 min
 
 
@@ -110,7 +110,7 @@ async def create_register(
         else:
             try:
                 set_session_token_cookie(
-                    http_response, await gerar_session_token(user_data.get("email"))
+                    http_response, await generate_session_token(user_data.get("email"))
                 )
             except jwt.exceptions.PyJWTError:
                 raise HTTPException(
@@ -151,11 +151,11 @@ async def login_user(user: schemas.UserLogin, http_response: Response):
         raise HTTPException(NOT_FOUND, "Senha incorreta")
 
     try:
-        session_token = await gerar_session_token(found.id_usuario)
+        session_token = await generate_session_token(found.id_usuario)
         await set_session_token_cookie(http_response, session_token)
 
         if user.keep_login:
-            refresh_token = await gerar_refresh_token(found.id_usuario)
+            refresh_token = await generate_refresh_token(found.id_usuario)
             await set_refresh_token_cookie(http_response, refresh_token)
 
     except jwt.exceptions.PyJWTError as e:

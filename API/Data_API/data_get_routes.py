@@ -1,118 +1,108 @@
 from Database import db_mapping as tables
-from Database.utils import AsyncSession, validar_token
-from fastapi import FastAPI, Request, Response
+from Database.utils import AsyncSession, validate_token
+from fastapi import FastAPI, Depends
 from sqlalchemy import or_, select
 
 DATA_API = FastAPI(title="Rotas POST para serviços de treinos")
 
 
 @DATA_API.get("/groups/get")
-async def buscar_todos_os_grupamentos(request: Request, response: Response):
-    await validar_token(request, response)
+async def get_all_muscular_groups(user_id: int = Depends(validate_token)):
 
     async with AsyncSession() as session:
-        grupamentos = await session.scalars(select(tables.Grupamento))
+        groups = await session.scalars(select(tables.Grupamento))
 
-    return grupamentos.fetchall()
+    return groups.fetchall()
 
 
 @DATA_API.get("/muscle/get")
-async def buscar_todos_os_musculos(request: Request, response: Response):
+async def get_all_muscles(user_id: int = Depends(validate_token)):
     """Busca os músuclos referentes a um usuário e retorna eles"""
 
-    id_usuario = await validar_token(request, response)
-
     async with AsyncSession() as session:
-        musculos = await session.scalars(
+        muscles = await session.scalars(
             select(tables.Musculo).where(
                 or_(
-                    tables.Musculo.id_usuario == id_usuario,
+                    tables.Musculo.id_usuario == user_id,
                     tables.Musculo.id_usuario == None,
                 )
             )
         )
 
-    return musculos.fetchall()
+    return muscles.fetchall()
 
 
 @DATA_API.get("/equipment/get")
-async def buscar_todos_os_equipamentos(request: Request, response: Response):
+async def get_all_equipments(user_id: int = Depends(validate_token)):
     """Busca os músuclos referentes a um usuário e retorna eles"""
 
-    id_usuario = await validar_token(request, response)
-
     async with AsyncSession() as session:
-        aparelhos = await session.scalars(
+        equipments = await session.scalars(
             select(tables.Aparelho).where(
                 or_(
-                    tables.Aparelho.id_usuario == id_usuario,
+                    tables.Aparelho.id_usuario == user_id,
                     tables.Aparelho.id_usuario == None,
                 )
             )
         )
 
-    return aparelhos.fetchall()
+    return equipments.fetchall()
 
 
 @DATA_API.get("/exercise/get")
-async def buscar_todos_os_exercicios(request: Request, response: Response):
+async def get_all_exercises(user_id: int = Depends(validate_token)):
     """Valida o token e busca os exercicios relativos aquele usuário"""
 
-    id_usuario = await validar_token(request, response)
-
     async with AsyncSession() as session:
-        exercicios = await session.scalars(
+        exercises = await session.scalars(
             select(tables.Exercicio).where(
                 or_(
-                    tables.Exercicio.id_usuario == id_usuario,
+                    tables.Exercicio.id_usuario == user_id,
                     tables.Exercicio.id_usuario == None,
                 )
             )
         )
 
-    return exercicios.fetchall()
+    return exercises.fetchall()
 
 
 @DATA_API.get("/workout/sheet/get")
-async def buscar_todas_fichas_treino(request: Request, response: Response):
-    id_usuario = await validar_token(request, response)
+async def get_all_workout_sheets(user_id: int = Depends(validate_token)):
 
     async with AsyncSession() as session:
-        fichas = await session.scalars(
+        sheets = await session.scalars(
             select(tables.FichaTreino).where(
-                tables.FichaTreino.id_usuario == id_usuario,
+                tables.FichaTreino.id_usuario == user_id,
             )
         )
 
-    return fichas.fetchall()
+    return sheets.fetchall()
 
 
 @DATA_API.get("/workout/sheet/get_divisions")
-async def buscar_todas_divisoes_treino(request: Request, response: Response):
-    id_usuario = await validar_token(request, response)
+async def get_all_workout_divisions(user_id: int = Depends(validate_token)):
 
     async with AsyncSession() as session:
-        fichas = await session.scalars(
+        sheets = await session.scalars(
             select(tables.DivisaoTreino)
             .join(tables.FichaTreino)
-            .where(tables.FichaTreino.id_usuario == id_usuario)
+            .where(tables.FichaTreino.id_usuario == user_id)
         )
-    return fichas.fetchall()
+    return sheets.fetchall()
 
 
 @DATA_API.get("/workout/sheet/get_exercises")
-async def buscar_todos_exercicios_divisao(request: Request, response: Response):
-    id_usuario = await validar_token(request, response)
+async def get_all_division_exercises(user_id: int = Depends(validate_token)):
 
     async with AsyncSession() as session:
-        fichas = await session.scalars(
+        sheets = await session.scalars(
             select(tables.DivisaoExercicio)
             .join(
                 tables.DivisaoTreino,
                 tables.DivisaoTreino.divisao == tables.DivisaoExercicio.divisao,
             )
             .join(tables.FichaTreino)
-            .where(tables.FichaTreino.id_usuario == id_usuario)
+            .where(tables.FichaTreino.id_usuario == user_id)
         )
 
-    return fichas.fetchall()
+    return sheets.fetchall()
