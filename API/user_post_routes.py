@@ -34,8 +34,8 @@ USER_API = FastAPI(title="Rotas POST para serivços de usuários")
 async def search_for_user(username: str, email: EmailStr):
     async with AsyncSession() as session:
         try:
-            transaction = session.begin()
-            await session.scalars(
+            await session.begin()
+            await session.execute(
                 insert(tables.Usuario).values(
                     username=username, email=email, password="abc"
                 )
@@ -48,7 +48,7 @@ async def search_for_user(username: str, email: EmailStr):
             if "uq_usuario_email" in str(e):
                 raise HTTPException(CONFLICT, "Esse email já está sendo usado!")
         else:
-            transaction.rollback()
+            await session.rollback()
             return True
 
 
@@ -62,7 +62,7 @@ async def begin_register(user: schemas.UserRegistro, bg_tasks: BackgroundTasks):
     except PydanticCustomError:
         raise HTTPException(UNPROCESSABLE_ENTITY, "Email Inválido")
 
-    search_for_user()
+    await search_for_user(user.username, user.email)
 
     protocolo_usuario = uuid4()
     bg_tasks.add_task(

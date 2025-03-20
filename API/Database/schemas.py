@@ -83,17 +83,17 @@ class MusculoAlterar(BaseSchema):
 
 
 class AparelhoAlterar(BaseSchema):
-    nome_grupamento: Optional[str]
-    nome_aparelho: Optional[str]
+    nome_grupamento: Optional[str] = None
+    nome_aparelho: Optional[str] = None
 
 
 class ExercicioAlterar(BaseSchema):
-    nome_exercicio: Optional[str]
-    id_musculo: Optional[int]
-    id_aparelho: Optional[int]
-    descricao: Optional[str]
+    nome_exercicio: Optional[str] = None
+    id_musculo: Optional[int] = None
+    id_aparelho: Optional[int] = None
+    descricao: Optional[str] = None
 
 
 class FichaTreinoAlterar(BaseSchema):
-    nome_ficha_treino: Optional[str]
-    objetivo_ficha_treino: Optional[str]
+    nome_ficha_treino: Optional[str] = None
+    objetivo_ficha_treino: Optional[str] = None

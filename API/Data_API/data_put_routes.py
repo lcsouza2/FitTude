@@ -117,7 +117,7 @@ async def alterar_exercicio(
             await sessao.commit()
 
 
-@DATA_API.put("workout/sheet/update/{id_ficha_treino}")
+@DATA_API.put("/workout/sheet/update/{id_ficha_treino}")
 async def alterar_ficha_treino(
     id_ficha_treino: int,
     alteracoes: schemas.FichaTreinoAlterar,
@@ -131,7 +131,7 @@ async def alterar_ficha_treino(
                 .where(
                     and_(
                         tables.FichaTreino.id_ficha_treino == id_ficha_treino,
-                        tables.FichaTreino.id_usuario == id_usuario,
+                        tables.FichaTreino.id_usuario == id_usuario
                     )
                 )
                 .values(excluir_falsy_dict(alteracoes.model_dump(exclude_none=True)))
@@ -141,7 +141,7 @@ async def alterar_ficha_treino(
             if "uq_ficha_treino" in str(erro):
                 raise HTTPException(
                     CONFLICT,
-                    "Os dados recebidos conflitam com algum registro existente!",
+                    "O nome da recebido já é usado por outra ficha de treino",
                 )
         else:
             await sessao.commit()
@@ -150,6 +150,37 @@ async def alterar_ficha_treino(
 @DATA_API.put("/workout/division/update/{division}")
 async def update_workout_division(
     division: str,
-    new_division_name: str = Query(),
+    new_division_name: str = Query(
+        max_length=15, description="Novo nome da divisão especificada"
+    ),
     user_id: int = Depends(validar_token),
-): ...
+):
+    async with AsyncSession() as session:
+        try:
+            await session.begin()
+            await session.execute(
+                update(tables.DivisaoTreino)
+                .where(
+                    and_(
+                        tables.DivisaoTreino.divisao == division,
+                        tables.DivisaoTreino.id_ficha_treino
+                            == tables.FichaTreino.id_ficha_treino,
+                        tables.FichaTreino.id_usuario == user_id,
+                    )
+                )
+                .values(divisao=new_division_name)
+            )
+        except IntegrityError as exc:
+            await session.rollback()
+
+            if "pk_divisao_treino" in str(exc):
+                raise HTTPException(
+                    CONFLICT, "Já existe essa divisão nessa ficha de treino"
+                )
+
+            if "fk_fivisao_treino_ficha_treino" in str(exc):
+                raise HTTPException(
+                    NOT_FOUND, "O ID da ficha de treino recebido não existe"
+                )
+        else:
+            await session.commit()
