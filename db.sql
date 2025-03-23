@@ -109,7 +109,7 @@ CREATE TABLE ficha_treino(
 	id_ficha_treino         INTEGER       GENERATED ALWAYS AS IDENTITY,
 	id_usuario              INTEGER       NOT NULL,
 	nome_ficha_treino       VARCHAR(20)   NOT NULL,
-	objetivo_ficha_treino   VARCHAR(20)   NOT NULL,
+	objetivo_ficha_treino   VARCHAR(50)   NOT NULL,
 
 	CONSTRAINT pk_ficha_treino
 	    PRIMARY KEY (id_ficha_treino),
@@ -124,7 +124,7 @@ CREATE TABLE ficha_treino(
 
 
 CREATE TABLE divisao_treino(
-    divisao           CHAR(1)   NOT NULL,
+    divisao           VARCHAR(20)   NOT NULL,
     id_ficha_treino   INTEGER   NOT NULL,
 
     CONSTRAINT pk_divisao_treino
@@ -139,7 +139,7 @@ CREATE TABLE divisao_treino(
 CREATE TABLE relatorio_treino(
     id_relatorio_treino   INTEGER   GENERATED ALWAYS AS IDENTITY,
     id_ficha_treino       INTEGER   NOT NULL,
-    divisao               CHAR(1)   NOT NULL,
+    divisao               VARCHAR(20)   NOT NULL,
     
     CONSTRAINT pk_relatorio_treino
         PRIMARY KEY (id_relatorio_treino),
@@ -150,7 +150,7 @@ CREATE TABLE relatorio_treino(
 
 CREATE TABLE divisao_exercicio(
     id_ficha_treino    INTEGER       NOT NULL,
-    divisao            CHAR(1)       NOT NULL,
+    divisao            VARCHAR(20)       NOT NULL,
     id_exercicio       INTEGER       NOT NULL,
     ordem_execucao     INTEGER       NOT NULL,
     series             INTEGER       NOT NULL,
@@ -173,7 +173,7 @@ CREATE TABLE divisao_exercicio(
 CREATE TABLE serie_relatorio(
     id_relatorio_treino   INTEGER        NOT NULL,
     id_exercicio          INTEGER        NOT NULL,
-    divisao               CHAR(1)        NOT NULL,
+    divisao               VARCHAR(20)        NOT NULL,
     id_ficha_treino       INTEGER        NOT NULL,
     ordem_execucao        INTEGER        NOT NULL,
     numero_serie          INTEGER        NOT NULL,

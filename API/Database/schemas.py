@@ -97,3 +97,15 @@ class ExercicioAlterar(BaseSchema):
 class FichaTreinoAlterar(BaseSchema):
     nome_ficha_treino: Optional[str] = None
     objetivo_ficha_treino: Optional[str] = None
+
+
+class DivisaoExercicioAlterar(BaseSchema):
+    divisao: str
+    id_ficha_treino: int
+    id_exercicio: int
+    ordem_execucao_atual: int  # ordem de execução no banco de dados
+    ordem_execucao: Optional[int]  # nova ordem de execução do exercício
+    series: Optional[int] = None
+    repeticoes: Optional[str] = None
+    tecnica_avancada: Optional[str] = None
+    descanso: Optional[int] = None

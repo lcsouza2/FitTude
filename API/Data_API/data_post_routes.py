@@ -8,7 +8,7 @@ from Database.utils import (
     AsyncSession,
     validate_token,
 )
-from fastapi import HTTPException, Request, Response, Depends
+from fastapi import Depends, HTTPException
 from sqlalchemy import insert
 from sqlalchemy.exc import IntegrityError
 
@@ -20,7 +20,6 @@ async def create_new_equipment(
     """
     Tenta criar o aparelho enviado pelo usuário no banco de dados
     """
-
 
     async with AsyncSession() as session:
         try:
@@ -42,7 +41,6 @@ async def create_new_muscle(
 ):
     """Adiciona um novo músculo personalizado pelo usuário ao banco de dados"""
 
-
     async with AsyncSession() as session:
         try:
             await session.execute(
@@ -61,7 +59,6 @@ async def create_new_exercise(
     exercise: schemas.Exercicio, user_id: int = Depends(validate_token)
 ):
     """Adiciona um exercício personalizado pelo usuário ao banco de dados"""
-    
 
     async with AsyncSession() as session:
         try:
@@ -81,8 +78,6 @@ async def create_new_workout_sheet(
     sheet: schemas.FichaTreino, user_id: int = Depends(validate_token)
 ):
     """Cria uma nova ficha de treino"""
-
-    
 
     async with AsyncSession() as session:
         try:
@@ -131,17 +126,16 @@ async def add_exercise_to_division(
                 raise HTTPException(
                     CONFLICT, "Esse exercicio já foi adicionado a essa divisão"
                 )
-            
+
             if "fk_divisao_exercicio_divisao_treino" in str(exc):
                 raise HTTPException(
                     NOT_FOUND, "A divisão de treino referenciada não existe"
                 )
 
             if "fk_divisao_exercicio_exercicio" in str(exc):
-                raise HTTPException(
-                    NOT_FOUND, "O exercício referenciado não existe"
-                )
-            
+                raise HTTPException(NOT_FOUND, "O exercício referenciado não existe")
+
+
 @DATA_API.post("/workout/report/new_report")
 async def create_new_report(
     report: schemas.RelatorioTreino, user_id: int = Depends(validate_token)
@@ -158,9 +152,11 @@ async def create_new_report(
         except IntegrityError as exc:
             if "pk_relatorio_treino" in str(exc):
                 raise HTTPException(CONFLICT, "Esse relatório já existe")
-            
+
             if "fk_relatorio_treino_divisao_treino" in str(exc):
-                raise HTTPException(NOT_FOUND, "A divisão de treino referenciada não existe")
+                raise HTTPException(
+                    NOT_FOUND, "A divisão de treino referenciada não existe"
+                )
 
 
 @DATA_API.post("/workout/report/add_exercise")
@@ -181,9 +177,13 @@ async def add_exercise_to_report(
                 raise HTTPException(
                     CONFLICT, "Essa série já foi adicionada a esse relatório"
                 )
-            
+
             if "fk_serie_relatorio_divisao_exercicio" in str(exc):
-                raise HTTPException(NOT_FOUND, "O exercício referenciado não existe na divisão")
-            
+                raise HTTPException(
+                    NOT_FOUND, "O exercício referenciado não existe na divisão"
+                )
+
             if "fk_serie_relatorio_relatorio_treino" in str(exc):
-                raise HTTPException(NOT_FOUND, "O relatório de treino referenciado não existe")
+                raise HTTPException(
+                    NOT_FOUND, "O relatório de treino referenciado não existe"
+                )

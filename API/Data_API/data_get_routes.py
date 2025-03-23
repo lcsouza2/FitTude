@@ -1,6 +1,6 @@
 from Database import db_mapping as tables
 from Database.utils import AsyncSession, validate_token
-from fastapi import FastAPI, Depends
+from fastapi import Depends, FastAPI
 from sqlalchemy import or_, select
 
 DATA_API = FastAPI(title="Rotas POST para serviços de treinos")
@@ -8,7 +8,6 @@ DATA_API = FastAPI(title="Rotas POST para serviços de treinos")
 
 @DATA_API.get("/groups/get")
 async def get_all_muscular_groups(user_id: int = Depends(validate_token)):
-
     async with AsyncSession() as session:
         groups = await session.scalars(select(tables.Grupamento))
 
@@ -68,7 +67,6 @@ async def get_all_exercises(user_id: int = Depends(validate_token)):
 
 @DATA_API.get("/workout/sheet/get")
 async def get_all_workout_sheets(user_id: int = Depends(validate_token)):
-
     async with AsyncSession() as session:
         sheets = await session.scalars(
             select(tables.FichaTreino).where(
@@ -81,7 +79,6 @@ async def get_all_workout_sheets(user_id: int = Depends(validate_token)):
 
 @DATA_API.get("/workout/sheet/get_divisions")
 async def get_all_workout_divisions(user_id: int = Depends(validate_token)):
-
     async with AsyncSession() as session:
         sheets = await session.scalars(
             select(tables.DivisaoTreino)
@@ -93,7 +90,6 @@ async def get_all_workout_divisions(user_id: int = Depends(validate_token)):
 
 @DATA_API.get("/workout/sheet/get_exercises")
 async def get_all_division_exercises(user_id: int = Depends(validate_token)):
-
     async with AsyncSession() as session:
         sheets = await session.scalars(
             select(tables.DivisaoExercicio)

@@ -19,7 +19,7 @@ async def update_muscle(
     async with AsyncSession() as session:
         try:
             await session.begin()
-            await session.execute(
+            result = await session.execute(
                 update(tables.Musculo)
                 .where(
                     and_(
@@ -28,6 +28,7 @@ async def update_muscle(
                     )
                 )
                 .values(exclude_falsy_from_dict(updates.model_dump(exclude_none=True)))
+                .returning(tables.Musculo.id_musculo)
             )
         except IntegrityError as exc:
             await session.rollback()
@@ -41,6 +42,10 @@ async def update_muscle(
                     NOT_FOUND, "O grupamento referenciado não foi encontrado"
                 )
         else:
+            if result.scalars().one_or_none() is None:
+                await session.rollback()
+                raise HTTPException(NOT_FOUND, "Músculo não encontrado")
+
             await session.commit()
 
 
@@ -53,7 +58,7 @@ async def update_equipment(
     async with AsyncSession() as session:
         try:
             await session.begin()
-            await session.execute(
+            result = await session.execute(
                 update(tables.Aparelho)
                 .where(
                     and_(
@@ -62,6 +67,7 @@ async def update_equipment(
                     )
                 )
                 .values(exclude_falsy_from_dict(updates.model_dump(exclude_none=True)))
+                .returning(tables.Aparelho.id_aparelho)
             )
         except IntegrityError as exc:
             await session.rollback()
@@ -75,6 +81,9 @@ async def update_equipment(
                     NOT_FOUND, "O grupamento referenciado não foi encontrado"
                 )
         else:
+            if result.scalars().one_or_none() is None: 
+                await session.rollback()
+                raise HTTPException(NOT_FOUND, "Aparelho não encontrado")
             await session.commit()
 
 
@@ -87,7 +96,7 @@ async def update_exercise(
     async with AsyncSession() as session:
         try:
             await session.begin()
-            await session.execute(
+            result = await session.execute(
                 update(tables.Exercicio)
                 .where(
                     and_(
@@ -96,6 +105,7 @@ async def update_exercise(
                     )
                 )
                 .values(exclude_falsy_from_dict(updates.model_dump(exclude_none=True)))
+                .returning(tables.Exercicio.id_exercicio)
             )
         except IntegrityError as exc:
             await session.rollback()
@@ -114,11 +124,14 @@ async def update_exercise(
                 )
 
         else:
+            if result.scalars().one_or_none() is None:
+                await session.rollback()
+                raise HTTPException(NOT_FOUND, "Exercício não econtrado")
             await session.commit()
 
 
 @DATA_API.put("/workout/sheet/update/{sheet_id}")
-async def alterar_ficha_treino(
+async def update_workout_sheet(
     sheet_id: int,
     updates: schemas.FichaTreinoAlterar,
     user_id: int = Depends(validate_token),
@@ -126,15 +139,16 @@ async def alterar_ficha_treino(
     async with AsyncSession() as session:
         try:
             await session.begin()
-            await session.execute(
+            result = await session.execute(
                 update(tables.FichaTreino)
                 .where(
                     and_(
                         tables.FichaTreino.id_ficha_treino == sheet_id,
-                        tables.FichaTreino.id_usuario == user_id
+                        tables.FichaTreino.id_usuario == user_id,
                     )
                 )
                 .values(exclude_falsy_from_dict(updates.model_dump(exclude_none=True)))
+                .returning(tables.FichaTreino.id_ficha_treino)
             )
         except IntegrityError as exc:
             await session.rollback()
@@ -151,24 +165,27 @@ async def alterar_ficha_treino(
 async def update_workout_division(
     division: str,
     new_division_name: str = Query(
-        max_length=15, description="Novo nome da divisão especificada"
+        max_length=20, description="Novo nome da divisão especificada"
     ),
     user_id: int = Depends(validate_token),
 ):
     async with AsyncSession() as session:
         try:
             await session.begin()
-            await session.execute(
+            result = await session.execute(
                 update(tables.DivisaoTreino)
                 .where(
                     and_(
                         tables.DivisaoTreino.divisao == division,
-                        tables.DivisaoTreino.id_ficha_treino
-                            == tables.FichaTreino.id_ficha_treino,
                         tables.FichaTreino.id_usuario == user_id,
+
+                        #Join
+                        tables.DivisaoTreino.id_ficha_treino
+                        == tables.FichaTreino.id_ficha_treino,
                     )
                 )
                 .values(divisao=new_division_name)
+                .returning(tables.FichaTreino.id_ficha_treino)
             )
         except IntegrityError as exc:
             await session.rollback()
@@ -183,4 +200,66 @@ async def update_workout_division(
                     NOT_FOUND, "O ID da ficha de treino recebido não existe"
                 )
         else:
+            if result.scalars().one_or_none() is None:
+                raise HTTPException(NOT_FOUND, "Divisão de treino não encontrada")
+            await session.commit()
+
+
+
+@DATA_API.put("/workout/division/exercise/update/")
+async def update_division_exercise(
+    updates: schemas.DivisaoExercicioAlterar,
+    user_id: int = Depends(validate_token),
+):
+    async with AsyncSession() as session:
+        try:
+            result = await session.execute(
+                update(tables.DivisaoExercicio)
+                .where(
+                    and_(
+                        tables.DivisaoExercicio.divisao == updates.divisao,
+
+                        tables.DivisaoExercicio.id_exercicio == updates.id_exercicio,
+
+                        tables.DivisaoExercicio.ordem_execucao
+                        == updates.ordem_execucao_atual,
+
+                        tables.FichaTreino.id_usuario == user_id,
+
+                        tables.FichaTreino.id_ficha_treino == updates.id_ficha_treino,
+
+                        #Joins
+                        tables.DivisaoExercicio.id_ficha_treino
+                        == tables.DivisaoTreino.id_ficha_treino,
+
+                        tables.DivisaoTreino.id_ficha_treino
+                        == tables.FichaTreino.id_ficha_treino,
+
+                    )
+                )
+                .values(
+                    updates.model_dump(
+                        exclude=(
+                            "ordem_execucao_atual",
+                            "id_ficha_treino",
+                            "id_exercicio",
+                            "divisao",
+                        )
+                    )
+                ).returning(
+                    tables.FichaTreino.id_ficha_treino
+                )
+            )
+
+        except IntegrityError as exc:
+            if "pk_divisao_exercicio" in str(exc):
+                raise HTTPException(CONFLICT, "Esse exercício já existe nessa divisão")
+
+            if "fk_divisao_exercicio_divisao_treino" in str(exc):
+                raise HTTPException(
+                    NOT_FOUND, "A divisão de treino referenciada não existe"
+                )
+        else:
+            if result.scalars().one_or_none() is None:
+                raise HTTPException(NOT_FOUND, "Exercício não encontrado nessa divisão")
             await session.commit()

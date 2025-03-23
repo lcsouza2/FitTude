@@ -20,7 +20,7 @@ from Database.utils import (
     set_session_token_cookie,
 )
 from email_verify import send_verification_mail
-from fastapi import BackgroundTasks, Body, FastAPI, HTTPException, Request, Response
+from fastapi import BackgroundTasks, FastAPI, HTTPException, Request, Response
 from fastapi.templating import Jinja2Templates
 from pydantic import EmailStr, validate_email
 from pydantic_core import PydanticCustomError
