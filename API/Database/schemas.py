@@ -2,6 +2,8 @@ from typing import Optional
 
 from pydantic import BaseModel, EmailStr
 
+from datetime import date, datetime, timezone
+
 
 class BaseSchema(BaseModel):
     class Config:
@@ -62,6 +64,7 @@ class DivisaoExercicio(BaseSchema):
 
 
 class RelatorioTreino(BaseSchema):
+    data_relatorio: date = datetime.now(timezone.utc).date()
     divisao: str
     id_ficha_treino: int
 
@@ -70,6 +73,7 @@ class SerieRelatorio(BaseSchema):
     divisao: str
     id_ficha_treino: int
     id_exercicio: int
+    ordem_execucao: int
     numero_serie: int
     id_relatorio_treino: int
     repeticoes: str
@@ -109,3 +113,10 @@ class DivisaoExercicioAlterar(BaseSchema):
     repeticoes: Optional[str] = None
     tecnica_avancada: Optional[str] = None
     descanso: Optional[int] = None
+
+
+class DivisaoExercicioInativar(BaseSchema):
+    divisao: str
+    id_ficha_treino: int
+    id_exercicio: int
+    ordem_execucao: int

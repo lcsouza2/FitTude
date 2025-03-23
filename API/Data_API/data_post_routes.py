@@ -145,7 +145,7 @@ async def create_new_report(
     async with AsyncSession() as session:
         try:
             await session.execute(
-                insert(tables.DivisaoExercicio).values(report.model_dump())
+                insert(tables.RelatorioTreino).values(report.model_dump())
             )
             await session.commit()
 
@@ -166,24 +166,24 @@ async def add_exercise_to_report(
     """Adiciona uma lista de exercícios feitos a um relatório de treino"""
 
     async with AsyncSession() as session:
-        try:
+        # try:
             for i in exercises:
                 await session.execute(
                     insert(tables.SerieRelatorio).values(i.model_dump())
                 )
                 await session.commit()
-        except IntegrityError as exc:
-            if "pk_series_relatorio" in str(exc):
-                raise HTTPException(
-                    CONFLICT, "Essa série já foi adicionada a esse relatório"
-                )
+        # except IntegrityError as exc:
+        #     if "pk_series_relatorio" in str(exc):
+        #         raise HTTPException(
+        #             CONFLICT, "Essa série já foi adicionada a esse relatório"
+        #         )
 
-            if "fk_serie_relatorio_divisao_exercicio" in str(exc):
-                raise HTTPException(
-                    NOT_FOUND, "O exercício referenciado não existe na divisão"
-                )
+        #     if "fk_serie_relatorio_divisao_exercicio" in str(exc):
+        #         raise HTTPException(
+        #             NOT_FOUND, "O exercício referenciado não existe na divisão"
+        #         )
 
-            if "fk_serie_relatorio_relatorio_treino" in str(exc):
-                raise HTTPException(
-                    NOT_FOUND, "O relatório de treino referenciado não existe"
-                )
+        #     if "fk_serie_relatorio_relatorio_treino" in str(exc):
+        #         raise HTTPException(
+        #             NOT_FOUND, "O relatório de treino referenciado não existe"
+        #         )

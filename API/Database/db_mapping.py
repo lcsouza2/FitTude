@@ -35,6 +35,7 @@ class Musculo:
         ForeignKey("usuario.id_usuario"), unique=True, nullable=True
     )
     nome_musculo: Mapped[str] = mapped_column(unique=True)
+    ativo: Mapped[bool] = mapped_column(default=True)
 
 
 @reg.mapped_as_dataclass
@@ -49,6 +50,7 @@ class Aparelho:
         ForeignKey("grupamento.nome_grupamento"), unique=True
     )
     nome_aparelho: Mapped[str] = mapped_column(unique=True)
+    ativo: Mapped[bool] = mapped_column(default=True)
 
 
 @reg.mapped_as_dataclass
@@ -68,6 +70,7 @@ class Exercicio:
     nome_exercicio: Mapped[str] = mapped_column(unique=True)
 
     descricao: Mapped[str]
+    ativo: Mapped[bool] = mapped_column(default=True)
 
 
 @reg.mapped_as_dataclass
@@ -80,6 +83,7 @@ class FichaTreino:
     )
     nome_ficha_treino: Mapped[str] = mapped_column(unique=True)
     objetivo_ficha_treino: Mapped[str]
+    ativo: Mapped[bool] = mapped_column(default=True)
 
 
 @reg.mapped_as_dataclass
@@ -90,6 +94,7 @@ class DivisaoTreino:
     id_ficha_treino: Mapped[int] = mapped_column(
         ForeignKey("ficha_treino.id_ficha_treino"), primary_key=True
     )
+    ativo: Mapped[bool] = mapped_column(default=True)
 
 
 @reg.mapped_as_dataclass
@@ -110,6 +115,7 @@ class DivisaoExercicio:
     repeticoes: Mapped[str]
     tecnica_avancada: Mapped[str] = mapped_column(nullable=True)
     descanso: Mapped[int]
+    ativo: Mapped[bool] = mapped_column(default=True)
 
 
 @reg.mapped_as_dataclass
@@ -118,8 +124,8 @@ class RelatorioTreino:
 
     data_relatorio: Mapped[date]
     id_relatorio_treino: Mapped[int] = mapped_column(primary_key=True, init=False)
-    id_ficha_treino: Mapped[int] = ForeignKey("divisao_treino.id_ficha_treino")
-    divisao: Mapped[str] = ForeignKey("divisao_treino.divisao")
+    id_ficha_treino: Mapped[int] = mapped_column(ForeignKey("divisao_treino.id_ficha_treino"))
+    divisao: Mapped[str] = mapped_column(ForeignKey("divisao_treino.divisao"))
 
 
 @reg.mapped_as_dataclass
@@ -138,6 +144,7 @@ class SerieRelatorio:
     id_ficha_treino: Mapped[int] = mapped_column(
         ForeignKey("divisao_exercicio.id_ficha_treino"), primary_key=True
     )
+    ordem_execucao: Mapped[int]
     numero_serie: Mapped[int] = mapped_column(primary_key=True)
     repeticoes: Mapped[str]
     carga: Mapped[int]

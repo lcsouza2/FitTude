@@ -1,13 +1,12 @@
-from Data_API.data_post_routes import DATA_API
-import Database.db_mapping as tables
-from Database import schemas
-from Database.utils import AsyncSession, validate_token, exclude_falsy_from_dict
-from sqlalchemy import update, and_
-from sqlalchemy.exc import IntegrityError
-
-from fastapi import HTTPException, Depends, Query
-
 from http.client import CONFLICT, NOT_FOUND
+
+import Database.db_mapping as tables
+from Data_API.data_post_routes import DATA_API
+from Database import schemas
+from Database.utils import AsyncSession, exclude_falsy_from_dict, validate_token
+from fastapi import Depends, HTTPException, Query
+from sqlalchemy import and_, update
+from sqlalchemy.exc import IntegrityError
 
 
 @DATA_API.put("/muscle/update/{muscle_id}")
@@ -18,7 +17,6 @@ async def update_muscle(
 ):
     async with AsyncSession() as session:
         try:
-            await session.begin()
             result = await session.execute(
                 update(tables.Musculo)
                 .where(
@@ -42,7 +40,7 @@ async def update_muscle(
                     NOT_FOUND, "O grupamento referenciado não foi encontrado"
                 )
         else:
-            if result.scalars().one_or_none() is None:
+            if result.scalar_one_or_none() is None:
                 await session.rollback()
                 raise HTTPException(NOT_FOUND, "Músculo não encontrado")
 
@@ -57,7 +55,6 @@ async def update_equipment(
 ):
     async with AsyncSession() as session:
         try:
-            await session.begin()
             result = await session.execute(
                 update(tables.Aparelho)
                 .where(
@@ -81,7 +78,7 @@ async def update_equipment(
                     NOT_FOUND, "O grupamento referenciado não foi encontrado"
                 )
         else:
-            if result.scalars().one_or_none() is None: 
+            if result.scalar_one_or_none() is None:
                 await session.rollback()
                 raise HTTPException(NOT_FOUND, "Aparelho não encontrado")
             await session.commit()
@@ -95,7 +92,6 @@ async def update_exercise(
 ):
     async with AsyncSession() as session:
         try:
-            await session.begin()
             result = await session.execute(
                 update(tables.Exercicio)
                 .where(
@@ -124,7 +120,7 @@ async def update_exercise(
                 )
 
         else:
-            if result.scalars().one_or_none() is None:
+            if result.scalar_one_or_none() is None:
                 await session.rollback()
                 raise HTTPException(NOT_FOUND, "Exercício não econtrado")
             await session.commit()
@@ -138,7 +134,6 @@ async def update_workout_sheet(
 ):
     async with AsyncSession() as session:
         try:
-            await session.begin()
             result = await session.execute(
                 update(tables.FichaTreino)
                 .where(
@@ -158,6 +153,8 @@ async def update_workout_sheet(
                     "O nome da recebido já é usado por outra ficha de treino",
                 )
         else:
+            if result.scalar_one_or_none() is None:
+                raise HTTPException(NOT_FOUND, "Ficha de treino não encontrada")
             await session.commit()
 
 
@@ -171,15 +168,13 @@ async def update_workout_division(
 ):
     async with AsyncSession() as session:
         try:
-            await session.begin()
             result = await session.execute(
                 update(tables.DivisaoTreino)
                 .where(
                     and_(
                         tables.DivisaoTreino.divisao == division,
                         tables.FichaTreino.id_usuario == user_id,
-
-                        #Join
+                        # Join
                         tables.DivisaoTreino.id_ficha_treino
                         == tables.FichaTreino.id_ficha_treino,
                     )
@@ -200,10 +195,9 @@ async def update_workout_division(
                     NOT_FOUND, "O ID da ficha de treino recebido não existe"
                 )
         else:
-            if result.scalars().one_or_none() is None:
+            if result.scalar_one_or_none() is None:
                 raise HTTPException(NOT_FOUND, "Divisão de treino não encontrada")
             await session.commit()
-
 
 
 @DATA_API.put("/workout/division/exercise/update/")
@@ -218,23 +212,16 @@ async def update_division_exercise(
                 .where(
                     and_(
                         tables.DivisaoExercicio.divisao == updates.divisao,
-
                         tables.DivisaoExercicio.id_exercicio == updates.id_exercicio,
-
                         tables.DivisaoExercicio.ordem_execucao
                         == updates.ordem_execucao_atual,
-
                         tables.FichaTreino.id_usuario == user_id,
-
                         tables.FichaTreino.id_ficha_treino == updates.id_ficha_treino,
-
-                        #Joins
+                        # Joins
                         tables.DivisaoExercicio.id_ficha_treino
                         == tables.DivisaoTreino.id_ficha_treino,
-
                         tables.DivisaoTreino.id_ficha_treino
                         == tables.FichaTreino.id_ficha_treino,
-
                     )
                 )
                 .values(
@@ -246,9 +233,8 @@ async def update_division_exercise(
                             "divisao",
                         )
                     )
-                ).returning(
-                    tables.FichaTreino.id_ficha_treino
                 )
+                .returning(tables.FichaTreino.id_ficha_treino)
             )
 
         except IntegrityError as exc:
@@ -260,6 +246,6 @@ async def update_division_exercise(
                     NOT_FOUND, "A divisão de treino referenciada não existe"
                 )
         else:
-            if result.scalars().one_or_none() is None:
+            if result.scalar_one_or_none() is None:
                 raise HTTPException(NOT_FOUND, "Exercício não encontrado nessa divisão")
             await session.commit()

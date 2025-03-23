@@ -1,4 +1,4 @@
-from Data_API.data_put_routes import DATA_API
+from Data_API.data_delete_routes import DATA_API
 from fastapi import FastAPI
 from user_post_routes import USER_API
 
