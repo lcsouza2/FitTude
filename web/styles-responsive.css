@@ -1,27 +1,93 @@
-@media (max-width: 768px) {
-    h1 {
-        position: absolute; 
-        top: 2px;         
-        left: 3%;   
-        margin: 0;     
-        color: #9b9b9b;
-        font-size: 250%;
+@media screen and (max-width: 400px) {
+    .fale-conosco {
+        left: 2%;
+      }
+    
+    .sobre-nos {
+        right: 2%;
+        left: auto;
+      }
     }
+  @media screen and (min-width: 401px) and (max-width: 576px) {
+    .fale-conosco {
+      left: 10%;
+    }
+  
+    .sobre-nos {
+      left: 70%; 
+    }
+  }
+
+@media screen and (max-width: 576px) {
+    body {
+      background-size: cover;
+      background-position: center;
+    }
+  
+    .righteous-regular {
+      font-size: 30px;
+      top: 10px;
+      left: 10px;
+    }
+  
+    .center {
+      padding: 0 15px; 
+    }
+  
     h2 {
-        position: absolute; 
-        top: 50px;         
-        left: 50%;        
-        transform: translateX(-50%);
-        text-align: center;
-        color: #cbd2d8;
-        text-decoration: underline;
-        font-size: 120%;
-        max-width: 90%;
+      font-size: 24px;
+      max-width: 100%;
     }
+  
     h3 {
-        margin: 20px 0;
-        padding: 10px;
-        font-size: 15px;
-        max-width: 100%;
+      font-size: 18px;
+      max-width: 100%;
     }
-}
+  
+    p {
+      font-size: 22px;
+    }
+  
+    .button-style {
+      width: 250px;
+      padding: 10px 20px;
+      font-size: 14px;
+    }
+  
+    .fale-conosco, .sobre-nos {
+      font-size: 14px;
+      bottom: 10px;
+    }
+  
+    .sobre-nos {
+      left: 27%;
+    }
+  }
+  
+  @media screen and (min-width: 577px) and (max-width: 992px) {
+    body {
+      background-size: cover;
+      background-position: center;
+    }
+  
+    .righteous-regular {
+      font-size: 40px;
+    }
+  
+    h2 {
+      font-size: 32px;
+    }
+  
+    h3 {
+      font-size: 22px;
+    }
+  
+    .button-style {
+      width: 280px;
+    }
+  }
+  @media screen and (min-width: 993px) and (max-width: 1200px) {
+    .center {
+      max-width: 900px;
+    }
+  }
