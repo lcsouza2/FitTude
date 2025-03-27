@@ -1,6 +1,6 @@
-from Data_API.data_delete_routes import DATA_API
+from data_api.data_delete_routes import DATA_API
 from fastapi import FastAPI
-from user_post_routes import USER_API
+from routes.user_post_routes import USER_API
 
 MAIN_APP = FastAPI(debug=True)
 

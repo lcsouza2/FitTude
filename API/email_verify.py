@@ -3,7 +3,7 @@ from jinja2 import Environment, FileSystemLoader
 from pydantic import EmailStr
 
 html_template_env = Environment(
-    loader=FileSystemLoader(searchpath="./Html_Templates/"), enable_async=True
+    loader=FileSystemLoader(searchpath="./templates/"), enable_async=True
 )
 template = html_template_env.get_template(name="verify_email.html")
 

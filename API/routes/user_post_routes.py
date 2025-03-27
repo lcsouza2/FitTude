@@ -6,12 +6,12 @@ from http.client import (
 )
 from uuid import UUID, uuid4
 
-import Database.db_mapping as tables
+import database.db_mapping as tables
 import jwt
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
-from Database import schemas
-from Database.utils import (
+from database import schemas
+from database.utils import (
     AsyncSession,
     generate_refresh_token,
     generate_session_token,
@@ -20,16 +20,14 @@ from Database.utils import (
     set_session_token_cookie,
 )
 from email_verify import send_verification_mail
-from fastapi import BackgroundTasks, FastAPI, HTTPException, Request, Response
+from fastapi import BackgroundTasks, HTTPException, Request, Response
 from fastapi.templating import Jinja2Templates
 from pydantic import EmailStr, validate_email
 from pydantic_core import PydanticCustomError
 from sqlalchemy import exc, insert, or_, select
+from ..main import USER_API
 
 hasher = PasswordHasher()
-
-USER_API = FastAPI(title="Rotas POST para serivços de usuários")
-
 
 async def search_for_user(username: str, email: EmailStr):
     async with AsyncSession() as session:

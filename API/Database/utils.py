@@ -2,7 +2,7 @@ from datetime import datetime, timedelta, timezone
 from http.client import BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND, UNAUTHORIZED
 
 import jwt
-from Database import db_mapping as tables
+from database import db_mapping as tables
 from fastapi import HTTPException, Request, Response
 from pydantic import EmailStr
 from redis import Redis
