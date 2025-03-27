@@ -1,4 +1,4 @@
-from database.utils import redis_pool
+from core.connections import redis_pool
 from fastapi import Request
 
 from core.config import Config

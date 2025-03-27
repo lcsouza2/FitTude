@@ -5,7 +5,6 @@ from sqlalchemy.orm import Mapped, mapped_column, registry
 
 reg = registry()
 
-
 @reg.mapped_as_dataclass
 class Grupamento:
     __tablename__ = "grupamento"

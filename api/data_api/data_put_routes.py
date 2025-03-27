@@ -1,9 +1,9 @@
 from http.client import CONFLICT, NOT_FOUND
 
-import Database.db_mapping as tables
-from Data_API.data_post_routes import DATA_API
-from Database import schemas
-from Database.utils import AsyncSession, exclude_falsy_from_dict, validate_token
+import database.db_mapping as tables
+from data_api.data_post_routes import DATA_API
+from database import schemas
+from database.utils import AsyncSession, exclude_falsy_from_dict, validate_token
 from fastapi import Depends, HTTPException, Query
 from sqlalchemy import and_, update
 from sqlalchemy.exc import IntegrityError
