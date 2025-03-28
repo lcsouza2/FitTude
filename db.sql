@@ -148,7 +148,7 @@ CREATE TABLE divisao_treino(
 CREATE TABLE relatorio_treino(
     id_relatorio_treino   INTEGER       GENERATED ALWAYS AS IDENTITY,
     id_ficha_treino       INTEGER       NOT NULL,
-    data_relatorio        DATE          NOT NULL
+    data_relatorio        DATE          NOT NULL,
     divisao               VARCHAR(20)   NOT NULL,
     
     CONSTRAINT pk_relatorio_treino

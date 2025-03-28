@@ -1,7 +1,7 @@
-from core.connections import redis_pool
 from fastapi import Request
 
 from core.config import Config
+from core.connections import redis_pool
 from core.exceptions import RequestLimitExceeded
 
 
@@ -12,7 +12,7 @@ def is_rate_limited(request: Request) -> bool:
         current = redis.get(key)
 
         if not current:
-            redis.setex(key, Config.REQUEST_WINDOW, 1)
+            redis.setex(key, Config.REQUEST_TIME_WINDOW, 1)
             return False
 
         if int(current) >= Config.MAX_REQUESTS:

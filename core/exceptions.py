@@ -1,4 +1,12 @@
-from http.client import CONFLICT, NOT_FOUND, TOO_MANY_REQUESTS, UNAUTHORIZED, INTERNAL_SERVER_ERROR, BAD_REQUEST
+from http.client import (
+    BAD_REQUEST,
+    CONFLICT,
+    INTERNAL_SERVER_ERROR,
+    NOT_FOUND,
+    TOO_MANY_REQUESTS,
+    UNAUTHORIZED,
+)
+
 from fastapi import HTTPException
 
 
@@ -13,29 +21,33 @@ class DatabaseError(HTTPException):
 class PrimaryKeyViolation(DatabaseError):
     """Raised when trying to insert a record with an existing primary key."""
 
-    def __init__(self, entity: str):
-        super().__init__(CONFLICT, f"O(a) {entity} já existe")
+    def __init__(self, message: str = "Chave primária violada"):
+        super().__init__(CONFLICT, message)
 
 
 class UniqueConstraintViolation(DatabaseError):
     """Raised when a unique constraint is violated."""
 
-    def __init__(self, entity: str):
-        super().__init__(CONFLICT, f"O(a) {entity} já existe")
+    def __init__(self, message: str = "Restrição única violada"):
+        super().__init__(CONFLICT, message)
 
 
 class ForeignKeyViolation(DatabaseError):
     """Raised when referenced entity does not exist."""
 
-    def __init__(self, entity: str):
-        super().__init__(NOT_FOUND, f"O(a) {entity} referenciado não existe")
+    def __init__(self, message: str = "Entidade referenciada não existe"):
+        super().__init__(NOT_FOUND, message)
 
 
 # Erros de autenticação do usuário
 class AuthenticationError(HTTPException):
     """Base exception for authentication related errors."""
 
-    def __init__(self, message: str, status_code:int = UNAUTHORIZED,):
+    def __init__(
+        self,
+        message: str,
+        status_code: int = UNAUTHORIZED,
+    ):
         super().__init__(status_code=status_code, detail=message)
 
 
@@ -51,6 +63,7 @@ class InvalidCredentials(AuthenticationError):
 
     def __init__(self, message: str = "Credenciais inválidas"):
         super().__init__(message)
+
 
 class SessionExpired(AuthenticationError):
     """Raised when user session has expired."""
@@ -76,7 +89,14 @@ class RequestLimitExceeded(HTTPException):
         super().__init__(status_code=TOO_MANY_REQUESTS, detail=message)
 
 
-#Server errors
+class InvalidRegisterProtocol(HTTPException):
+    """Raised when the register protocol is invalid or expired."""
+
+    def __init__(self, message: str = "Protocolo de registro inválido ou expirado"):
+        super().__init__(status_code=NOT_FOUND, detail=message)
+
+
+# Server errors
 class UnknownAuthError(HTTPException):
     """Raised when an unknown error occurs during authentication."""
 

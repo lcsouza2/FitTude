@@ -2,11 +2,12 @@ from http.client import CONFLICT, NOT_FOUND
 
 import database.db_mapping as tables
 from data_api.data_post_routes import DATA_API
-from database import schemas
-from database.utils import AsyncSession, exclude_falsy_from_dict, validate_token
 from fastapi import Depends, HTTPException, Query
 from sqlalchemy import and_, update
 from sqlalchemy.exc import IntegrityError
+
+from core import schemas
+from core.utils import AsyncSession, exclude_falsy_from_dict, validate_token
 
 
 @DATA_API.put("/muscle/update/{muscle_id}")
