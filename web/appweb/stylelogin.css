@@ -1,26 +1,34 @@
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    font-family: "Kanit", sans-serif;
+    background-image: url('../images/background_image.png'); 
+    background-size: cover; 
+    background-position: center; 
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
-    width: 300px; /* Largura fixa */
-    margin: 0 auto;
-    text-align: center;
 }
 
 .login-container {
-    background-color: white;
+    background-color: rgb(160, 160, 160);
     padding: 30px;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     width: 320px;
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+form label{
+    text-align: left;
 }
 
 .input-group {
     width: 100%;
+    margin-bottom: 15px;
 }
 
 .input-group label {
@@ -30,33 +38,17 @@ body {
 }
 
 .input-group input {
-    width: 100%;
+    width: calc(100% - 20px); /* Desconta o padding */
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 14px;
 }
 
-label {
-    display: block;
-    margin-bottom: 5px;
-}
-
-input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    display: flex;
-    justify-content: center;   
-    text-align: center;
-
-}
-
 .button {
     width: 100%;
     padding: 10px;
-    background-color: #007bff;
+    background-color: #510feb;
     color: white;
     border: none;
     border-radius: 4px;
@@ -65,12 +57,57 @@ input {
     transition: background-color 0.3s ease;
 }
 
-button:hover {
+.button:hover {
     background-color: #0056b3;
 }
 
 .form-container {
+    width: 80%;
     display: flex;
     flex-direction: column;
-    gap: 15px;/* Estica os elementos para terem a mesma largura */
+    gap: 15px;
 }
+
+header {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+    background-color: black;
+    padding: 10px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.singup-button {
+    margin-right: 20px;
+    background-color: #510feb;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-family: "Kanit", sans-serif;
+    outline: none;
+}
+
+.righteous-regular {
+    font-family: "Righteous", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    position: relative;
+    margin: 0;     
+    color: #ffffff;
+    font-size: 50px;
+    margin-right: auto; 
+}
+  
+.h1-highlighted {
+    color: #510feb;
+}
+
