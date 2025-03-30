@@ -39,6 +39,13 @@ class ForeignKeyViolation(DatabaseError):
         super().__init__(NOT_FOUND, message)
 
 
+class EntityNotFound(DatabaseError):
+    """Raised when the requested entity does not exist."""
+
+    def __init__(self, message: str = "Entidade não encontrada"):
+        super().__init__(NOT_FOUND, message)
+
+
 # Erros de autenticação do usuário
 class AuthenticationError(HTTPException):
     """Base exception for authentication related errors."""

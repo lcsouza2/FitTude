@@ -3,7 +3,7 @@ from functools import wraps
 from json import dumps
 from typing import Callable
 
-from core.connections import AsyncSession, redis_pool
+from core.connections import redis_connection
 
 
 def actual_datetime():
@@ -14,25 +14,17 @@ def exclude_falsy_from_dict(payload: dict):
     return {key: value for key, value in payload.items() if value}
 
 
-def db_operation(func: Callable):
-    @wraps(func)
-    async def wrapper(*args, **kwargs):
-        async with AsyncSession() as session:
-            return await func(*args, session=session, **kwargs)
-
-    return wrapper
-
-
 def cached_operation(timeout: int = 3600):
     def decorator(
         func: Callable,
     ):
         @wraps(func)
         async def wrapper(*args, **kwargs):
-            async with redis_pool() as redis:
+            async with redis_connection() as redis:
                 parameters = dumps({"args": args, "kwargs": kwargs}, sort_keys=True)
 
                 key = f"{func.__name__}:{parameters}"
+                print(key)
                 result = await redis.get(key)
 
                 if result:

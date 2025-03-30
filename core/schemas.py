@@ -1,5 +1,5 @@
 from datetime import date, datetime, timezone
-from typing import Optional
+from typing import Optional, TypedDict
 
 from pydantic import BaseModel, EmailStr
 
@@ -119,3 +119,9 @@ class DivisaoExercicioInativar(BaseSchema):
     id_ficha_treino: int
     id_exercicio: int
     ordem_execucao: int
+
+
+class ConstraintErrorHandling(TypedDict):
+    constraint: str
+    error: Exception
+    message: str

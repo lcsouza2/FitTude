@@ -1,10 +1,16 @@
-from uuid import UUID, uuid4
+"""User authentication and registration routes.
 
-from ..database import db_mapping as tables
+This module handles all user-related operations including:
+- User registration and email verification
+- User login and session management
+"""
+
+from uuid import UUID, uuid4
+from typing import Any
+
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
-from core.email_verify import send_verification_mail
-from fastapi import APIRouter, BackgroundTasks, Depends, Request, Response
+from fastapi import APIRouter, BackgroundTasks, Depends
 from fastapi.templating import Jinja2Templates
 from pydantic import EmailStr, validate_email
 from pydantic_core import PydanticCustomError
@@ -14,31 +20,94 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from core import schemas
 from core.authetication import TokenService
 from core.config import Config
+from core.connections import db_connection, redis_connection
+from core.email_service import send_verification_mail
 from core.exceptions import (
     InvalidCredentials,
     InvalidRegisterProtocol,
     UniqueConstraintViolation,
 )
-from core.utils import cached_operation, db_operation, redis_pool
+from core.utils import cached_operation
+
+from ..database import db_mapping
 
 USER_ROUTER = APIRouter(prefix="/api/user")
 
 hasher = PasswordHasher()
 
 
-@cached_operation(timeout=3600)
-@db_operation
-async def search_for_user(
-    username: str, email: EmailStr, session
-) -> bool:
+def generate_user_protocol(): 
+    return uuid4()
+
+async def save_user_data(user: db_mapping.Usuario):
+
+        protocol = generate_user_protocol()
+
+        await send_verification_mail(
+            user.email,
+            protocol=protocol,
+            username=user.username
+        )
+
+        async with redis_connection() as redis:
+            await redis.hset(
+                f"protocol:{protocol}", 
+                mapping=user.model_dump()
+            )
+            await redis.expire(
+                f"protocol:{protocol}", 
+                1800  # 30 minutos
+            )
+
+
+async def _generate_auth_tokens(
+    user_id: int,
+    token_service: TokenService,
+    long_session: bool = True
+) -> tuple[str, str]:
     """
-    Check if username or email are already registered.
-    Returns True if user can be created (no conflicts found).
-    Raises UniqueConstraintViolation if conflicts exist.
+    Generate authentication tokens for a user.
+
+    Args:
+        user_id (int): User ID to generate tokens for
+        token_service (TokenService): Token service instance
+        long_session (bool): If False, sets refresh token to 1 day
+
+    Returns:
+        tuple[str, str]: Session token and refresh token
+    """
+    if not long_session:
+        token_service.refresh_expires = 86400  # 1 day in seconds
+
+    session_token = await token_service.generate_session_token(user_id)
+    refresh_token = await token_service.generate_refresh_token(user_id)
+    
+    return session_token, refresh_token
+
+
+@cached_operation(timeout=3600)
+async def search_for_user(
+    username: str, 
+    email: EmailStr, 
+    session: AsyncSession = db_connection()
+) -> str:
+    """
+    Check if a username or email is already registered in the database.
+
+    Args:
+        username (str): The username to check
+        email (EmailStr): The email to check
+        session (AsyncSession, optional): Database session. Defaults to db_connection()
+
+    Returns:
+        str: "Credenciais válidas" if no conflicts found
+
+    Raises:
+        UniqueConstraintViolation: If username or email already exists
     """
     result = await session.execute(
-        select(tables.Usuario).where(
-            or_(tables.Usuario.username == username, tables.Usuario.email == email)
+        select(db_mapping.Usuario).where(
+            or_(db_mapping.Usuario.username == username, db_mapping.Usuario.email == email)
         )
     )
 
@@ -47,14 +116,35 @@ async def search_for_user(
             raise UniqueConstraintViolation("Username já está em uso")
         raise UniqueConstraintViolation("Email já está em uso")
 
-    return True
+    return "Credenciais válidas"
 
 
 @USER_ROUTER.post("/register")
-async def begin_register(user: schemas.UserRegistro, bg_tasks: BackgroundTasks):
-    """Envia um email de confirmação do cadastro para o email fornecido,
-    depois armazena os dados fornecidos no redis para validar o cadastro"""
+async def begin_register(
+    user: schemas.UserRegistro, 
+    bg_tasks: BackgroundTasks
+) -> dict[str, str]:
+    """
+    Start user registration process by sending verification email.
 
+    This function:
+    1. Validates the email format
+    2. Checks if username/email are available
+    3. Generates a unique protocol
+    4. Sends verification email
+    5. Stores registration data in Redis
+
+    Args:
+        user (schemas.UserRegistro): User registration data
+        bg_tasks (BackgroundTasks): FastAPI background tasks handler
+
+    Returns:
+        dict[str, str]: Success message indicating email sent
+
+    Raises:
+        InvalidCredentials: If email format is invalid
+        UniqueConstraintViolation: If username/email already exists
+    """
     try:
         validate_email(user.email)
     except PydanticCustomError:
@@ -62,32 +152,41 @@ async def begin_register(user: schemas.UserRegistro, bg_tasks: BackgroundTasks):
 
     await search_for_user(user.username, user.email)
 
-    user_protocol = uuid4()
-    bg_tasks.add_task(
-        send_verification_mail,
-        user.email,
-        protocol=user_protocol,
-        username=user.username,
-    )
+    bg_tasks.add_task(save_user_data, user=user)
 
-    async with redis_pool() as cache_storage:
-        await cache_storage.hset(f"protocol:{user_protocol}", mapping=user.model_dump())
-        await cache_storage.expire(
-            f"protocol:{user_protocol}", 1800
-        )  # 1800 segundos == 30 min
+    return {"message": "Email de verificação enviado. Por favor verifique sua caixa de entrada."}
 
 
-@db_operation
 @USER_ROUTER.get("/register/confirm/{protocol}")
 async def create_register(
-    session,
     protocol: UUID,
-    token_service: TokenService = Depends(TokenService)
+    token_service: TokenService = Depends(TokenService),
+    session: AsyncSession = Depends(db_connection),
 ):
-    """Efetiva o registro no banco
-    recebendo uma requisição referente ao protocolo gerado"""
+    """
+    Complete user registration by confirming email verification.
 
-    async with redis_pool() as redis:
+    This function:
+    1. Retrieves registration data from Redis using protocol
+    2. Hashes the user password
+    3. Creates user record in database
+    4. Generates session and refresh tokens
+    5. Removes temporary Redis data
+
+    Args:
+        protocol (UUID): Registration verification protocol
+        token_service (TokenService): Service for token operations
+        session (AsyncSession): Database session
+
+    Returns:
+        TemplateResponse: Registration confirmation page with tokens
+
+    Raises:
+        InvalidRegisterProtocol: If protocol is invalid/expired
+        UniqueConstraintViolation: If username/email became taken
+    """
+
+    async with redis_connection() as redis:
         user_data = await redis.hgetall(f"protocol:{protocol}")
 
         if not user_data:
@@ -97,9 +196,9 @@ async def create_register(
 
         try:
             created_user = await session.execute(
-                insert(tables.Usuario)
+                insert(db_mapping.Usuario)
                 .values(user_data)
-                .returning(tables.Usuario.id_usuario)
+                .returning(db_mapping.Usuario.id_usuario)
             )
 
         except exc.IntegrityError as e:
@@ -107,17 +206,20 @@ async def create_register(
                 raise UniqueConstraintViolation("Esse username já está sendo usado!")
 
             raise UniqueConstraintViolation("Esse email já está sendo usado!")
+
         else:
             session_token = await token_service.generate_session_token(created_user)
             refresh_token = await token_service.generate_refresh_token(created_user)
 
-            token_service.set_refresh_token_cookie(token_service.response, refresh_token)
+            token_service.set_refresh_token_cookie(
+                token_service.response, refresh_token
+            )
 
             await session.commit()
 
             redis.delete(f"protocol:{protocol}")
 
-            return Jinja2Templates("./Html_Templates").TemplateResponse(
+            return Jinja2Templates("./templates").TemplateResponse(
                 "confirm_register.html",
                 {
                     "request": token_service.request,
@@ -128,45 +230,52 @@ async def create_register(
             )
 
 
-@db_operation
 @USER_ROUTER.post("/login")
 async def login_user(
     user: schemas.UserLogin,
-    session,
+    session: AsyncSession = Depends(db_connection),
     token_service: TokenService = Depends(TokenService),
-):
-    """Procura o usuário no banco e valida a senha,
-    se válida retorna 2 tokens, senão, levanta erro"""
-
-    result = await session.execute(
-        select(tables.Usuario).where(
+) -> dict[str, Any]:
+    """
+    Authenticate user and generate session tokens.
+    """
+    # Query optimization - select only needed columns
+    query = (
+        select(
+            db_mapping.Usuario.id_usuario,
+            db_mapping.Usuario.password
+        )
+        .where(
             or_(
-                tables.Usuario.username == user.login_key,
-                tables.Usuario.email == user.login_key,
+                db_mapping.Usuario.username == user.login_key,
+                db_mapping.Usuario.email == user.login_key,
             )
         )
     )
+    
+    async with session:
+        result = await session.execute(query)
+        if not (found := result.first()):
+            raise InvalidCredentials("Usuário não encontrado")
+        
+        try:
+            hasher.verify(found.password, user.password)
+        except VerifyMismatchError:
+            raise InvalidCredentials("Senha inválida")
 
-    found = result.scalars().one_or_none()
+        session_token, refresh_token = await _generate_auth_tokens(
+            user_id=found.id_usuario,
+            token_service=token_service,
+            long_session=user.keep_login
+        )
 
-    if found is None:
-        raise InvalidCredentials("Usuário não encontrado")
+        await token_service.set_refresh_token_cookie(
+            token_service.response, 
+            refresh_token
+        )
 
-    try:
-        hasher.verify(found.password, user.password)
-    except VerifyMismatchError:
-        raise InvalidCredentials("Senha inválida")
-
-    session_token = await token_service.generate_session_token(found.id_usuario)
-
-    if not user.keep_login:
-        token_service.refresh_expires = 86400  # 1 dia em segundos
-
-    refresh_token = await token_service.generate_refresh_token(found.id_usuario)
-    await token_service.set_refresh_token_cookie(token_service.response, refresh_token)
-
-    return {
-        "access_token": session_token,
-        "token_type": "Bearer",
-        "expires_in": int(token_service.session_expires.total_seconds()),
-    }
+        return {
+            "access_token": session_token,
+            "token_type": "Bearer",
+            "expires_in": int(token_service.session_expires.total_seconds()),
+        }

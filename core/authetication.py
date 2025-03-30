@@ -1,5 +1,6 @@
 import jwt
-from fastapi import Request, Response
+from fastapi import Depends, Request, Response
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from core.config import Config
 from core.exceptions import InvalidToken, MissingToken, SessionExpired, UnknownAuthError
@@ -7,6 +8,8 @@ from core.utils import actual_datetime
 
 
 class TokenService:
+    security = HTTPBearer(auto_error=False)
+
     def __init__(self, request: Request, response: Response):
         self.request = request
         self.response = response
@@ -71,9 +74,15 @@ class TokenService:
             token = await self.generate_session_token(decoded["sub"])
             return token
 
-    async def validate_token(self, token: str) -> int:
+    @classmethod
+    async def validate_token(cls, token: HTTPAuthorizationCredentials = Depends(security)) -> int:
+        """Valida o token JWT e retorna o id do usuário"""
         try:
-            decoded = jwt.decode(token, self.session_key, algorithms=self.algorithm)
+            decoded = jwt.decode(
+                token.credentials,
+                Config.get_jwt_session_key(),
+                algorithms=Config.JWT_ALGORITHM,
+            )
 
         except jwt.exceptions.ExpiredSignatureError:
             raise SessionExpired()
