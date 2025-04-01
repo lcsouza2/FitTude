@@ -1,13 +1,13 @@
+from datetime import datetime, timedelta, timezone
+
 import jwt
 from fastapi import Depends, Request, Response
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from core.config import Config
 from core.exceptions import InvalidToken, MissingToken, SessionExpired, UnknownAuthError
 from core.utils import actual_datetime
 
-from datetime import timedelta, datetime, timezone
-from typing import Optional
 
 class TokenService:
     security = HTTPBearer(auto_error=False)
@@ -56,7 +56,7 @@ class TokenService:
         self,
         response: Response,
         user_id: int,
-        expires_delta: timedelta = timedelta(minutes=15)
+        expires_delta: timedelta = timedelta(minutes=15),
     ) -> None:
         """Sets session token in HTTP-only cookie"""
         token = await self.generate_session_token(user_id)
@@ -71,15 +71,6 @@ class TokenService:
             expires=expires.timestamp(),
         )
 
-
-    def get_refresh_token(self, request: Request):
-        token = request.cookies.get("refresh_token")
-
-        if token:
-            return token
-        else:
-            raise MissingToken("Refresh token não encontrado")
-
     def get_session_token(self, request: Request):
         token = request.cookies.get("session_token")
 
@@ -87,7 +78,6 @@ class TokenService:
             return token
         else:
             raise MissingToken("Session token não encontrado")
-
 
     async def renew_token(self, request: Request):
         token = self.get_refresh_token(request)
@@ -105,12 +95,23 @@ class TokenService:
             token = await self.generate_session_token(decoded["sub"])
             return token
 
-    @classmethod
-    async def validate_token(cls, token: HTTPAuthorizationCredentials = Depends(security)) -> int:
+    @staticmethod
+    async def validate_token(
+        request: Request,
+        token: HTTPAuthorizationCredentials = Depends(security),
+        cookie_mode: bool = False
+    ) -> int:
         """Valida o token JWT e retorna o id do usuário"""
+
+        if cookie_mode:
+            token = request.cookies.get("refresh_token")
+
+        if not token:
+            raise MissingToken("Refresh token não encontrado")
+
         try:
             decoded = jwt.decode(
-                token.credentials,
+                token,
                 Config.get_jwt_session_key(),
                 algorithms=Config.JWT_ALGORITHM,
             )
@@ -126,27 +127,3 @@ class TokenService:
         else:
             return int(decoded["sub"])
 
-    
-    @classmethod
-    async def validate_cookie_token(
-        cls,
-        session_token: str = get_session_token()
-    ) -> int:
-        """Validates token from cookie and returns user_id"""
-        if not session_token:
-            raise InvalidToken()
-
-        try:
-            decoded = jwt.decode(
-                session_token,
-                Config.get_jwt_session_key(),
-                algorithms=Config.JWT_ALGORITHM
-            )
-
-        except jwt.exceptions.ExpiredSignatureError:
-            raise SessionExpired()
-
-        except (jwt.exceptions.InvalidTokenError, jwt.DecodeError):
-            raise InvalidToken()
-
-        return int(decoded["sub"])

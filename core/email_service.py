@@ -1,10 +1,11 @@
+from logging import getLogger
+from typing import Optional
+
+from fastapi import HTTPException
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema
 from fastapi_mail.errors import ConnectionErrors
 from jinja2 import Environment, FileSystemLoader
 from pydantic import EmailStr
-from typing import Optional
-from fastapi import HTTPException
-from logging import getLogger
 
 logger = getLogger(__name__)
 
@@ -26,9 +27,7 @@ connection = ConnectionConfig(
 
 
 async def send_verification_mail(
-    dest_email: EmailStr, 
-    protocol: str, 
-    username: str
+    dest_email: EmailStr, protocol: str, username: str
 ) -> Optional[bool]:
     """
     Send verification email to user.
@@ -58,13 +57,11 @@ async def send_verification_mail(
     except ConnectionErrors as e:
         logger.error(f"Erro de conexão ao enviar email: {str(e)}")
         raise HTTPException(
-            status_code=503,
-            detail="Serviço de email temporariamente indisponível"
+            status_code=503, detail="Serviço de email temporariamente indisponível"
         )
-    
+
     except Exception as e:
         logger.error(f"Erro ao enviar email de verificação: {str(e)}")
         raise HTTPException(
-            status_code=500,
-            detail="Erro ao enviar email de verificação"
+            status_code=500, detail="Erro ao enviar email de verificação"
         )

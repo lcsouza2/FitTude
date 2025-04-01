@@ -5,8 +5,8 @@ This module handles all user-related operations including:
 - User login and session management
 """
 
-from uuid import UUID, uuid4
 from typing import Any
+from uuid import UUID, uuid4
 
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
@@ -35,29 +35,22 @@ USER_ROUTER = APIRouter(prefix="/api/user")
 
 hasher = PasswordHasher()
 
-def generate_user_protocol(): 
+
+def generate_user_protocol():
     return uuid4()
 
 
 async def save_user_data(user: db_mapping.Usuario):
+    protocol = generate_user_protocol()
 
-        protocol = generate_user_protocol()
+    await send_verification_mail(user.email, protocol=protocol, username=user.username)
 
-        await send_verification_mail(
-            user.email,
-            protocol=protocol,
-            username=user.username
+    async with redis_connection() as redis:
+        await redis.hset(f"protocol:{protocol}", mapping=user.model_dump())
+        await redis.expire(
+            f"protocol:{protocol}",
+            1800,  # 30 minutos
         )
-
-        async with redis_connection() as redis:
-            await redis.hset(
-                f"protocol:{protocol}", 
-                mapping=user.model_dump()
-            )
-            await redis.expire(
-                f"protocol:{protocol}", 
-                1800  # 30 minutos
-            )
 
 
 async def _generate_auth_tokens(
@@ -87,9 +80,7 @@ async def _generate_auth_tokens(
 
 @cached_operation(timeout=3600)
 async def search_for_user(
-    username: str, 
-    email: EmailStr, 
-    session: AsyncSession = db_connection()
+    username: str, email: EmailStr, session: AsyncSession = db_connection()
 ) -> str:
     """
     Check if a username or email is already registered in the database.
@@ -107,7 +98,10 @@ async def search_for_user(
     """
     result = await session.execute(
         select(db_mapping.Usuario).where(
-            or_(db_mapping.Usuario.username == username, db_mapping.Usuario.email == email)
+            or_(
+                db_mapping.Usuario.username == username,
+                db_mapping.Usuario.email == email,
+            )
         )
     )
 
@@ -121,8 +115,7 @@ async def search_for_user(
 
 @USER_ROUTER.post("/register")
 async def begin_register(
-    user: schemas.UserRegistro, 
-    bg_tasks: BackgroundTasks
+    user: schemas.UserRegistro, bg_tasks: BackgroundTasks
 ) -> dict[str, str]:
     """
     Start user registration process by sending verification email.
@@ -154,7 +147,10 @@ async def begin_register(
 
     bg_tasks.add_task(save_user_data, user=user)
 
-    return {"message": "Email de verificação enviado. Por favor verifique sua caixa de entrada."}
+    return {
+        "message": """Email de verificação enviado.
+        Por favor verifique sua caixa de entrada."""
+    }
 
 
 @USER_ROUTER.get("/register/confirm/{protocol}")
@@ -162,7 +158,7 @@ async def create_register(
     protocol: UUID,
     token_service: TokenService = Depends(TokenService),
     session: AsyncSession = Depends(db_connection),
-    cookie: bool = True
+    cookie: bool = True,
 ):
     """
     Complete user registration by confirming email verification.
@@ -209,39 +205,40 @@ async def create_register(
             raise UniqueConstraintViolation("Esse email já está sendo usado!")
 
         else:
-            session_token = refresh_token = _generate_auth_tokens(user_data.get("id"), token_service, False)
+            session_token = refresh_token = _generate_auth_tokens(
+               created_user, token_service, False
+            )
 
             token_service.set_refresh_token_cookie(
                 token_service.response, refresh_token
             )
-
 
             await session.commit()
 
             redis.delete(f"protocol:{protocol}")
 
             default_context = {
-                    "request": token_service.request,
-                }
+                "request": token_service.request,
+            }
 
-            if cookie: 
+            if cookie:
                 await token_service.set_session_token_cookie(
                     token_service.response,
-                    user_data.get("id"),
+                    created_user,
                 )
 
                 default_context.update(
                     {
                         "acess_token": session_token,
                         "token_type": "Bearer",
-                        "expires_in": int(Config.JWT_ACCESS_TOKEN_EXPIRES.total_seconds()),
+                        "expires_in": int(
+                            Config.JWT_ACCESS_TOKEN_EXPIRES.total_seconds()
+                        ),
                     }
                 )
 
-
             return Jinja2Templates("./templates").TemplateResponse(
-                "confirm_register.html",
-                default_context
+                "confirm_register.html", default_context
             )
 
 
@@ -250,21 +247,15 @@ async def login_user(
     user: schemas.UserLogin,
     session: AsyncSession = Depends(db_connection),
     token_service: TokenService = Depends(TokenService),
-    cookie: bool = True
+    cookie: bool = True,
 ) -> dict[str, Any]:
     """
     Authenticate user and generate session tokens.
     """
-    query = (
-        select(
-            db_mapping.Usuario.id_usuario,
-            db_mapping.Usuario.password
-        )
-        .where(
-            or_(
-                db_mapping.Usuario.username == user.login_key,
-                db_mapping.Usuario.email == user.login_key,
-            )
+    query = select(db_mapping.Usuario.id_usuario, db_mapping.Usuario.password).where(
+        or_(
+            db_mapping.Usuario.username == user.login_key,
+            db_mapping.Usuario.email == user.login_key,
         )
     )
 
@@ -281,12 +272,11 @@ async def login_user(
         session_token, refresh_token = await _generate_auth_tokens(
             user_id=found.id_usuario,
             token_service=token_service,
-            long_session=user.keep_login
+            long_session=user.keep_login,
         )
 
         await token_service.set_refresh_token_cookie(
-            token_service.response, 
-            refresh_token
+            token_service.response, refresh_token
         )
 
         if cookie:
