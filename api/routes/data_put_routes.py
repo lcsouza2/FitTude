@@ -28,16 +28,15 @@ async def _execute_update(
     entity_name: str,
     where_clause: BinaryExpression,
     values_mapping: Dict[InstrumentedAttribute, Any],
-    session: AsyncSession,
     error_mapping: List[schemas.ConstraintErrorHandling],
     returning_column: Optional[InstrumentedAttribute],
 ):
-    async with session:
+    async with db_connection() as session:
         try:
             result = await session.execute(
                 update(table)
                 .where(where_clause)
-                .values(exclude_falsy_from_dict(values_mapping))
+                .values(values_mapping)
                 .returning(returning_column)
             )
         except IntegrityError as exc:
@@ -59,7 +58,6 @@ async def update_muscle(
     muscle_id: int,
     updates: schemas.MusculoAlterar,
     user_id: int = Depends(TokenService.validate_token),
-    session: AsyncSession = Depends(db_connection),
 ):
 
     await _execute_update(
@@ -69,8 +67,7 @@ async def update_muscle(
             db_mapping.Musculo.id_musculo == muscle_id,
             db_mapping.Musculo.id_usuario == user_id,
         ),
-        values_mapping=updates.model_dump(exclude_none=True),
-        session=session,
+        values_mapping=exclude_falsy_from_dict(updates.model_dump(exclude_none=True)),
         error_mapping=[
             {
                 "constraint": "uq_musculo",
@@ -99,35 +96,39 @@ async def update_equipment(
     updates: schemas.AparelhoAlterar,
     user_id: int = Depends(TokenService.validate_token),
 ):
-    async with AsyncSession() as session:
-        try:
-            result = await session.execute(
-                update(db_mapping.Aparelho)
-                .where(
-                    and_(
+
+    await _execute_update(
+        table=db_mapping.Aparelho,
+        entity_name="Aparelho",
+        where_clause=and_(
                         db_mapping.Aparelho.id_aparelho == equipment_id,
                         db_mapping.Aparelho.id_usuario == user_id,
-                    )
-                )
-                .values(exclude_falsy_from_dict(updates.model_dump(exclude_none=True)))
-                .returning(db_mapping.Aparelho.id_aparelho)
-            )
-        except IntegrityError as exc:
-            await session.rollback()
-            if "uq_aparelho" in str(exc):
-                raise HTTPException(
-                    CONFLICT,
-                    "Os dados recebidos conflitam com algum registro existente!",
-                )
-            elif "fk_aparelho_grupamento" in str(exc):
-                raise HTTPException(
-                    NOT_FOUND, "O grupamento referenciado não foi encontrado"
-                )
-        else:
-            if result.scalar_one_or_none() is None:
-                await session.rollback()
-                raise HTTPException(NOT_FOUND, "Aparelho não encontrado")
-            await session.commit()
+                    ),
+        values_mapping=exclude_falsy_from_dict(updates.model_dump(exclude_none=True)),
+        error_mapping=[
+                {
+                    "constraint": "uq_aparelho",
+                    "error": UniqueConstraintViolation,
+                    "message": "Os dados recebidos conflitam com algum registro existente!",
+                },
+                {
+                    "constraint": "fk_aparelho_grupamento",
+                    "error": ForeignKeyViolation,
+                    "message": "O grupamento referenciado não foi encontrado",
+                },
+                {
+                    "constraint": "fk_musculo_aparelho",
+                    "error": ForeignKeyViolation,
+                    "message": "O usuário referenciado não foi encontrado",
+                },
+                {
+                    "constraint": "fk_aparelho_usuario",
+                    "error": ForeignKeyViolation,
+                    "message": "O usuário referenciado não foi encontrado",
+                },
+            ],
+            returning_column=db_mapping.Aparelho.id_aparelho
+    )
 
 
 @DATA_PUT_API.put("/exercise/update/{exercise_id}")
@@ -136,40 +137,38 @@ async def update_exercise(
     updates: schemas.ExercicioAlterar,
     user_id: int = Depends(TokenService.validate_token),
 ):
-    async with AsyncSession() as session:
-        try:
-            result = await session.execute(
-                update(db_mapping.Exercicio)
-                .where(
-                    and_(
+    await _execute_update(
+        table=db_mapping.Exercicio,
+        entity_name="Exercício",
+        where_clause=and_(
                         db_mapping.Exercicio.id_exercicio == exercise_id,
                         db_mapping.Exercicio.id_usuario == user_id,
-                    )
-                )
-                .values(exclude_falsy_from_dict(updates.model_dump(exclude_none=True)))
-                .returning(db_mapping.Exercicio.id_exercicio)
-            )
-        except IntegrityError as exc:
-            await session.rollback()
-            if "uq_exercicio" in str(exc):
-                raise HTTPException(
-                    CONFLICT,
-                    "Os dados recebidos conflitam com algum registro existente!",
-                )
-            elif "fk_exercicio_aparelho" in str(exc):
-                raise HTTPException(
-                    NOT_FOUND, "O aparelho referenciado não foi encontrado "
-                )
-            elif "fk_exercicio_musculo" in str(exc):
-                raise HTTPException(
-                    NOT_FOUND, "O músculo referenciado não foi encontrado "
-                )
-
-        else:
-            if result.scalar_one_or_none() is None:
-                await session.rollback()
-                raise HTTPException(NOT_FOUND, "Exercício não econtrado")
-            await session.commit()
+                    ),
+        values_mapping=exclude_falsy_from_dict(updates.model_dump(exclude_none=True)),
+        error_mapping=[
+            {
+                "constraint": "uq_exercicio",
+                "error": UniqueConstraintViolation,
+                "message": "Os dados recebidos conflitam com algum registro existente!",
+            },
+            {
+                "constraint": "fk_exercicio_aparelho",
+                "error": ForeignKeyViolation,
+                "message": "O grupamento referenciado não foi encontrado",
+            },
+            {
+                "constraint": "fk_exercicio_musculo",
+                "error": ForeignKeyViolation,
+                "message": "O Musculo referenciado não foi encontrado",
+            },
+            {
+                "constraint": "fk_exercicio_usuario",
+                "error": ForeignKeyViolation,
+                "message": "O usuário referenciado não foi encontrado",
+            },
+        ],
+        returning_column=db_mapping.Exercicio.id_exercicio
+    )
 
 
 @DATA_PUT_API.put("/workout/sheet/update/{sheet_id}")
@@ -178,31 +177,29 @@ async def update_workout_sheet(
     updates: schemas.FichaTreinoAlterar,
     user_id: int = Depends(TokenService.validate_token),
 ):
-    async with AsyncSession() as session:
-        try:
-            result = await session.execute(
-                update(db_mapping.FichaTreino)
-                .where(
-                    and_(
+    
+    await _execute_update(
+        table=db_mapping.FichaTreino,
+        entity_name="Ficha de Treino",
+        where_clause=and_(
                         db_mapping.FichaTreino.id_ficha_treino == sheet_id,
                         db_mapping.FichaTreino.id_usuario == user_id,
-                    )
-                )
-                .values(exclude_falsy_from_dict(updates.model_dump(exclude_none=True)))
-                .returning(db_mapping.FichaTreino.id_ficha_treino)
-            )
-        except IntegrityError as exc:
-            await session.rollback()
-            if "uq_ficha_treino" in str(exc):
-                raise HTTPException(
-                    CONFLICT,
-                    "O nome da recebido já é usado por outra ficha de treino",
-                )
-        else:
-            if result.scalar_one_or_none() is None:
-                raise HTTPException(NOT_FOUND, "Ficha de treino não encontrada")
-            await session.commit()
-
+                    ),
+        values_mapping=exclude_falsy_from_dict(updates.model_dump(exclude_none=True)),
+        error_mapping=[
+            {
+                "constraint": "uq_ficha_treino",
+                "error": UniqueConstraintViolation,
+                "message": "Os dados recebidos conflitam com algum registro existente!",
+            },
+            {
+                "constraint": "fk_ficha_treino_usuario",
+                "error": ForeignKeyViolation,
+                "message": "O usuário referenciado não foi encontrado",
+            },
+        ],
+        returning_column=db_mapping.FichaTreino.id_ficha_treino
+    )
 
 @DATA_PUT_API.put("/workout/division/update/{division}")
 async def update_workout_division(
@@ -212,39 +209,32 @@ async def update_workout_division(
     ),
     user_id: int = Depends(TokenService.validate_token),
 ):
-    async with AsyncSession() as session:
-        try:
-            result = await session.execute(
-                update(db_mapping.DivisaoTreino)
-                .where(
-                    and_(
+
+    _execute_update(
+        table=db_mapping.DivisaoTreino,
+        entity_name="Divisão de Treino",
+        where_clause=and_(
                         db_mapping.DivisaoTreino.divisao == division,
                         db_mapping.FichaTreino.id_usuario == user_id,
                         # Join
                         db_mapping.DivisaoTreino.id_ficha_treino
                         == db_mapping.FichaTreino.id_ficha_treino,
-                    )
-                )
-                .values(divisao=new_division_name)
-                .returning(db_mapping.FichaTreino.id_ficha_treino)
-            )
-        except IntegrityError as exc:
-            await session.rollback()
-
-            if "pk_divisao_treino" in str(exc):
-                raise HTTPException(
-                    CONFLICT, "Já existe essa divisão nessa ficha de treino"
-                )
-
-            if "fk_fivisao_treino_ficha_treino" in str(exc):
-                raise HTTPException(
-                    NOT_FOUND, "O ID da ficha de treino recebido não existe"
-                )
-        else:
-            if result.scalar_one_or_none() is None:
-                raise HTTPException(NOT_FOUND, "Divisão de treino não encontrada")
-            await session.commit()
-
+                    ),
+        values_mapping={db_mapping.DivisaoTreino.divisao: new_division_name},
+        error_mapping=[
+            {
+                "constraint": "pk_divisao_treino",
+                "error": UniqueConstraintViolation,
+                "message": "Já existe essa divisão nessa ficha de treino",
+            },
+            {
+                "constraint": "fk_fivisao_treino_ficha_treino",
+                "error": ForeignKeyViolation,
+                "message": "O ID da ficha de treino recebido não existe",
+            },
+        ],
+        returning_column=db_mapping.FichaTreino.id_ficha_treino
+    )
 
 @DATA_PUT_API.put("/workout/division/exercise/update/")
 async def update_division_exercise(

@@ -6,11 +6,13 @@ from core.config import Config
 from core.exceptions import InvalidToken, MissingToken, SessionExpired, UnknownAuthError
 from core.utils import actual_datetime
 
+from datetime import timedelta, datetime, timezone
+from typing import Optional
 
 class TokenService:
     security = HTTPBearer(auto_error=False)
 
-    def __init__(self, request: Request, response: Response):
+    def __init__(self, request: Request, response: Response, cookie_mode: bool = False):
         self.request = request
         self.response = response
         self.session_key = Config.get_jwt_session_key()
@@ -50,6 +52,26 @@ class TokenService:
             samesite="strict",
         )
 
+    async def set_session_token_cookie(
+        self,
+        response: Response,
+        user_id: int,
+        expires_delta: timedelta = timedelta(minutes=15)
+    ) -> None:
+        """Sets session token in HTTP-only cookie"""
+        token = await self.generate_session_token(user_id)
+        expires = datetime.now(timezone.utc) + expires_delta
+
+        response.set_cookie(
+            key="session_token",
+            value=token,
+            httponly=True,
+            secure=True,
+            samesite="strict",
+            expires=expires.timestamp(),
+        )
+
+
     def get_refresh_token(self, request: Request):
         token = request.cookies.get("refresh_token")
 
@@ -57,6 +79,15 @@ class TokenService:
             return token
         else:
             raise MissingToken("Refresh token não encontrado")
+
+    def get_session_token(self, request: Request):
+        token = request.cookies.get("session_token")
+
+        if token:
+            return token
+        else:
+            raise MissingToken("Session token não encontrado")
+
 
     async def renew_token(self, request: Request):
         token = self.get_refresh_token(request)
@@ -94,3 +125,28 @@ class TokenService:
             raise UnknownAuthError()
         else:
             return int(decoded["sub"])
+
+    
+    @classmethod
+    async def validate_cookie_token(
+        cls,
+        session_token: str = get_session_token()
+    ) -> int:
+        """Validates token from cookie and returns user_id"""
+        if not session_token:
+            raise InvalidToken()
+
+        try:
+            decoded = jwt.decode(
+                session_token,
+                Config.get_jwt_session_key(),
+                algorithms=Config.JWT_ALGORITHM
+            )
+
+        except jwt.exceptions.ExpiredSignatureError:
+            raise SessionExpired()
+
+        except (jwt.exceptions.InvalidTokenError, jwt.DecodeError):
+            raise InvalidToken()
+
+        return int(decoded["sub"])

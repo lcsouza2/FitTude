@@ -35,9 +35,9 @@ USER_ROUTER = APIRouter(prefix="/api/user")
 
 hasher = PasswordHasher()
 
-
 def generate_user_protocol(): 
     return uuid4()
+
 
 async def save_user_data(user: db_mapping.Usuario):
 
@@ -63,7 +63,7 @@ async def save_user_data(user: db_mapping.Usuario):
 async def _generate_auth_tokens(
     user_id: int,
     token_service: TokenService,
-    long_session: bool = True
+    long_session: bool = True,
 ) -> tuple[str, str]:
     """
     Generate authentication tokens for a user.
@@ -81,7 +81,7 @@ async def _generate_auth_tokens(
 
     session_token = await token_service.generate_session_token(user_id)
     refresh_token = await token_service.generate_refresh_token(user_id)
-    
+
     return session_token, refresh_token
 
 
@@ -162,6 +162,7 @@ async def create_register(
     protocol: UUID,
     token_service: TokenService = Depends(TokenService),
     session: AsyncSession = Depends(db_connection),
+    cookie: bool = True
 ):
     """
     Complete user registration by confirming email verification.
@@ -208,25 +209,39 @@ async def create_register(
             raise UniqueConstraintViolation("Esse email já está sendo usado!")
 
         else:
-            session_token = await token_service.generate_session_token(created_user)
-            refresh_token = await token_service.generate_refresh_token(created_user)
+            session_token = refresh_token = _generate_auth_tokens(user_data.get("id"), token_service, False)
 
             token_service.set_refresh_token_cookie(
                 token_service.response, refresh_token
             )
 
+
             await session.commit()
 
             redis.delete(f"protocol:{protocol}")
 
+            default_context = {
+                    "request": token_service.request,
+                }
+
+            if cookie: 
+                await token_service.set_session_token_cookie(
+                    token_service.response,
+                    user_data.get("id"),
+                )
+
+                default_context.update(
+                    {
+                        "acess_token": session_token,
+                        "token_type": "Bearer",
+                        "expires_in": int(Config.JWT_ACCESS_TOKEN_EXPIRES.total_seconds()),
+                    }
+                )
+
+
             return Jinja2Templates("./templates").TemplateResponse(
                 "confirm_register.html",
-                {
-                    "request": token_service.request,
-                    "acess_token": session_token,
-                    "token_type": "Bearer",
-                    "expires_in": int(Config.JWT_ACCESS_TOKEN_EXPIRES.total_seconds()),
-                },
+                default_context
             )
 
 
@@ -235,11 +250,11 @@ async def login_user(
     user: schemas.UserLogin,
     session: AsyncSession = Depends(db_connection),
     token_service: TokenService = Depends(TokenService),
+    cookie: bool = True
 ) -> dict[str, Any]:
     """
     Authenticate user and generate session tokens.
     """
-    # Query optimization - select only needed columns
     query = (
         select(
             db_mapping.Usuario.id_usuario,
@@ -252,12 +267,12 @@ async def login_user(
             )
         )
     )
-    
+
     async with session:
         result = await session.execute(query)
         if not (found := result.first()):
             raise InvalidCredentials("Usuário não encontrado")
-        
+
         try:
             hasher.verify(found.password, user.password)
         except VerifyMismatchError:
@@ -273,6 +288,14 @@ async def login_user(
             token_service.response, 
             refresh_token
         )
+
+        if cookie:
+            await token_service.set_session_token_cookie(
+                token_service.response,
+                found.id_usuario,
+            )
+
+            return "Cookie setado"
 
         return {
             "access_token": session_token,
