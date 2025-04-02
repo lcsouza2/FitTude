@@ -11,7 +11,7 @@ def actual_datetime():
 
 
 def exclude_falsy_from_dict(payload: dict):
-    return {key: value for key, value in payload.items() if value}
+    return {key: value for key, value in payload.items() if value or type(value) == bool}
 
 
 def cached_operation(timeout: int = 3600):

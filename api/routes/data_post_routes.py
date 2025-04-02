@@ -1,13 +1,13 @@
-from typing import List, Any, Dict, Optional
-from sqlalchemy.orm import MappedAsDataclass, InstrumentedAttribute
-from fastapi import Depends, HTTPException, APIRouter
-from http import HTTPStatus
+from typing import List, Any, Dict
+from sqlalchemy.orm import MappedAsDataclass
+from fastapi import Depends, APIRouter
 from sqlalchemy import insert
 from sqlalchemy.exc import IntegrityError
 
 from core.exceptions import PrimaryKeyViolation, ForeignKeyViolation, UniqueConstraintViolation, EntityNotFound
 from core.connections import AsyncSession
 from core.authetication import TokenService
+from core.utils import exclude_falsy_from_dict
 
 from database import db_mapping
 from core import schemas
@@ -64,8 +64,19 @@ async def create_new_equipment(
         values={**equipment.model_dump(), "id_usuario": user_id},
         error_mapping=[
             {
-                "constraint": "uq_aparelho", 
+                "constraint": "uq_aparelho",
+                "error": UniqueConstraintViolation,
                 "message": "Esse aparelho já existe"
+            },
+            {
+                "constraint": "fk_aparelho_usuario",
+                "error": ForeignKeyViolation,
+                "message": "Usuário referenciado não existe"
+            },
+            {
+                "constraint": "fk_aparelho_grupamento",
+                "error": ForeignKeyViolation,
+                "message": "O grupamento referenciado não existe"
             }
         ],
         entity_name="Aparelho",
@@ -81,7 +92,21 @@ async def create_new_muscle(
         table=db_mapping.Musculo,
         values={**muscle.model_dump(), "id_usuario": user_id},
         error_mapping=[
-            {"constraint": "uq_musculo", "message": "Esse musculo já existe"}
+            {
+                "constraint": "uq_musculo",
+                "error": UniqueConstraintViolation,
+                "message": "Esse músculo já existe"
+            },
+            {
+                "constraint": "fk_musculo_usuario",
+                "error": ForeignKeyViolation,
+                "message": "Usuário referenciado não existe"
+            },
+            {
+                "constraint": "fk_musculo_grupamento",
+                "error": ForeignKeyViolation,
+                "message": "O grupamento referenciado não existe"
+            }
         ],
         entity_name="Musculo",
     )
@@ -96,7 +121,26 @@ async def create_new_exercise(
         table=db_mapping.Exercicio,
         values={**exercise.model_dump(), "id_usuario": user_id},
         error_mapping=[
-            {"constraint": "uq_exercicio", "message": "Esse exercicio já existe"}
+            {
+                "constraint": "uq_exercicio",
+                "error": UniqueConstraintViolation,
+                "message": "Esse exercício já existe"
+            },
+            {
+                "constraint": "fk_exercicio_usuario",
+                "error": ForeignKeyViolation,
+                "message": "Usuário referenciado não existe"
+            },
+            {
+                "constraint": "fk_exercicio_aparelho",
+                "error": ForeignKeyViolation,
+                "message": "O aparelho referenciado não existe"
+            },
+            {
+                "constraint": "fk_exercicio_musculo",
+                "error": ForeignKeyViolation,
+                "message": "O musculo referenciado não existe"
+            }
         ],
         entity_name="Exercicio",
     )
@@ -111,7 +155,16 @@ async def create_new_workout_sheet(
         table=db_mapping.FichaTreino,
         values={**sheet.model_dump(), "id_usuario": user_id},
         error_mapping=[
-            {"constraint": "uq_ficha_treino", "message": "Essa ficha de treino já existe"}
+            {
+                "constraint": "uq_ficha_treino",
+                "error": UniqueConstraintViolation,
+                "message": "Essa ficha de treino já existe"
+            },
+            {
+                "constraint": "fk_ficha_treino_usuario",
+                "error": ForeignKeyViolation,
+                "message": "O usuario referenciado não existe"
+            }
         ],
         entity_name="FichaTreino",
     )
@@ -126,7 +179,16 @@ async def criar_nova_divisao_treino(
         table=db_mapping.DivisaoTreino,
         values=division.model_dump(),
         error_mapping=[
-            {"constraint": "pk_divisao_treino", "message": "Essa divisao de treino já existe"}
+            {
+                "constraint": "pk_divisao_treino",
+                "error": PrimaryKeyViolation,
+                "message": "Essa divisão de treino já existe nessa ficha"
+            },
+            {
+                "constraint": "fk_divisao_treino_ficha_treino",
+                "error": ForeignKeyViolation,
+                "message": "A ficha de treino referenciada não existe"
+            }
         ],
         entity_name="DivisaoTreino",
     )
@@ -138,26 +200,28 @@ async def add_exercise_to_division(
 ):
     """Adiciona uma lista de exercícios a uma divisão de treino"""
 
-    async with AsyncSession() as session:
-        try:
-            valores = [i.model_dump() for i in exercises]
-            await session.execute(insert(db_mapping.DivisaoExercicio).values(valores))
-            await session.commit()
-
-        except IntegrityError as exc:
-            if "pk_divisao_exercicio" in str(exc):
-                raise HTTPException(
-                    CONFLICT, "Esse exercicio já foi adicionado a essa divisão"
-                )
-
-            if "fk_divisao_exercicio_divisao_treino" in str(exc):
-                raise HTTPException(
-                    NOT_FOUND, "A divisão de treino referenciada não existe"
-                )
-
-            if "fk_divisao_exercicio_exercicio" in str(exc):
-                raise HTTPException(NOT_FOUND, "O exercício referenciado não existe")
-
+    await _execute_insert(
+        table=db_mapping.DivisaoExercicio,
+        values=[i.model_dump() for i in exercises],
+        error_mapping=[
+            {
+                "constraint": "pk_divisao_exercicio",
+                "error": PrimaryKeyViolation,
+                "message": "Esse exercicio já foi adicionado a essa divisão"
+            },
+            {
+                "constraint": "fk_divisao_exercicio_divisao_treino",
+                "error": ForeignKeyViolation,
+                "message": "A divisão de treino referenciada não existe"
+            },
+            {
+                "constraint": "fk_divisao_exercicio_exercicio",
+                "error": ForeignKeyViolation,
+                "message": "O exercício referenciado não existe"
+            }
+        ],
+        entity_name="Exercício na divisão"
+    )
 
 @DATA_POST_API.post("/workout/report/new_report")
 async def create_new_report(
@@ -168,10 +232,13 @@ async def create_new_report(
         table=db_mapping.RelatorioTreino,
         values=report.model_dump(),
         error_mapping=[
-            {"constraint": "pk_relatorio_treino", "message": "Esse relatório já existe"},
-            {"constraint": "fk_relatorio_treino_divisao_treino", "message": "A divisão de treino referenciada não existe", "status": HTTPStatus.NOT_FOUND}
+            {
+                "constraint": "fk_relatorio_treino_divisao_treino",
+                "error": ForeignKeyViolation,
+                "message": "A divisão de treino referenciada não existe"
+            },
         ],
-        entity_name="RelatorioTreino",
+        entity_name="Relatorio de treino",
     )
 
 
@@ -181,11 +248,11 @@ async def add_exercise_to_report(
 ):
     """Adiciona uma lista de exercícios feitos a um relatório de treino"""
 
-    async with AsyncSession() as session:
-        # try:
-        for i in exercises:
-            await session.execute(insert(db_mapping.SerieRelatorio).values(i.model_dump()))
-            await session.commit()
+    await _execute_insert(
+        table=db_mapping.SerieRelatorio,
+        values=[exclude_falsy_from_dict(i.model_dump(exclude_none=True)) for i in exercises],
+    )
+
     # except IntegrityError as exc:
     #     if "pk_series_relatorio" in str(exc):
     #         raise HTTPException(

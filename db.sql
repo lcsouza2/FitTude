@@ -139,7 +139,7 @@ CREATE TABLE divisao_treino(
     CONSTRAINT pk_divisao_treino
         PRIMARY KEY (divisao, id_ficha_treino),
 
-    CONSTRAINT fk_fivisao_treino_ficha_treino
+    CONSTRAINT fk_divisao_treino_ficha_treino
         FOREIGN KEY (id_ficha_treino) REFERENCES ficha_treino(id_ficha_treino)
 );
 
