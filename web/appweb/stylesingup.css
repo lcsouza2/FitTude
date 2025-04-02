@@ -10,7 +10,7 @@ body {
     justify-content: center;
 }
 
-.login-box {
+.register-box {
     background-color: rgba(160, 160, 160, 0.7);
     backdrop-filter: blur(8px);
     padding: 15px;
@@ -23,10 +23,23 @@ body {
     align-items: center;
 }
 
-.login-box h2 {
-    margin: 0 0 30px;
+.input-group {
+    font-family: "Kanit", sans-serif;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    font-family: "Kanit", sans-serif;
+}
+
+form h2 {
+    font-weight: 700;
     text-align: center;
-    color: #2E8B57;
+    margin: 0 auto;
+    color: #000000;
+    font-size: 200%;
+    max-width: 90%;
 }
 
 .user-box {
@@ -45,15 +58,20 @@ body {
     background: transparent;
 }
 
-.user-box label {
-    position: absolute;
-    top: 0;
-    left: 0;
-    padding: 10px 0;
-    font-size: 16px;
-    color: #666;
-    pointer-events: none;
-    transition: 0.5s;
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 17px;
+    text-align: left;
+    color: rgb(0, 0, 0);
+}
+
+.input-group input {
+    width: calc(100% - 20px); 
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
 }
 
 .user-box input:focus ~ label,
