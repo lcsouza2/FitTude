@@ -4,7 +4,7 @@ from fastapi import Depends, APIRouter
 from sqlalchemy import insert
 from sqlalchemy.exc import IntegrityError
 
-from core.exceptions import PrimaryKeyViolation, ForeignKeyViolation, UniqueConstraintViolation, EntityNotFound
+from core.exceptions import PrimaryKeyViolation, ForeignKeyViolation, UniqueConstraintViolation
 from core.connections import AsyncSession
 from core.authetication import TokenService
 from core.utils import exclude_falsy_from_dict
@@ -251,20 +251,22 @@ async def add_exercise_to_report(
     await _execute_insert(
         table=db_mapping.SerieRelatorio,
         values=[exclude_falsy_from_dict(i.model_dump(exclude_none=True)) for i in exercises],
+        error_mapping=[
+            {
+                "constraint": "pk_serie_relatorio",
+                "error": PrimaryKeyViolation,
+                "message": "Esse exercício já existe nesse relatório"
+            },
+            {
+                "constraint": "fk_serie_relatorio_divisao_exercicio",
+                "error": ForeignKeyViolation,
+                "message": "Exercício não encontrado na divisão referenciada"
+            },
+            {
+                "constraint": "fk_serie_relatorio_relatorio_treino",
+                "error": ForeignKeyViolation,
+                "message": "Relatório referenciado não encontrado"
+            },
+        ],
+        entity_name="Série no relatório"
     )
-
-    # except IntegrityError as exc:
-    #     if "pk_series_relatorio" in str(exc):
-    #         raise HTTPException(
-    #             CONFLICT, "Essa série já foi adicionada a esse relatório"
-    #         )
-
-    #     if "fk_serie_relatorio_divisao_exercicio" in str(exc):
-    #         raise HTTPException(
-    #             NOT_FOUND, "O exercício referenciado não existe na divisão"
-    #         )
-
-    #     if "fk_serie_relatorio_relatorio_treino" in str(exc):
-    #         raise HTTPException(
-    #             NOT_FOUND, "O relatório de treino referenciado não existe"
-    #         )

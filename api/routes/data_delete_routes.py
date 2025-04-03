@@ -1,186 +1,202 @@
 from http.client import NOT_FOUND
 
-import Database.db_mapping as tables
-from Data_API.data_put_routes import DATA_API
-from Database import schemas
-from Database.utils import AsyncSession, validate_token
-from fastapi import Depends, HTTPException
-from sqlalchemy import and_, delete, update
+from database import db_mapping
+from core import schemas
+from core.authetication import TokenService
+from core.connections import db_connection
+from fastapi import Depends, APIRouter
+from core.exceptions import EntityNotFound
+from sqlalchemy import and_, delete, update, BinaryExpression
+from sqlalchemy.orm import InstrumentedAttribute, MappedAsDataclass
+from sqlalchemy.exc import IntegrityError
 
 
-@DATA_API.delete("/muscle/inactivate/{muscle_id}")
-async def inactivate_muscle(muscle_id: int, user_id: int = Depends(validate_token)):
-    async with AsyncSession() as session:
+DATA_DELETE_API = APIRouter(prefix="/api/data")
+
+async def _execute_inactivate_entity(*, table: MappedAsDataclass, where_clause: BinaryExpression, returning_column: InstrumentedAttribute, entity_name: str):
+
+    async with db_connection() as session:
         result = await session.execute(
-            update(tables.Musculo)
-            .where(
-                and_(
-                    tables.Musculo.id_musculo == muscle_id,
-                    tables.Musculo.id_usuario == user_id,
-                )
+            update(table)
+            .values(ativo = False)
+            .where(where_clause)
+            .returning(returning_column)
             )
-            .values(ativo=False)
-            .returning(tables.Musculo.id_musculo)
-        )
 
         if result.scalar_one_or_none() is None:
-            raise HTTPException(NOT_FOUND, "Músculo não encontrado")
+            await session.rollback()
+            raise EntityNotFound(f"{entity_name} não encontrado(a)")
+
         await session.commit()
 
+        return f"{entity_name} excluido"
 
-@DATA_API.delete("/equipment/inactivate/{equipment_id}")
+
+async def _execute_delete(*, table: MappedAsDataclass, where_clause: BinaryExpression, returning_column: InstrumentedAttribute, entity_name: str):
+
+    async with db_connection() as session:
+        result = await session.execute(
+            delete(table)
+            .where(where_clause)
+            .returning(returning_column)
+            )
+
+        if result.scalar_one_or_none() is None:
+            await session.rollback()
+            raise EntityNotFound(f"{entity_name} não encontrado(a)")
+
+        await session.commit()
+
+        return f"{entity_name} excluido"
+
+
+
+@DATA_DELETE_API.delete("/muscle/inactivate/{muscle_id}")
+async def inactivate_muscle(muscle_id: int, user_id: int = Depends(TokenService.validate_token)):
+
+    where = and_(
+                    db_mapping.Musculo.id_musculo == muscle_id,
+                    db_mapping.Musculo.id_usuario == user_id,
+                )
+
+    returning = db_mapping.Musculo.id_musculo
+
+    await _execute_inactivate_entity(
+        table=db_mapping.Musculo,
+        where_clause=where,
+        returning_column=returning,
+        entity_name="Musculo"
+        )
+
+@DATA_DELETE_API.delete("/equipment/inactivate/{equipment_id}")
 async def inactivate_equipment(
-    equipment_id: int, user_id: int = Depends(validate_token)
+    equipment_id: int, user_id: int = Depends(TokenService.validate_token)
 ):
-    async with AsyncSession() as session:
-        result = await session.execute(
-            update(tables.Aparelho)
-            .where(
-                and_(
-                    tables.Aparelho.id_aparelho == equipment_id,
-                    tables.Aparelho.id_usuario == user_id,
-                )
-            )
-            .values(ativo=False)
-            .returning(tables.Aparelho.id_aparelho)
-        )
+    where = and_(
+        db_mapping.Aparelho.id_aparelho == equipment_id,
+        db_mapping.Aparelho.id_usuario == user_id,
+    )
 
-        if result.scalar_one_or_none() is None:
-            raise HTTPException(NOT_FOUND, "Aparelho não encontrado")
-        await session.commit()
+    returning = db_mapping.Aparelho.id_aparelho
 
+    await _execute_inactivate_entity(
+        table=db_mapping.Aparelho,
+        where_clause=where,
+        returning_column=returning,
+        entity_name="Aparelho"
+    )
 
-@DATA_API.delete("/exericse/inactivate/{exercise_id}")
-async def inactivate_exercise(exercise_id: int, user_id: int = Depends(validate_token)):
-    async with AsyncSession() as session:
-        result = await session.execute(
-            update(tables.Exercicio)
-            .where(
-                and_(
-                    tables.Exercicio.id_exercicio == exercise_id,
-                    tables.Exercicio.id_usuario == user_id,
-                )
-            )
-            .values(ativo=False)
-            .returning(tables.Exercicio.id_exercicio)
-        )
+@DATA_DELETE_API.delete("/exericse/inactivate/{exercise_id}")
+async def inactivate_exercise(
+    exercise_id: int, user_id: int = Depends(TokenService.validate_token)
+):
+    where = and_(
+        db_mapping.Exercicio.id_exercicio == exercise_id,
+        db_mapping.Exercicio.id_usuario == user_id,
+    )
 
-        if result.scalar_one_or_none() is None:
-            raise HTTPException(NOT_FOUND, "Exercício não encontrado")
-        await session.commit()
+    returning = db_mapping.Exercicio.id_exercicio
 
+    await _execute_inactivate_entity(
+        table=db_mapping.Exercicio,
+        where_clause=where,
+        returning_column=returning,
+        entity_name="Exercício"
+    )
 
-@DATA_API.delete("/workout/sheet/inactivate/{sheet_id}")
+@DATA_DELETE_API.delete("/workout/sheet/inactivate/{sheet_id}")
 async def inactivate_workout_sheet(
-    sheet_id: int, user_id: int = Depends(validate_token)
+    sheet_id: int, user_id: int = Depends(TokenService.validate_token)
 ):
-    async with AsyncSession() as session:
-        result = await session.execute(
-            update(tables.FichaTreino)
-            .where(
-                and_(
-                    tables.FichaTreino.id_ficha_treino == sheet_id,
-                    tables.FichaTreino.id_usuario == user_id,
-                )
-            )
-            .values(ativo=False)
-            .returning(tables.FichaTreino.id_ficha_treino)
-        )
+    where = and_(
+        db_mapping.FichaTreino.id_ficha_treino == sheet_id,
+        db_mapping.FichaTreino.id_usuario == user_id,
+    )
 
-        if result.scalar_one_or_none() is None:
-            raise HTTPException(NOT_FOUND, "Ficha de treino não encontrada")
-        await session.commit()
+    returning = db_mapping.FichaTreino.id_ficha_treino
 
+    await _execute_inactivate_entity(
+        table=db_mapping.FichaTreino,
+        where_clause=where,
+        returning_column=returning,
+        entity_name="Ficha de treino"
+    )
 
-@DATA_API.delete("/workout/division/inactivate/{division}")
+@DATA_DELETE_API.delete("/workout/division/inactivate/{division}")
 async def inactivate_workout_division(
-    division: str, user_id: int = Depends(validate_token)
+    division: str, user_id: int = Depends(TokenService.validate_token)
 ):
-    async with AsyncSession() as session:
-        result = await session.execute(
-            update(tables.DivisaoTreino)
-            .where(
-                and_(
-                    tables.DivisaoTreino.divisao == division,
-                    tables.DivisaoTreino.id_ficha_treino
-                    == tables.FichaTreino.id_ficha_treino,
-                    tables.FichaTreino.id_usuario == user_id,
-                )
-            )
-            .values(ativo=False)
-            .returning(tables.FichaTreino.id_ficha_treino)
-        )
+    where = and_(
+        db_mapping.DivisaoTreino.divisao == division,
+        db_mapping.DivisaoTreino.id_ficha_treino == db_mapping.FichaTreino.id_ficha_treino,
+        db_mapping.FichaTreino.id_usuario == user_id,
+    )
 
-        if result.scalar_one_or_none() is None:
-            raise HTTPException(NOT_FOUND, "Divisão de treino não encontrada")
-        await session.commit()
+    returning = db_mapping.FichaTreino.id_ficha_treino
 
+    await _execute_inactivate_entity(
+        table=db_mapping.DivisaoTreino,
+        where_clause=where,
+        returning_column=returning,
+        entity_name="Divisão de treino"
+    )
 
-@DATA_API.delete("/workout/division/exercise/inactivate")
+@DATA_DELETE_API.delete("/workout/division/exercise/inactivate")
 async def inactivate_division_exercise(
-    exercise: schemas.DivisaoExercicioInativar, user_id: int = Depends(validate_token)
+    exercise: schemas.DivisaoExercicioInativar, 
+    user_id: int = Depends(TokenService.validate_token)
 ):
-    async with AsyncSession() as session:
-        result = await session.execute(
-            update(tables.DivisaoExercicio)
-            .where(
-                and_(
-                    tables.DivisaoExercicio.divisao == exercise.divisao,
-                    tables.DivisaoExercicio.id_exercicio == exercise.id_exercicio,
-                    tables.DivisaoExercicio.ordem_execucao == exercise.ordem_execucao,
-                    tables.FichaTreino.id_usuario == user_id,
-                    tables.FichaTreino.id_ficha_treino == exercise.id_ficha_treino,
-                    # Joins
-                    tables.DivisaoExercicio.id_ficha_treino
-                    == tables.DivisaoTreino.id_ficha_treino,
-                    tables.DivisaoTreino.id_ficha_treino
-                    == tables.FichaTreino.id_ficha_treino,
-                )
-            )
-            .values(ativo=False)
-            .returning(tables.FichaTreino.id_ficha_treino)
-        )
+    where = and_(
+        db_mapping.DivisaoExercicio.divisao == exercise.divisao,
+        db_mapping.DivisaoExercicio.id_exercicio == exercise.id_exercicio,
+        db_mapping.DivisaoExercicio.ordem_execucao == exercise.ordem_execucao,
+        db_mapping.FichaTreino.id_usuario == user_id,
+        db_mapping.FichaTreino.id_ficha_treino == exercise.id_ficha_treino,
+        # Joins
+        db_mapping.DivisaoExercicio.id_ficha_treino == db_mapping.DivisaoTreino.id_ficha_treino,
+        db_mapping.DivisaoTreino.id_ficha_treino == db_mapping.FichaTreino.id_ficha_treino,
+    )
 
-        if result.scalar_one_or_none() is None:
-            raise HTTPException(
-                NOT_FOUND, "Exercício não encontrado na divisao de treino"
-            )
-        await session.commit()
+    returning = db_mapping.FichaTreino.id_ficha_treino
 
+    await _execute_inactivate_entity(
+        table=db_mapping.DivisaoExercicio,
+        where_clause=where,
+        returning_column=returning,
+        entity_name="Exercício na divisao de treino"
+    )
 
-@DATA_API.delete("/workout/report/delete/{report_id}")
-async def inactivate_division_exercise(
-    report_id: int, user_id: int = Depends(validate_token)
+@DATA_DELETE_API.delete("/workout/report/delete/{report_id}")
+async def delete_workout_report(
+    report_id: int, user_id: int = Depends(TokenService.validate_token)
 ):
-    async with AsyncSession() as session:
-        await session.execute(
-            delete(tables.SerieRelatorio).where(
-                and_(
-                    tables.SerieRelatorio.id_relatorio_treino == report_id,
-                    tables.FichaTreino.id_usuario == user_id,
-                    # Joins
-                    tables.SerieRelatorio.id_relatorio_treino
-                    == tables.RelatorioTreino.id_relatorio_treino,
-                    tables.RelatorioTreino.id_ficha_treino
-                    == tables.FichaTreino.id_ficha_treino,
-                )
-            )
-        )
+    # First delete the series reports
+    where_series = and_(
+        db_mapping.SerieRelatorio.id_relatorio_treino == report_id,
+        db_mapping.FichaTreino.id_usuario == user_id,
+        # Joins
+        db_mapping.SerieRelatorio.id_relatorio_treino == db_mapping.RelatorioTreino.id_relatorio_treino,
+        db_mapping.RelatorioTreino.id_ficha_treino == db_mapping.FichaTreino.id_ficha_treino,
+    )
 
-        result = await session.execute(
-            delete(tables.RelatorioTreino)
-            .where(
-                and_(
-                    tables.RelatorioTreino.id_relatorio_treino == report_id,
-                    tables.FichaTreino.id_ficha_treino == user_id,
-                    # Join
-                    tables.RelatorioTreino.id_ficha_treino
-                    == tables.FichaTreino.id_ficha_treino,
-                )
-            )
-            .returning(tables.FichaTreino.id_ficha_treino)
-        )
+    await _execute_delete(
+        table=db_mapping.SerieRelatorio,
+        where_clause=where_series,
+        returning_column=db_mapping.SerieRelatorio.id_relatorio_treino,
+        entity_name="Séries do relatório"
+    )
 
-        if result.scalar_one_or_none() is None:
-            raise HTTPException(NOT_FOUND, "Relatório não encontrado")
-        await session.commit()
+    # Then delete the workout report
+    where_report = and_(
+        db_mapping.RelatorioTreino.id_relatorio_treino == report_id,
+        db_mapping.FichaTreino.id_usuario == user_id,
+        # Join
+        db_mapping.RelatorioTreino.id_ficha_treino == db_mapping.FichaTreino.id_ficha_treino,
+    )
+
+    await _execute_delete(
+        table=db_mapping.RelatorioTreino,
+        where_clause=where_report,
+        returning_column=db_mapping.RelatorioTreino.id_relatorio_treino,
+        entity_name="Relatório"
+    )
