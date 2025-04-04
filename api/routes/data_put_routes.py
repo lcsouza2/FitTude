@@ -71,6 +71,38 @@ async def _execute_update(
             return "Alterado"
 
 
+
+@DATA_PUT_API.put("/groups/update/{group_name}")
+async def update_group(
+    group_name: str,
+    updates: schemas.GrupamentoAlterar,
+    user_id: int = Depends(TokenService.validate_token),
+):
+    """Atualiza um grupamento muscular existente"""
+    await _execute_update(
+        table=db_mapping.Grupamento,
+        entity_name="Grupamento",
+        where_clause=and_(
+            db_mapping.Grupamento.nome_grupamento == group_name,
+            db_mapping.Grupamento.id_usuario == user_id,
+        ),
+        values_mapping=exclude_falsy_from_dict(updates.model_dump(exclude_none=True)),
+        error_mapping=[
+            {
+                "constraint": "uq_grupamento",
+                "error": UniqueConstraintViolation,
+                "message": "Os dados recebidos conflitam com algum registro existente!",
+            },
+            {
+                "constraint": "fk_grupamento_usuario",
+                "error": ForeignKeyViolation,
+                "message": "O usuário referenciado não foi encontrado",
+            },
+        ],
+        returning_column=db_mapping.Grupamento.nome_grupamento,
+    )
+
+
 @DATA_PUT_API.put("/muscle/update/{muscle_id}")
 async def update_muscle(
     muscle_id: int,
@@ -295,3 +327,4 @@ async def update_division_exercise(
         ],
         returning_column=db_mapping.FichaTreino.id_ficha_treino,
     )
+

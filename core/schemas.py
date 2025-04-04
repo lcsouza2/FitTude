@@ -24,6 +24,11 @@ class UserLogin(User):
     keep_login: bool
 
 
+class Grupamento(BaseSchema):
+    nome_grupamento: str
+    id_usuario: Optional[int]
+
+
 class Aparelho(BaseSchema):
     nome_grupamento: str
     nome_aparelho: str

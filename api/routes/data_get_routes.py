@@ -1,104 +1,176 @@
-from Database import db_mapping as tables
-from Database.utils import AsyncSession, validate_token
-from fastapi import Depends, FastAPI
-from sqlalchemy import or_, select
+from fastapi import APIRouter, Depends
+from database import db_mapping 
+from core.authetication import TokenService
+from core.connections import db_connection
+from core.utils import cached_operation
+from sqlalchemy.orm import MappedAsDataclass, InstrumentedAttribute
+from sqlalchemy import BinaryExpression, or_, and_
+from typing import List, Optional, Union, Any
+from sqlalchemy import select
+from sqlalchemy.orm import joinedload
 
-DATA_API = FastAPI(title="Rotas POST para serviços de treinos")
+DATA_GET_API = APIRouter(prefix="/api/data", tags=["data"])
 
+async def _execute_select(
+    *,
+    table_or_columns: MappedAsDataclass | List[InstrumentedAttribute],
+    where_clause: Optional[BinaryExpression] = None,
+    group_by: Optional[Union[InstrumentedAttribute, List[InstrumentedAttribute]]] = None,
+    having: Optional[BinaryExpression] = None,
+    order_by: Optional[Union[InstrumentedAttribute, List[InstrumentedAttribute]]] = None,
+    joins: Optional[List[tuple]] = None,
+    limit: Optional[int] = None,
+    offset: Optional[int] = None,
+    distinct: bool = False,
+    eager_load: Optional[List[InstrumentedAttribute]] = None,
+    active_only: bool = False,
+) -> List[Any]:
+    """
+    Execute a flexible SELECT query with various options.
 
-@DATA_API.get("/groups/get")
-async def get_all_muscular_groups(user_id: int = Depends(validate_token)):
-    async with AsyncSession() as session:
-        groups = await session.scalars(select(tables.Grupamento))
+    Args:
+        table_or_columns: The main table or list of columns to select from
+        where_clause: Optional WHERE conditions
+        group_by: Optional GROUP BY column(s)
+        order_by: Optional ORDER BY column(s)
+        joins: Optional list of (table, condition) tuples for JOINs
+        limit: Optional LIMIT value
+        offset: Optional OFFSET value
+        distinct: Whether to add DISTINCT to the query
+        eager_load: Optional list of relationships to eager load
+        active_only: Whether to filter only active records
 
-    return groups.fetchall()
+    Returns:
+        List of query results
+    """
+    # Start building the query
+    query = select(table_or_columns)
 
+    if distinct:
+        query = query.distinct()
 
-@DATA_API.get("/muscle/get")
-async def get_all_muscles(user_id: int = Depends(validate_token)):
-    """Busca os músuclos referentes a um usuário e retorna eles"""
+    # Add WHERE clause if provided
+    if where_clause is not None:
+        if active_only and hasattr(table_or_columns, 'ativo'):
+            where_clause = and_(where_clause, table_or_columns.ativo == True)
+        query = query.where(where_clause)
+    elif active_only and hasattr(table_or_columns, 'ativo'):
+        query = query.where(table_or_columns.ativo == True)
 
-    async with AsyncSession() as session:
-        muscles = await session.scalars(
-            select(tables.Musculo).where(
-                or_(
-                    tables.Musculo.id_usuario == user_id,
-                    tables.Musculo.id_usuario == None,
-                )
-            )
+    # Add JOINs if provided
+    if joins:
+        for join_table, join_condition in joins:
+            query = query.join(join_table, join_condition)
+
+    # Add eager loading if provided
+    if eager_load:
+        for relationship in eager_load:
+            query = query.options(joinedload(relationship))
+
+    # Add GROUP BY if provided
+    if group_by is not None:
+        if isinstance(group_by, list):
+            query = query.group_by(*group_by)
+        else:
+            query = query.group_by(group_by)
+
+    # Add HAVING if provided
+    if having is not None:
+        query = query.having(having)
+
+    # Add ORDER BY if provided
+    if order_by is not None:
+        if isinstance(order_by, list):
+            query = query.order_by(*order_by)
+        else:
+            query = query.order_by(order_by)
+
+    # Add LIMIT and OFFSET if provided
+    if limit is not None:
+        query = query.limit(limit)
+    if offset is not None:
+        query = query.offset(offset)
+
+    async with db_connection() as session:
+        # Execute the query
+        result = await session.scalars(query)
+    return result.fetchall()
+
+@DATA_GET_API.get("/groups")
+@cached_operation(expire_time=3600)
+async def get_all_muscular_groups(user_id: int = Depends(TokenService.validate_token)):
+    return await _execute_select(
+        table_or_columns=db_mapping.Grupamento,
+        where_clause=or_(
+            db_mapping.Grupamento.id_usuario == user_id,
+            db_mapping.Grupamento.id_usuario == None,
         )
+    )
 
-    return muscles.fetchall()
-
-
-@DATA_API.get("/equipment/get")
-async def get_all_equipments(user_id: int = Depends(validate_token)):
+@DATA_GET_API.get("/muscles")
+@cached_operation(expire_time=3600)
+async def get_all_muscles(user_id: int = Depends(TokenService.validate_token)):
     """Busca os músuclos referentes a um usuário e retorna eles"""
-
-    async with AsyncSession() as session:
-        equipments = await session.scalars(
-            select(tables.Aparelho).where(
-                or_(
-                    tables.Aparelho.id_usuario == user_id,
-                    tables.Aparelho.id_usuario == None,
-                )
-            )
+    return await _execute_select(
+        table_or_columns=db_mapping.Musculo,
+        where_clause=or_(
+            db_mapping.Musculo.id_usuario == user_id,
+            db_mapping.Musculo.id_usuario == None,
         )
+    )
 
-    return equipments.fetchall()
+@DATA_GET_API.get("/equipment")
+@cached_operation(expire_time=3600)
+async def get_all_equipments(user_id: int = Depends(TokenService.validate_token)):
+    """Busca os equipamentos referentes a um usuário e retorna eles"""
+    return await _execute_select(
+        table_or_columns=db_mapping.Aparelho,
+        where_clause=or_(
+            db_mapping.Aparelho.id_usuario == user_id,
+            db_mapping.Aparelho.id_usuario == None,
+        )
+    )
 
-
-@DATA_API.get("/exercise/get")
-async def get_all_exercises(user_id: int = Depends(validate_token)):
+@DATA_GET_API.get("/exercises")
+async def get_all_exercises(user_id: int = Depends(TokenService.validate_token)):
     """Valida o token e busca os exercicios relativos aquele usuário"""
-
-    async with AsyncSession() as session:
-        exercises = await session.scalars(
-            select(tables.Exercicio).where(
-                or_(
-                    tables.Exercicio.id_usuario == user_id,
-                    tables.Exercicio.id_usuario == None,
-                )
-            )
+    return await _execute_select(
+        table_or_columns=db_mapping.Exercicio,
+        where_clause=or_(
+            db_mapping.Exercicio.id_usuario == user_id,
+            db_mapping.Exercicio.id_usuario == None,
         )
+    )
 
-    return exercises.fetchall()
+@DATA_GET_API.get("/workout/sheets")
+async def get_all_workout_sheets(user_id: int = Depends(TokenService.validate_token)):
+    return await _execute_select(
+        table_or_columns=db_mapping.FichaTreino,
+        where_clause=db_mapping.FichaTreino.id_usuario == user_id,
+    )
 
+@DATA_GET_API.get("/workout/divisions")
+async def get_all_workout_divisions(user_id: int = Depends(TokenService.validate_token)):
+    return await _execute_select(
+        table_or_columns=db_mapping.DivisaoTreino,
+        joins=[(db_mapping.FichaTreino, None)],
+        where_clause=db_mapping.FichaTreino.id_usuario == user_id,
+    )
 
-@DATA_API.get("/workout/sheet/get")
-async def get_all_workout_sheets(user_id: int = Depends(validate_token)):
-    async with AsyncSession() as session:
-        sheets = await session.scalars(
-            select(tables.FichaTreino).where(
-                tables.FichaTreino.id_usuario == user_id,
-            )
-        )
+@DATA_GET_API.get("/workout/division-exercises")
+async def get_all_division_exercises(user_id: int = Depends(TokenService.validate_token)):
+    return await _execute_select(
+        table_or_columns=db_mapping.DivisaoExercicio,
+        joins=[
+            (db_mapping.DivisaoTreino, db_mapping.DivisaoTreino.divisao == db_mapping.DivisaoExercicio.divisao),
+            (db_mapping.FichaTreino, None)
+        ],
+        where_clause=db_mapping.FichaTreino.id_usuario == user_id,
+    )
 
-    return sheets.fetchall()
-
-
-@DATA_API.get("/workout/sheet/get_divisions")
-async def get_all_workout_divisions(user_id: int = Depends(validate_token)):
-    async with AsyncSession() as session:
-        sheets = await session.scalars(
-            select(tables.DivisaoTreino)
-            .join(tables.FichaTreino)
-            .where(tables.FichaTreino.id_usuario == user_id)
-        )
-    return sheets.fetchall()
-
-
-@DATA_API.get("/workout/sheet/get_exercises")
-async def get_all_division_exercises(user_id: int = Depends(validate_token)):
-    async with AsyncSession() as session:
-        sheets = await session.scalars(
-            select(tables.DivisaoExercicio)
-            .join(
-                tables.DivisaoTreino,
-                tables.DivisaoTreino.divisao == tables.DivisaoExercicio.divisao,
-            )
-            .join(tables.FichaTreino)
-            .where(tables.FichaTreino.id_usuario == user_id)
-        )
-
-    return sheets.fetchall()
+@DATA_GET_API.get("/workout/reports")
+async def get_all_workout_reports(user_id: int = Depends(TokenService.validate_token)):
+    return await _execute_select(
+        table_or_columns=db_mapping.RelatorioTreino,
+        where_clause=db_mapping.RelatorioTreino.id_usuario == user_id,
+    )

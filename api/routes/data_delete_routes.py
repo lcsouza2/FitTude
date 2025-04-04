@@ -50,6 +50,26 @@ async def _execute_delete(*, table: MappedAsDataclass, where_clause: BinaryExpre
         return f"{entity_name} excluido"
 
 
+@DATA_DELETE_API.delete("/groups/inactivate/{group_name}")
+async def inactivate_group(
+    group_name: str, 
+    user_id: int = Depends(TokenService.validate_token)
+):
+    """Inativa um grupamento muscular"""
+    where = and_(
+        db_mapping.Grupamento.nome_grupamento == group_name,
+        db_mapping.Grupamento.id_usuario == user_id,
+    )
+
+    returning = db_mapping.Grupamento.nome_grupamento
+
+    await _execute_inactivate_entity(
+        table=db_mapping.Grupamento,
+        where_clause=where,
+        returning_column=returning,
+        entity_name="Grupamento"
+    )
+
 
 @DATA_DELETE_API.delete("/muscle/inactivate/{muscle_id}")
 async def inactivate_muscle(muscle_id: int, user_id: int = Depends(TokenService.validate_token)):
@@ -200,3 +220,4 @@ async def delete_workout_report(
         returning_column=db_mapping.RelatorioTreino.id_relatorio_treino,
         entity_name="Relatório"
     )
+

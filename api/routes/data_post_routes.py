@@ -51,6 +51,28 @@ async def _execute_insert(
             # Se não encontrou erro mapeado, re-raise a exceção original
             raise
 
+@DATA_POST_API.post("/groups/new")
+async def create_new_group(
+    group: schemas.Grupamento, user_id: int = Depends(TokenService.validate_token)
+):
+    """Adiciona um novo grupamento muscular personalizado pelo usuário"""
+    return await _execute_insert(
+        table=db_mapping.Grupamento,
+        values={**group.model_dump(), "id_usuario": user_id},
+        error_mapping=[
+            {
+                "constraint": "uq_grupamento",
+                "error": UniqueConstraintViolation,
+                "message": "Esse grupamento já existe"
+            },
+            {
+                "constraint": "fk_grupamento_usuario",
+                "error": ForeignKeyViolation,
+                "message": "Usuário referenciado não existe"
+            }
+        ],
+        entity_name="Grupamento",
+    )
 
 @DATA_POST_API.post("/equipment/new")
 async def create_new_equipment(
@@ -270,3 +292,5 @@ async def add_exercise_to_report(
         ],
         entity_name="Série no relatório"
     )
+
+

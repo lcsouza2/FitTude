@@ -31,9 +31,15 @@ CREATE TABLE usuario(
 
 CREATE TABLE grupamento (
     nome_grupamento   VARCHAR(50) NOT NULL,
-    
+    id_usuario        INTEGER   NULL,
+    ativo             BOOLEAN   DEFAULT TRUE,
+
     CONSTRAINT pk_grupamento
-        PRIMARY KEY (nome_grupamento)
+        PRIMARY KEY (nome_grupamento),
+    CONSTRAINT uq_grupamento
+        UNIQUE (id_usuario, nome_grupamento),
+    CONSTRAINT fk_grupamento_usuario
+        FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
     );
 
 
@@ -202,6 +208,8 @@ CREATE TABLE serie_relatorio(
     CONSTRAINT fk_serie_relatorio_relatorio_treino
         FOREIGN KEY (id_relatorio_treino) REFERENCES relatorio_treino(id_relatorio_treino)
 );
+
+CREATE INDEX idx_grupamento_id_usuario ON grupamento(id_usuario);
 
 CREATE INDEX id_username_usuario ON usuario(username);
 
