@@ -1,4 +1,5 @@
 import jwtDecode from 'jwt-decode';
+import axios from 'axios';
 
 class AuthManager {
     constructor() {
@@ -57,7 +58,7 @@ class AuthManager {
         try {
             const decoded = jwtDecode(token);
             const now = Date.now();
-            
+
             return (
                 decoded.iss === window.location.origin &&
                 decoded.aud === 'web-client' &&
@@ -72,11 +73,11 @@ class AuthManager {
 
     async getValidSessionToken() {
         const session = this.tokenStore.get(this.instanceKey);
-        
+
         if (!session || Date.now() >= session.expiration - 30000) { // Renova 30s antes
             await this.refreshSessionToken();
         }
-        
+
         return this.tokenStore.get(this.instanceKey)?.token;
     }
 
@@ -85,26 +86,27 @@ class AuthManager {
     }
 
     async refreshSessionToken() {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000); // 5s timeout
+        const source = axios.CancelToken.source();
+        const timeoutId = setTimeout(() => source.cancel(), 5000); // 5s timeout
 
         try {
-            const response = await fetch('/api/user/renew_token', {
+            const response = await axios({
                 method: 'POST',
-                credentials: 'include',
-                signal: controller.signal,
+                url: '/api/user/renew_token',
+                withCredentials: true,
+                cancelToken: source.token,
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
                 }
             });
 
-            if (!response.ok) throw new Error('Falha ao renovar token');
-
-            const { token } = await response.json();
+            const { token } = response.data;
             this.setSessionToken(token);
         } catch (error) {
-            this.clearSession();
-            throw error;
+            if (axios.isCancel(error)) {
+                throw new Error('Timeout ao renovar token');
+            }
+            throw new Error('Falha ao renovar token');
         } finally {
             clearTimeout(timeoutId);
         }
@@ -115,29 +117,36 @@ class AuthManager {
 const authManager = Object.freeze(new AuthManager());
 
 export const secureRequest = async (url, options = {}) => {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+    const source = axios.CancelToken.source();
+    const timeoutId = setTimeout(() => source.cancel(), 10000); // 10s timeout
 
     try {
         const token = await authManager.getValidSessionToken();
-        
-        const response = await fetch(url, {
+
+        const response = await axios({
             ...options,
-            signal: controller.signal,
+            url,
+            cancelToken: source.token,
             headers: {
                 ...options.headers,
                 'Authorization': `Bearer ${token}`,
                 'X-Requested-With': 'XMLHttpRequest'
             },
-            credentials: 'include'
+            withCredentials: true
         });
 
-        if (response.status === 401) {
+        return response;
+    } catch (error) {
+        if (error.response?.status === 401) {
             await authManager.refreshSessionToken();
             return secureRequest(url, options);
         }
 
-        return response;
+        if (axios.isCancel(error)) {
+            throw new Error('Request timeout');
+        }
+
+        throw error;
     } finally {
         clearTimeout(timeoutId);
     }
