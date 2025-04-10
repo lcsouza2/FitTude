@@ -52,32 +52,16 @@ class TokenService:
             samesite="strict",
         )
 
-    async def set_session_token_cookie(
-        self,
-        response: Response,
-        user_id: int,
-        expires_delta: timedelta = timedelta(minutes=15),
-    ) -> None:
-        """Sets session token in HTTP-only cookie"""
-        token = await self.generate_session_token(user_id)
-        expires = datetime.now(timezone.utc) + expires_delta
-
-        response.set_cookie(
-            key="session_token",
-            value=token,
-            httponly=True,
-            secure=True,
-            samesite="strict",
-            expires=expires.timestamp(),
-        )
-
-    def get_session_token(self, request: Request):
-        token = request.cookies.get("session_token")
+    def get_refresh_token(self, request: Request):
+        token = request.cookies.get("refresh_token")
 
         if token:
             return token
         else:
-            raise MissingToken("Session token não encontrado")
+            raise MissingToken("Refresh token não encontrado")
+
+    def delete_refresh_token_cookie(self, response: Response):
+        response.delete_cookie("refresh_token")
 
     async def renew_token(self, request: Request):
         token = self.get_refresh_token(request)
@@ -97,14 +81,11 @@ class TokenService:
 
     @staticmethod
     async def validate_token(
-        request: Request,
         token: HTTPAuthorizationCredentials = Depends(security),
-        cookie_mode: bool = False
     ) -> int:
         """Valida o token JWT e retorna o id do usuário"""
 
-        if cookie_mode:
-            token = request.cookies.get("refresh_token")
+        token = token.credentials
 
         if not token:
             raise MissingToken("Refresh token não encontrado")

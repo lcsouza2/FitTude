@@ -25,7 +25,7 @@ from core.email_service import send_verification_mail
 from core.exceptions import (
     InvalidCredentials,
     InvalidRegisterProtocol,
-    UniqueConstraintViolation,
+    UniqueConstraintViolation
 )
 from core.utils import cached_operation
 
@@ -158,7 +158,6 @@ async def create_register(
     protocol: UUID,
     token_service: TokenService = Depends(TokenService),
     session: AsyncSession = Depends(db_connection),
-    cookie: bool = True,
 ):
     """
     Complete user registration by confirming email verification.
@@ -218,24 +217,12 @@ async def create_register(
             redis.delete(f"protocol:{protocol}")
 
             default_context = {
-                "request": token_service.request,
+                "acess_token": session_token,
+                "token_type": "Bearer",
+                "expires_in": int(
+                    Config.JWT_ACCESS_TOKEN_EXPIRES.total_seconds()
+                ),
             }
-
-            if cookie:
-                await token_service.set_session_token_cookie(
-                    token_service.response,
-                    created_user,
-                )
-
-                default_context.update(
-                    {
-                        "acess_token": session_token,
-                        "token_type": "Bearer",
-                        "expires_in": int(
-                            Config.JWT_ACCESS_TOKEN_EXPIRES.total_seconds()
-                        ),
-                    }
-                )
 
             return Jinja2Templates("./templates").TemplateResponse(
                 "confirm_register.html", default_context
@@ -247,7 +234,6 @@ async def login_user(
     user: schemas.UserLogin,
     session: AsyncSession = Depends(db_connection),
     token_service: TokenService = Depends(TokenService),
-    cookie: bool = True,
 ) -> dict[str, Any]:
     """
     Authenticate user and generate session tokens.
@@ -279,16 +265,35 @@ async def login_user(
             token_service.response, refresh_token
         )
 
-        if cookie:
-            await token_service.set_session_token_cookie(
-                token_service.response,
-                found.id_usuario,
-            )
-
-            return "Cookie setado"
-
         return {
             "access_token": session_token,
             "token_type": "Bearer",
             "expires_in": int(token_service.session_expires.total_seconds()),
         }
+
+@USER_ROUTER.post("/logout")
+async def logout_user(
+    token_service: TokenService = Depends(TokenService),
+) -> dict[str, str]:
+    """
+    Logout user by deleting session and refresh tokens.
+    """
+    token_service.delete_refresh_token_cookie(token_service.response)
+
+    return {"message": "Logout realizado com sucesso!"}
+
+@USER_ROUTER.post("/refresh_token")
+async def send_refresh_token(
+    token_service: TokenService = Depends(TokenService),
+) -> dict[str, str]:
+    """
+    Refresh user session token.
+
+    This function checks the validity of the refresh token and generates a new session token.
+    """
+
+    return {
+        "access_token": await token_service.renew_token(token_service.request),
+        "token_type": "Bearer",
+        "expires_in": int(token_service.session_expires.total_seconds()),
+    }
