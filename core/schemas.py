@@ -14,6 +14,11 @@ class User(BaseSchema):
     password: str
 
 
+class UserPasswordChange(BaseSchema):
+    email: EmailStr
+    password: str
+
+
 class UserRegistro(BaseSchema):
     username: str
     email: EmailStr
@@ -22,7 +27,6 @@ class UserRegistro(BaseSchema):
 
 class UserLogin(User):
     keep_login: bool
-
 
 class Grupamento(BaseSchema):
     nome_grupamento: str

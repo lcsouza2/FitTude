@@ -10,6 +10,8 @@ from uuid import UUID, uuid4
 
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
+import random
+import string
 from fastapi import APIRouter, BackgroundTasks, Depends
 from fastapi.templating import Jinja2Templates
 from pydantic import EmailStr, validate_email
@@ -21,7 +23,7 @@ from core import schemas
 from core.authetication import TokenService
 from core.config import Config
 from core.connections import db_connection, redis_connection
-from core.email_service import send_verification_mail
+from core.email_service import send_verification_mail, send_pwd_change_mail
 from core.exceptions import (
     InvalidCredentials,
     InvalidRegisterProtocol,
@@ -39,8 +41,11 @@ hasher = PasswordHasher()
 def generate_user_protocol():
     return uuid4()
 
+def generate_pwd_change_protocol(): 
+    return "".join([random.choice(string.ascii_letters + string.digits) for _ in range(6)])
 
-async def save_user_data(user: db_mapping.Usuario):
+
+async def save_register_protocol(user: schemas.User):
     protocol = generate_user_protocol()
 
     await send_verification_mail(user.email, protocol=protocol, username=user.username)
@@ -52,6 +57,17 @@ async def save_user_data(user: db_mapping.Usuario):
             1800,  # 30 minutos
         )
 
+async def save_pwd_change_protocol(user: schemas.UserPasswordChange):
+    protocol = generate_pwd_change_protocol()
+
+    await send_pwd_change_mail(user.email, protocol=protocol, username=user.username)
+
+    async with redis_connection() as redis:
+        await redis.hset(f"protocol:{protocol}", mapping=user.model_dump())
+        await redis.expire(
+            f"protocol:{protocol}",
+            1800,  # 30 minutos
+        )
 
 async def _generate_auth_tokens(
     user_id: int,
@@ -145,7 +161,7 @@ async def begin_register(
 
     await search_for_user(user.username, user.email)
 
-    bg_tasks.add_task(save_user_data, user=user)
+    bg_tasks.add_task(save_register_protocol, user=user)
 
     return {
         "message": """Email de verificação enviado.
@@ -281,6 +297,14 @@ async def logout_user(
     token_service.delete_refresh_token_cookie(token_service.response)
 
     return {"message": "Logout realizado com sucesso!"}
+
+@USER_ROUTER.post("/password_change")
+async def handle_password_change(background_tasks: BackgroundTasks, user: schemas.User):
+
+    background_tasks.add_task(save_pwd_change_protocol,)
+    
+
+async def confirm_password_change():
 
 @USER_ROUTER.post("/refresh_token")
 async def send_refresh_token(

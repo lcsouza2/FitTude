@@ -1,5 +1,5 @@
-from logging import getLogger
 from typing import Optional
+from core.config import Config
 
 from fastapi import HTTPException
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema
@@ -7,7 +7,8 @@ from fastapi_mail.errors import ConnectionErrors
 from jinja2 import Environment, FileSystemLoader
 from pydantic import EmailStr
 
-logger = getLogger(__name__)
+from core.exceptions import MailServiceError
+
 
 html_template_env = Environment(
     loader=FileSystemLoader(searchpath="./templates/"), enable_async=True
@@ -15,14 +16,14 @@ html_template_env = Environment(
 template = html_template_env.get_template(name="verify_email.html")
 
 connection = ConnectionConfig(
-    MAIL_USERNAME="fittude.gym@gmail.com",
-    MAIL_PASSWORD="ghwk qhez ovdr tofn",
-    MAIL_PORT=587,
-    MAIL_SERVER="smtp.gmail.com",
-    MAIL_STARTTLS=True,
-    MAIL_SSL_TLS=False,
-    MAIL_FROM="fittude.gym@gmail.com",
-    MAIL_FROM_NAME="FitTude Team",
+    MAIL_USERNAME=Config.MAIL_USERNAME,
+    MAIL_PASSWORD=Config.get_mail_password(),
+    MAIL_PORT=Config.MAIL_PORT,
+    MAIL_SERVER=Config.get_mail_server(),
+    MAIL_STARTTLS=Config.MAIL_STARTTLS,
+    MAIL_SSL_TLS=Config.MAIL_SSL_TLS,
+    MAIL_FROM=Config.MAIL_FROM,
+    MAIL_FROM_NAME=Config.MAIL_FROM_NAME,
 )
 
 
@@ -55,13 +56,27 @@ async def send_verification_mail(
         return True
 
     except ConnectionErrors as e:
-        logger.error(f"Erro de conexão ao enviar email: {str(e)}")
-        raise HTTPException(
-            status_code=503, detail="Serviço de email temporariamente indisponível"
-        )
+        raise MailServiceError()
 
-    except Exception as e:
-        logger.error(f"Erro ao enviar email de verificação: {str(e)}")
-        raise HTTPException(
-            status_code=500, detail="Erro ao enviar email de verificação"
+
+async def send_pwd_change_mail(dest_email: EmailStr, username: str, char_protocol: str):
+    """
+    Handle password change request.
+
+    Returns:
+        Optional[bool]: True if email sent successfully, None if failed
+
+    Raises:
+        HTTPException: If email sending fails
+    """
+    try:
+        message = MessageSchema(
+            recipients=[dest_email],
+            subject="Alteração de senha no FitTude",
+            body=await template.render_async(nome=username, random_char_sequence=char_protocol),
+            subtype="html",
         )
+        await FastMail(connection).send_message(message)
+
+    except ConnectionErrors as e:
+        raise MailServiceError()

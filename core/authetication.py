@@ -12,7 +12,7 @@ from core.utils import actual_datetime
 class TokenService:
     security = HTTPBearer(auto_error=False)
 
-    def __init__(self, request: Request, response: Response, cookie_mode: bool = False):
+    def __init__(self, request: Request, response: Response):
         self.request = request
         self.response = response
         self.session_key = Config.get_jwt_session_key()
