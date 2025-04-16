@@ -1,5 +1,3 @@
-from datetime import datetime, timedelta, timezone
-
 import jwt
 from fastapi import Depends, Request, Response
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer

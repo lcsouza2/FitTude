@@ -287,6 +287,7 @@ async def login_user(
             "expires_in": int(token_service.session_expires.total_seconds()),
         }
 
+
 @USER_ROUTER.post("/logout")
 async def logout_user(
     token_service: TokenService = Depends(TokenService),
@@ -298,13 +299,12 @@ async def logout_user(
 
     return {"message": "Logout realizado com sucesso!"}
 
+
 @USER_ROUTER.post("/password_change")
 async def handle_password_change(background_tasks: BackgroundTasks, user: schemas.User):
 
-    background_tasks.add_task(save_pwd_change_protocol,)
-    
+    background_tasks.add_task(save_pwd_change_protocol, user=user)
 
-async def confirm_password_change():
 
 @USER_ROUTER.post("/refresh_token")
 async def send_refresh_token(

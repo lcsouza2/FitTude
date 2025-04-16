@@ -23,7 +23,7 @@ async def _execute_select(
     offset: Optional[int] = None,
     distinct: bool = False,
     eager_load: Optional[List[InstrumentedAttribute]] = None,
-    active_only: bool = False,
+    active_only: bool = True,
 ) -> List[Any]:
     """
     Execute a flexible SELECT query with various options.
@@ -95,6 +95,7 @@ async def _execute_select(
         # Execute the query
         result = await session.scalars(query)
     return result.fetchall()
+
 
 @DATA_GET_API.get("/groups")
 @cached_operation(expire_time=3600)
