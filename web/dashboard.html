@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitTude - Dashboard</title>
+    <link rel="shortcut icon" href="static/assets/img/favicon2.png" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Kanit:wght@400;600;700&family=Righteous&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="static/css/dashboard.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+<body>
+    <header>
+        <a href="../index.html" style="text-decoration: none;">
+            <h1><span class="h1-highlighted">Fit</span>Tude</h1>
+        </a>
+        <div class="user-menu">
+            <div class="profile-pic">R</div>
+            <span class="username">RafaelSilva</span>
+            <button class="logout-button">Sair</button>
+        </div>
+    </header>
+    
+    <div class="content-container">
+        <div class="sidebar">
+            <ul class="sidebar-menu">
+                <li class="active">Dashboard</li>
+                <li>Minhas Fichas</li>
+                <li>Exercícios</li>
+                <li>Relatórios</li>
+                <li>Grupamentos</li>
+                <li>Aparelhos</li>
+                <li>Configurações</li>
+            </ul>
+        </div>
+        
+        <div class="main-content">
+            <div class="dashboard-header">
+                <h2>Bem-vindo ao seu Dashboard, Rafael!</h2>
+                <button class="button-style">+ Nova Ficha de Treino</button>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-title">Treinos Registrados</div>
+                    <div class="stat-value">27</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Fichas de Treino</div>
+                    <div class="stat-value">3</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Exercícios Cadastrados</div>
+                    <div class="stat-value">42</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-title">Total de Séries</div>
+                    <div class="stat-value">857</div>
+                </div>
+            </div>
+            
+            <div class="training-plans">
+                <div class="plan-card">
+                    <div class="plan-title">Hipertrofia 2025</div>
+                    <div class="plan-details">
+                        <div><strong>Objetivo:</strong> Hipertrofia avançada</div>
+                        <div><strong>Divisões:</strong></div>
+                        <div class="plan-divisions">
+                            <span class="plan-division">A - Peito/Tríceps</span>
+                            <span class="plan-division">B - Costas/Bíceps</span>
+                            <span class="plan-division">C - Pernas/Ombros</span>
+                        </div>
+                    </div>
+                    <button class="button-style" style="width: 100%">Ver Ficha</button>
+                </div>
+                
+                <div class="plan-card">
+                    <div class="plan-title">Full Body 5x</div>
+                    <div class="plan-details">
+                        <div><strong>Objetivo:</strong> Condicionamento Geral</div>
+                        <div><strong>Divisões:</strong></div>
+                        <div class="plan-divisions">
+                            <span class="plan-division">A - Full Body</span>
+                            <span class="plan-division">B - Full Body</span>
+                            <span class="plan-division">C - Full Body</span>
+                            <span class="plan-division">D - Full Body</span>
+                            <span class="plan-division">E - Full Body</span>
+                        </div>
+                    </div>
+                    <button class="button-style" style="width: 100%">Ver Ficha</button>
+                </div>
+                
+                <div class="plan-card">
+                    <div class="plan-title">Força Base</div>
+                    <div class="plan-details">
+                        <div><strong>Objetivo:</strong> Ganho de Força</div>
+                        <div><strong>Divisões:</strong></div>
+                        <div class="plan-divisions">
+                            <span class="plan-division">A - Superior</span>
+                            <span class="plan-division">B - Inferior</span>
+                        </div>
+                    </div>
+                    <button class="button-style" style="width: 100%">Ver Ficha</button>
+                </div>
+            </div>
+            
+            <div class="two-columns">
+                <div class="workouts-container">
+                    <div class="card-header">
+                        <h3>Últimos Treinos</h3>
+                        <button class="button-style">Ver Todos</button>
+                    </div>
+                    
+                    <div class="workout-card">
+                        <div class="workout-info">
+                            <h4>Hipertrofia 2025 - A (Peito/Tríceps)</h4>
+                            <div class="workout-date">02 de Abril, 2025</div>
+                        </div>
+                        <div class="workout-actions">
+                            <button>Detalhes</button>
+                        </div>
+                    </div>
+                    
+                    <div class="workout-card">
+                        <div class="workout-info">
+                            <h4>Hipertrofia 2025 - C (Pernas/Ombros)</h4>
+                            <div class="workout-date">31 de Março, 2025</div>
+                        </div>
+                        <div class="workout-actions">
+                            <button>Detalhes</button>
+                        </div>
+                    </div>
+                    
+                    <div class="workout-card">
+                        <div class="workout-info">
+                            <h4>Hipertrofia 2025 - B (Costas/Bíceps)</h4>
+                            <div class="workout-date">29 de Março, 2025</div>
+                        </div>
+                        <div class="workout-actions">
+                            <button>Detalhes</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="muscle-distribution">
+                    <div class="card-header">
+                        <h3>Músculos por Grupamento</h3>
+                    </div>
+                    <div class="muscle-grid">
+                        <div class="muscle-item">
+                            <div class="muscle-name">Peitoral</div>
+                            <div class="muscle-count">5</div>
+                        </div>
+                        <div class="muscle-item">
+                            <div class="muscle-name">Costas</div>
+                            <div class="muscle-count">8</div>
+                        </div>
+                        <div class="muscle-item">
+                            <div class="muscle-name">Pernas</div>
+                            <div class="muscle-count">12</div>
+                        </div>
+                        <div class="muscle-item">
+                            <div class="muscle-name">Ombros</div>
+                            <div class="muscle-count">6</div>
+                        </div>
+                        <div class="muscle-item">
+                            <div class="muscle-name">Bíceps</div>
+                            <div class="muscle-count">4</div>
+                        </div>
+                        <div class="muscle-item">
+                            <div class="muscle-name">Tríceps</div>
+                            <div class="muscle-count">5</div>
+                        </div>
+                        <div class="muscle-item">
+                            <div class="muscle-name">Abdômen</div>
+                            <div class="muscle-count">3</div>
+                        </div>
+                        <div class="muscle-item">
+                            <div class="muscle-name">Antebraço</div>
+                            <div class="muscle-count">2</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <div class="card-header">
+                    <h3>Evolução - Supino Reto (Carga Máxima)</h3>
+                </div>
+                <canvas id="progressChart"></canvas>
+            </div>
+            
+            <div class="progress-section">
+                <div class="card-header">
+                    <h3>Próximos Treinos</h3>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-title">Semana Atual - Hipertrofia 2025</div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span>2/3 Treinos</span>
+                        <span>67%</span>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <button class="button-style" style="width: 100%">Iniciar Treino B - Costas/Bíceps</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="static/js/dashboard.js"></script>
+</body>
+</html>
