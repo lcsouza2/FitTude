@@ -1,8 +1,10 @@
 body {
     font-family: "Kanit", sans-serif;
-    background-image: url('../images/background_image.png');
+    background-image: url('../assets/img/background_image.png');
+    background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
+    background-attachment: fixed;
     margin: 0;
     padding: 0;
     color: #ececec;
