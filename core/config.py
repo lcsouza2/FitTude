@@ -6,6 +6,10 @@ from typing import Any
 class Config:
     # Application Settings
     APP_NAME: str = "FitTude"
+    DATABASE_URL = os.getenv("DATABASE_URL")
+    TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL")
+    REDIS_URL: str = os.getenv("REDIS_URL")
+    TEST_REDIS_URL: str = os.getenv("TEST_REDIS_URL")
 
     # Mail Settings
     MAIL_USERNAME: str = os.getenv("MAIL_USERNAME")
