@@ -32,7 +32,8 @@ class Grupamento(BaseSchema):
     nome_grupamento: str
     id_usuario: Optional[int]
 
-
+class GrupamentoAlterar(BaseSchema):
+    nome_grupamento: str
 class Aparelho(BaseSchema):
     nome_grupamento: str
     nome_aparelho: str
