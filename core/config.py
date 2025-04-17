@@ -6,15 +6,19 @@ from typing import Any
 class Config:
     # Application Settings
     APP_NAME: str = "FitTude"
+    DATABASE_URL = os.getenv("DATABASE_URL")
+    TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL")
+    REDIS_URL: str = os.getenv("REDIS_URL")
+    TEST_REDIS_URL: str = os.getenv("TEST_REDIS_URL")
 
     # Mail Settings
-    MAIL_USERNAME: str = "fittude.gym@gmail.com"
-    __MAIL_PASSWORD: str = "ghwk qhez ovdr tofn"
+    MAIL_USERNAME: str = os.getenv("MAIL_USERNAME")
+    __MAIL_PASSWORD: str = os.getenv("MAIL_PASSWORD")
     MAIL_PORT: int = 587
-    _MAIL_SERVER: str = "smtp.gmail.com"
+    _MAIL_SERVER: str = os.getenv("MAIL_SERVER")
     MAIL_STARTTLS: bool = True
     MAIL_SSL_TLS: bool = False
-    MAIL_FROM: str = "fittude.gym@gmail.com"
+    MAIL_FROM: str = os.getenv("MAIL_FROM")
     MAIL_FROM_NAME: str = "FitTude Team"
 
     # Authentication Settings
@@ -26,8 +30,8 @@ class Config:
     LOCKOUT_TIME: timedelta = timedelta(minutes=15)
 
     # JWT Settings
-    __JWT_REFRESH_KEY: str = os.getenv("JWT_REFRESH_KEY", "hlNDvdGkE69LAuM")
-    __JWT_SESSION_KEY: str = os.getenv("JWT_SESSION_KEY", "6TjFvAtLBhKOMoF")
+    __JWT_REFRESH_KEY: str = os.getenv("JWT_REFRESH_KEY")
+    __JWT_SESSION_KEY: str = os.getenv("JWT_SESSION_KEY")
     JWT_ACCESS_TOKEN_EXPIRES: timedelta = timedelta(minutes=15)
     JWT_REFRESH_TOKEN_EXPIRES: timedelta = timedelta(days=7)
     JWT_REFRESH_COOKIE_MAX_AGE: int = 604800  # 7 days in seconds
