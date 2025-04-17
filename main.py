@@ -6,7 +6,7 @@ from api.routes.data_get_routes import DATA_GET_API
 from api.routes.data_post_routes import DATA_POST_API
 from api.routes.user_routes import USER_ROUTER
 
-MAIN_APP = FastAPI(debug=True)
+MAIN_APP = FastAPI(debug=True, openapi_url=None, docs_url=None, redoc_url=None)
 
 # Apply rate limiting to all routes
 MAIN_APP.include_router(USER_ROUTER, dependencies=[Depends(verify_request_limit)])
