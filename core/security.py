@@ -1,8 +1,8 @@
 from fastapi import Request
 
-from core.config import Config 
-from core.connections import redis_connection
-from core.exceptions import RequestLimitExceeded
+from .config import Config 
+from .connections import redis_connection
+from .exceptions import RequestLimitExceeded
 
 async def is_rate_limited(request: Request) -> bool:
     async with redis_connection() as redis:

@@ -1,6 +1,6 @@
 from http.client import NOT_FOUND
 
-from database import db_mapping
+from ..database import db_mapping
 from core import schemas
 from core.authetication import TokenService
 from core.connections import db_connection

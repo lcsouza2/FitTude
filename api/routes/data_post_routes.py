@@ -9,7 +9,7 @@ from core.connections import AsyncSession
 from core.authetication import TokenService
 from core.utils import exclude_falsy_from_dict
 
-from database import db_mapping
+from ..database import db_mapping
 from core import schemas
 
 DATA_POST_API = APIRouter(prefix="/api/data")

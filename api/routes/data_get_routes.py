@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from database import db_mapping 
+from ..database import db_mapping 
 from core.authetication import TokenService
 from core.connections import db_connection
 from core.utils import cached_operation
@@ -98,7 +98,7 @@ async def _execute_select(
 
 
 @DATA_GET_API.get("/groups")
-@cached_operation(expire_time=3600)
+@cached_operation(timeout=3600)
 async def get_all_muscular_groups(user_id: int = Depends(TokenService.validate_token)):
     return await _execute_select(
         table_or_columns=db_mapping.Grupamento,
@@ -109,7 +109,7 @@ async def get_all_muscular_groups(user_id: int = Depends(TokenService.validate_t
     )
 
 @DATA_GET_API.get("/muscles")
-@cached_operation(expire_time=3600)
+@cached_operation(timeout=3600)
 async def get_all_muscles(user_id: int = Depends(TokenService.validate_token)):
     """Busca os músuclos referentes a um usuário e retorna eles"""
     return await _execute_select(
@@ -121,7 +121,7 @@ async def get_all_muscles(user_id: int = Depends(TokenService.validate_token)):
     )
 
 @DATA_GET_API.get("/equipment")
-@cached_operation(expire_time=3600)
+@cached_operation(timeout=3600)
 async def get_all_equipments(user_id: int = Depends(TokenService.validate_token)):
     """Busca os equipamentos referentes a um usuário e retorna eles"""
     return await _execute_select(

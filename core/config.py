@@ -2,7 +2,6 @@ import os
 from datetime import timedelta
 from typing import Any
 
-
 class Config:
     # Application Settings
     APP_NAME: str = "FitTude"

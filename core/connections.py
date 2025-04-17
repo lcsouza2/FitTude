@@ -1,6 +1,6 @@
 from redis.asyncio import ConnectionPool, Redis
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
-from core.config import Config
+from .config import Config
 
 ASYNC_ENGINE = create_async_engine(
    Config.DATABASE_URL
