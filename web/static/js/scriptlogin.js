@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function realizarLogin(email, senha) {
-    fetch('/api/login', {
+    fetch('Fiz_o_test_tatudofuncionando.com', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -24,8 +24,11 @@ function realizarLogin(email, senha) {
     .then(data => {
         if (data.sucesso) {
             exibirMensagem('Login realizado com sucesso!', 'sucesso');
+            setTimeout(() => {
+                // Redirecionar para a página principal após login
+                window.location.href = 'dashboard.html'; // Altere para o caminho correto do seu dashboard
+            }, 3000); // 2 segundos de espera antes do redirecionamento
             // Redirecionar para a página principal após login
-            window.location.href = '/dashboard';
         } else {
             exibirMensagem('Email ou senha inválidos', 'error');
         }
@@ -41,4 +44,10 @@ function exibirMensagem(mensagem, tipo) {
     mensagemElement.textContent = mensagem;
     mensagemElement.className = `mensagem ${tipo}`; 
     mensagemElement.style.display = 'block';
+    if (tipo == 'sucesso') {
+        mensagemElement.style.color = 'lightgreen';
+    }
+    else if (tipo == 'error') {
+        mensagemElement.style.color = '#ff6666'; // Vermelho claro
+    }
 }
