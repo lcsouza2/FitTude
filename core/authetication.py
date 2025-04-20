@@ -47,6 +47,7 @@ class TokenService:
             max_age=Config.JWT_REFRESH_COOKIE_MAX_AGE,  # 7 dias em segundos
             expires=actual_datetime() + self.refresh_expires,
             httponly=True,
+            secure=True,
             samesite="strict",
         )
 
