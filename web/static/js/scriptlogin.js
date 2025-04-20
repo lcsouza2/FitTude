@@ -26,9 +26,8 @@ function realizarLogin(email, senha) {
             exibirMensagem('Login realizado com sucesso!', 'sucesso');
             setTimeout(() => {
                 // Redirecionar para a página principal após login
-                window.location.href = 'dashboard.html'; // Altere para o caminho correto do seu dashboard
-            }, 3000); // 2 segundos de espera antes do redirecionamento
-            // Redirecionar para a página principal após login
+                window.location.href = 'dashboard.html';
+            }, 3000); // 3 segundos de espera antes do redirecionamento
         } else {
             exibirMensagem('Email ou senha inválidos', 'error');
         }

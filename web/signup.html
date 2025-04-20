@@ -20,11 +20,15 @@
             </div>
             <div class="input-group">
                 <label for="Senha">Senha</label>
-                <input type="password" id="Senha" required><br>
+                <input type="password" id="senha" required><br>
                 <label for="confirmarSenha">Confirmar senha</label>
                 <input type="password" id="confirmarSenha" required>
             </div>
             <br>
+            <div id="mensagem" class="error-message" style="opacity: 0; transform: translateY(-20px); transition: opacity 0.5s ease, transform 0.5s ease;">
+                <!-- Mensagem de erro será exibida aqui -->
+            </div>
+            </script>
             <div class="terms">
                 <input type="checkbox" id="terms" required>
                 <label for="terms">Concordo com os termos de uso do FitTude</label>
@@ -37,5 +41,6 @@
             </div>
         </form>
     </div>
+    <script src="./static/js/scriptcadastro.js"></script>
 </body>
 </html>
