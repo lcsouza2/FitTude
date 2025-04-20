@@ -50,8 +50,9 @@ function realizarLogin(email, senha) {
                 return;
             }
             else if (data.access_token) {
-                exibirMensagem('Login realizado com sucesso!', 'sucesso');
-                localStorage.setItem('token', data.access_token) //chegamos nos finalmentes
+                exibirMensagem('Login realizado com sucesso!', 'sucesso');  
+                sessionStorage.setItem("token", data.access_token);  //chegamos nos finalmentes
+
                 setTimeout(() => {
                     window.location.href = "dashboard.html"; 
                 }, 2000); // Aguarda 2 segundos antes de redirecionar

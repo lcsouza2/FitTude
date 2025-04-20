@@ -1,7 +1,8 @@
 // Dados para o gráfico de progresso
+
 const ctx = document.getElementById('progressChart').getContext('2d');
 
-const token = localStorage.getItem('token');
+const token = sessionStorage.getItem('token');
 if (!token) {
     window.location.href = "login.html"; // Redireciona para a página de login se o token não estiver presente
 }
