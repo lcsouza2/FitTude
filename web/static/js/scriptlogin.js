@@ -13,26 +13,58 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function realizarLogin(email, senha) {
-    fetch("https://fittude.onrender.com/api/user/register", {
+    fetch("https://fittude.onrender.com/api/user/login", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ 
-            "email": email,
-            "password": senha
+        body: JSON.stringify({
+            "login_key": email,
+            "password": senha,
+            "keep_login": true
+            
         })
     })
-    .then(response => response.json())
+    
+    .then(response => {
+        if (response.ok) {
+            console.log("200 OK:", response);
+        }
+       
+        else if (response.status == 400) {
+            exibirMensagem('Erro ao realizar login. Tente novamente.', 'error');
+            return;
+        }
+        else if (response.status == 500) {
+            exibirMensagem('Erro interno do servidor. Tente novamente mais tarde.', 'error');
+            return;
+        }
+        return response.json();
+
+    })
     .then(data => {
-        if (data.sucesso) {
-            exibirMensagem('Login realizado com sucesso!', 'sucesso');
-            setTimeout(() => {
-                // Redirecionar para a página principal após login
-                window.location.href = 'dashboard.html';
-            }, 3000); // 3 segundos de espera antes do redirecionamento
+        
+        if (data) {
+            if (data.detail) {
+                exibirMensagem(data.detail, 'error');
+                return;
+            }
+            else if (data.access_token) {
+                exibirMensagem('Login realizado com sucesso!', 'sucesso');
+                localStorage.setItem('token', data.access_token) //chegamos nos finalmentes
+                setTimeout(() => {
+                    window.location.href = "dashboard.html"; 
+                }, 2000); // Aguarda 2 segundos antes de redirecionar
+                
+                
+            } else {
+                exibirMensagem('Erro ao realizar login. Tente novamente.', 'error');
+                return;
+            }; 
+            //eu odeio javascript
+            
         } else {
-            exibirMensagem('Email ou senha inválidos', 'error');
+           console.log("Resposta vazia ou não JSON:", data);
         }
     })
     .catch(error => {

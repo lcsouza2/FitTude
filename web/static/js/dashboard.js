@@ -1,5 +1,11 @@
 // Dados para o gráfico de progresso
 const ctx = document.getElementById('progressChart').getContext('2d');
+
+const token = localStorage.getItem('token');
+if (!token) {
+    window.location.href = "login.html"; // Redireciona para a página de login se o token não estiver presente
+}
+
 const progressChart = new Chart(ctx, {
     type: 'line',
     data: {

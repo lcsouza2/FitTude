@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         else {
-            
+
             realizarCadastro(username, email, senha);
         }
         
@@ -44,7 +44,7 @@ function realizarCadastro(username, email, senha) {
     })
     .then(response => {
         if (response.ok) {
-            exibirMensagem('Cadastro realizado com sucesso! Verifique seu email para ativar sua conta.', 'sucesso');
+            console.log("200 OK:", response);
         }
         if (response.status == 409) {
             exibirMensagem('Email já cadastrado.', 'error');
@@ -62,6 +62,12 @@ function realizarCadastro(username, email, senha) {
     })
     .then(data => {
         console.log("Sucesso:", data);
+        if (data.sucesso) {
+            exibirMensagem('Cadastro realizado com sucesso!', 'sucesso');
+            
+        } else {
+            exibirMensagem('Erro ao cadastrar usuário. Tente novamente.', 'error');
+        }
     })
     .catch(error => {
         console.error(error);
