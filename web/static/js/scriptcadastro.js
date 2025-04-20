@@ -42,7 +42,7 @@ function realizarCadastro(username, email, senha) {
     
     .then(response => {
         setTimeout(() => {
-        } , 5000); // 3 segundos de espera antes do redirecionamento
+        } , 3000); // 3 segundos de espera antes do redirecionamento
         if (response.status === 400) {
             throw new Error("Email já cadastrado");
         } else if (response.status === 500) {

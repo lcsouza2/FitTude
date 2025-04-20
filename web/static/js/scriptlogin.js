@@ -13,12 +13,15 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function realizarLogin(email, senha) {
-    fetch('Fiz_o_test_tatudofuncionando.com', {
+    fetch("https://fittude.onrender.com/api/user/register", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ email, senha })
+        body: JSON.stringify({ 
+            "email": email,
+            "password": senha
+        })
     })
     .then(response => response.json())
     .then(data => {
