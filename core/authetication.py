@@ -105,4 +105,3 @@ class TokenService:
             raise UnknownAuthError()
         else:
             return int(decoded["sub"])
-

@@ -1,23 +1,29 @@
+from typing import Any, List, Optional, Union
+
 from fastapi import APIRouter, Depends
-from ..database import db_mapping 
+from sqlalchemy import BinaryExpression, and_, or_, select
+from sqlalchemy.orm import InstrumentedAttribute, MappedAsDataclass, joinedload
+
 from core.authetication import TokenService
 from core.connections import db_connection
 from core.utils import cached_operation
-from sqlalchemy.orm import MappedAsDataclass, InstrumentedAttribute
-from sqlalchemy import BinaryExpression, or_, and_
-from typing import List, Optional, Union, Any
-from sqlalchemy import select
-from sqlalchemy.orm import joinedload
+
+from ..database import db_mapping
 
 DATA_GET_API = APIRouter(prefix="/api/data", tags=["data"])
+
 
 async def _execute_select(
     *,
     table_or_columns: MappedAsDataclass | List[InstrumentedAttribute],
     where_clause: Optional[BinaryExpression] = None,
-    group_by: Optional[Union[InstrumentedAttribute, List[InstrumentedAttribute]]] = None,
+    group_by: Optional[
+        Union[InstrumentedAttribute, List[InstrumentedAttribute]]
+    ] = None,
     having: Optional[BinaryExpression] = None,
-    order_by: Optional[Union[InstrumentedAttribute, List[InstrumentedAttribute]]] = None,
+    order_by: Optional[
+        Union[InstrumentedAttribute, List[InstrumentedAttribute]]
+    ] = None,
     joins: Optional[List[tuple]] = None,
     limit: Optional[int] = None,
     offset: Optional[int] = None,
@@ -51,10 +57,10 @@ async def _execute_select(
 
     # Add WHERE clause if provided
     if where_clause is not None:
-        if active_only and hasattr(table_or_columns, 'ativo'):
+        if active_only and hasattr(table_or_columns, "ativo"):
             where_clause = and_(where_clause, table_or_columns.ativo == True)
         query = query.where(where_clause)
-    elif active_only and hasattr(table_or_columns, 'ativo'):
+    elif active_only and hasattr(table_or_columns, "ativo"):
         query = query.where(table_or_columns.ativo == True)
 
     # Add JOINs if provided
@@ -105,8 +111,9 @@ async def get_all_muscular_groups(user_id: int = Depends(TokenService.validate_t
         where_clause=or_(
             db_mapping.Grupamento.id_usuario == user_id,
             db_mapping.Grupamento.id_usuario == None,
-        )
+        ),
     )
+
 
 @DATA_GET_API.get("/muscles")
 @cached_operation(timeout=3600)
@@ -117,8 +124,9 @@ async def get_all_muscles(user_id: int = Depends(TokenService.validate_token)):
         where_clause=or_(
             db_mapping.Musculo.id_usuario == user_id,
             db_mapping.Musculo.id_usuario == None,
-        )
+        ),
     )
+
 
 @DATA_GET_API.get("/equipment")
 @cached_operation(timeout=3600)
@@ -129,8 +137,9 @@ async def get_all_equipments(user_id: int = Depends(TokenService.validate_token)
         where_clause=or_(
             db_mapping.Aparelho.id_usuario == user_id,
             db_mapping.Aparelho.id_usuario == None,
-        )
+        ),
     )
+
 
 @DATA_GET_API.get("/exercises")
 async def get_all_exercises(user_id: int = Depends(TokenService.validate_token)):
@@ -140,8 +149,9 @@ async def get_all_exercises(user_id: int = Depends(TokenService.validate_token))
         where_clause=or_(
             db_mapping.Exercicio.id_usuario == user_id,
             db_mapping.Exercicio.id_usuario == None,
-        )
+        ),
     )
+
 
 @DATA_GET_API.get("/workout/sheets")
 async def get_all_workout_sheets(user_id: int = Depends(TokenService.validate_token)):
@@ -150,24 +160,34 @@ async def get_all_workout_sheets(user_id: int = Depends(TokenService.validate_to
         where_clause=db_mapping.FichaTreino.id_usuario == user_id,
     )
 
+
 @DATA_GET_API.get("/workout/divisions")
-async def get_all_workout_divisions(user_id: int = Depends(TokenService.validate_token)):
+async def get_all_workout_divisions(
+    user_id: int = Depends(TokenService.validate_token),
+):
     return await _execute_select(
         table_or_columns=db_mapping.DivisaoTreino,
         joins=[(db_mapping.FichaTreino, None)],
         where_clause=db_mapping.FichaTreino.id_usuario == user_id,
     )
 
+
 @DATA_GET_API.get("/workout/division-exercises")
-async def get_all_division_exercises(user_id: int = Depends(TokenService.validate_token)):
+async def get_all_division_exercises(
+    user_id: int = Depends(TokenService.validate_token),
+):
     return await _execute_select(
         table_or_columns=db_mapping.DivisaoExercicio,
         joins=[
-            (db_mapping.DivisaoTreino, db_mapping.DivisaoTreino.divisao == db_mapping.DivisaoExercicio.divisao),
-            (db_mapping.FichaTreino, None)
+            (
+                db_mapping.DivisaoTreino,
+                db_mapping.DivisaoTreino.divisao == db_mapping.DivisaoExercicio.divisao,
+            ),
+            (db_mapping.FichaTreino, None),
         ],
         where_clause=db_mapping.FichaTreino.id_usuario == user_id,
     )
+
 
 @DATA_GET_API.get("/workout/reports")
 async def get_all_workout_reports(user_id: int = Depends(TokenService.validate_token)):

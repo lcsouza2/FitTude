@@ -1,14 +1,12 @@
 from typing import Optional
-from core.config import Config
 
-from fastapi import HTTPException
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema
 from fastapi_mail.errors import ConnectionErrors
 from jinja2 import Environment, FileSystemLoader
 from pydantic import EmailStr
 
+from core.config import Config
 from core.exceptions import MailServiceError
-
 
 html_template_env = Environment(
     loader=FileSystemLoader(searchpath="./templates/"), enable_async=True
@@ -55,7 +53,7 @@ async def send_verification_mail(
         await FastMail(connection).send_message(message)
         return True
 
-    except ConnectionErrors as e:
+    except ConnectionErrors:
         raise MailServiceError()
 
 
@@ -73,10 +71,12 @@ async def send_pwd_change_mail(dest_email: EmailStr, username: str, char_protoco
         message = MessageSchema(
             recipients=[dest_email],
             subject="Alteração de senha no FitTude",
-            body=await template.render_async(nome=username, random_char_sequence=char_protocol),
+            body=await template.render_async(
+                nome=username, random_char_sequence=char_protocol
+            ),
             subtype="html",
         )
         await FastMail(connection).send_message(message)
 
-    except ConnectionErrors as e:
+    except ConnectionErrors:
         raise MailServiceError()

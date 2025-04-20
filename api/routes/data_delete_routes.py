@@ -1,27 +1,31 @@
-from http.client import NOT_FOUND
+from fastapi import APIRouter, Depends
+from sqlalchemy import BinaryExpression, and_, delete, update
+from sqlalchemy.orm import InstrumentedAttribute, MappedAsDataclass
 
-from ..database import db_mapping
 from core import schemas
 from core.authetication import TokenService
 from core.connections import db_connection
-from fastapi import Depends, APIRouter
 from core.exceptions import EntityNotFound
-from sqlalchemy import and_, delete, update, BinaryExpression
-from sqlalchemy.orm import InstrumentedAttribute, MappedAsDataclass
-from sqlalchemy.exc import IntegrityError
 
+from ..database import db_mapping
 
 DATA_DELETE_API = APIRouter(prefix="/api/data")
 
-async def _execute_inactivate_entity(*, table: MappedAsDataclass, where_clause: BinaryExpression, returning_column: InstrumentedAttribute, entity_name: str):
 
+async def _execute_inactivate_entity(
+    *,
+    table: MappedAsDataclass,
+    where_clause: BinaryExpression,
+    returning_column: InstrumentedAttribute,
+    entity_name: str,
+):
     async with db_connection() as session:
         result = await session.execute(
             update(table)
-            .values(ativo = False)
+            .values(ativo=False)
             .where(where_clause)
             .returning(returning_column)
-            )
+        )
 
         if result.scalar_one_or_none() is None:
             await session.rollback()
@@ -32,14 +36,17 @@ async def _execute_inactivate_entity(*, table: MappedAsDataclass, where_clause: 
         return f"{entity_name} excluido"
 
 
-async def _execute_delete(*, table: MappedAsDataclass, where_clause: BinaryExpression, returning_column: InstrumentedAttribute, entity_name: str):
-
+async def _execute_delete(
+    *,
+    table: MappedAsDataclass,
+    where_clause: BinaryExpression,
+    returning_column: InstrumentedAttribute,
+    entity_name: str,
+):
     async with db_connection() as session:
         result = await session.execute(
-            delete(table)
-            .where(where_clause)
-            .returning(returning_column)
-            )
+            delete(table).where(where_clause).returning(returning_column)
+        )
 
         if result.scalar_one_or_none() is None:
             await session.rollback()
@@ -52,8 +59,7 @@ async def _execute_delete(*, table: MappedAsDataclass, where_clause: BinaryExpre
 
 @DATA_DELETE_API.delete("/groups/inactivate/{group_name}")
 async def inactivate_group(
-    group_name: str, 
-    user_id: int = Depends(TokenService.validate_token)
+    group_name: str, user_id: int = Depends(TokenService.validate_token)
 ):
     """Inativa um grupamento muscular"""
     where = and_(
@@ -67,17 +73,18 @@ async def inactivate_group(
         table=db_mapping.Grupamento,
         where_clause=where,
         returning_column=returning,
-        entity_name="Grupamento"
+        entity_name="Grupamento",
     )
 
 
 @DATA_DELETE_API.delete("/muscle/inactivate/{muscle_id}")
-async def inactivate_muscle(muscle_id: int, user_id: int = Depends(TokenService.validate_token)):
-
+async def inactivate_muscle(
+    muscle_id: int, user_id: int = Depends(TokenService.validate_token)
+):
     where = and_(
-                    db_mapping.Musculo.id_musculo == muscle_id,
-                    db_mapping.Musculo.id_usuario == user_id,
-                )
+        db_mapping.Musculo.id_musculo == muscle_id,
+        db_mapping.Musculo.id_usuario == user_id,
+    )
 
     returning = db_mapping.Musculo.id_musculo
 
@@ -85,8 +92,9 @@ async def inactivate_muscle(muscle_id: int, user_id: int = Depends(TokenService.
         table=db_mapping.Musculo,
         where_clause=where,
         returning_column=returning,
-        entity_name="Musculo"
-        )
+        entity_name="Musculo",
+    )
+
 
 @DATA_DELETE_API.delete("/equipment/inactivate/{equipment_id}")
 async def inactivate_equipment(
@@ -103,8 +111,9 @@ async def inactivate_equipment(
         table=db_mapping.Aparelho,
         where_clause=where,
         returning_column=returning,
-        entity_name="Aparelho"
+        entity_name="Aparelho",
     )
+
 
 @DATA_DELETE_API.delete("/exericse/inactivate/{exercise_id}")
 async def inactivate_exercise(
@@ -121,8 +130,9 @@ async def inactivate_exercise(
         table=db_mapping.Exercicio,
         where_clause=where,
         returning_column=returning,
-        entity_name="Exercício"
+        entity_name="Exercício",
     )
+
 
 @DATA_DELETE_API.delete("/workout/sheet/inactivate/{sheet_id}")
 async def inactivate_workout_sheet(
@@ -139,8 +149,9 @@ async def inactivate_workout_sheet(
         table=db_mapping.FichaTreino,
         where_clause=where,
         returning_column=returning,
-        entity_name="Ficha de treino"
+        entity_name="Ficha de treino",
     )
+
 
 @DATA_DELETE_API.delete("/workout/division/inactivate/{division}")
 async def inactivate_workout_division(
@@ -148,7 +159,8 @@ async def inactivate_workout_division(
 ):
     where = and_(
         db_mapping.DivisaoTreino.divisao == division,
-        db_mapping.DivisaoTreino.id_ficha_treino == db_mapping.FichaTreino.id_ficha_treino,
+        db_mapping.DivisaoTreino.id_ficha_treino
+        == db_mapping.FichaTreino.id_ficha_treino,
         db_mapping.FichaTreino.id_usuario == user_id,
     )
 
@@ -158,13 +170,14 @@ async def inactivate_workout_division(
         table=db_mapping.DivisaoTreino,
         where_clause=where,
         returning_column=returning,
-        entity_name="Divisão de treino"
+        entity_name="Divisão de treino",
     )
+
 
 @DATA_DELETE_API.delete("/workout/division/exercise/inactivate")
 async def inactivate_division_exercise(
-    exercise: schemas.DivisaoExercicioInativar, 
-    user_id: int = Depends(TokenService.validate_token)
+    exercise: schemas.DivisaoExercicioInativar,
+    user_id: int = Depends(TokenService.validate_token),
 ):
     where = and_(
         db_mapping.DivisaoExercicio.divisao == exercise.divisao,
@@ -173,8 +186,10 @@ async def inactivate_division_exercise(
         db_mapping.FichaTreino.id_usuario == user_id,
         db_mapping.FichaTreino.id_ficha_treino == exercise.id_ficha_treino,
         # Joins
-        db_mapping.DivisaoExercicio.id_ficha_treino == db_mapping.DivisaoTreino.id_ficha_treino,
-        db_mapping.DivisaoTreino.id_ficha_treino == db_mapping.FichaTreino.id_ficha_treino,
+        db_mapping.DivisaoExercicio.id_ficha_treino
+        == db_mapping.DivisaoTreino.id_ficha_treino,
+        db_mapping.DivisaoTreino.id_ficha_treino
+        == db_mapping.FichaTreino.id_ficha_treino,
     )
 
     returning = db_mapping.FichaTreino.id_ficha_treino
@@ -183,8 +198,9 @@ async def inactivate_division_exercise(
         table=db_mapping.DivisaoExercicio,
         where_clause=where,
         returning_column=returning,
-        entity_name="Exercício na divisao de treino"
+        entity_name="Exercício na divisao de treino",
     )
+
 
 @DATA_DELETE_API.delete("/workout/report/delete/{report_id}")
 async def delete_workout_report(
@@ -195,15 +211,17 @@ async def delete_workout_report(
         db_mapping.SerieRelatorio.id_relatorio_treino == report_id,
         db_mapping.FichaTreino.id_usuario == user_id,
         # Joins
-        db_mapping.SerieRelatorio.id_relatorio_treino == db_mapping.RelatorioTreino.id_relatorio_treino,
-        db_mapping.RelatorioTreino.id_ficha_treino == db_mapping.FichaTreino.id_ficha_treino,
+        db_mapping.SerieRelatorio.id_relatorio_treino
+        == db_mapping.RelatorioTreino.id_relatorio_treino,
+        db_mapping.RelatorioTreino.id_ficha_treino
+        == db_mapping.FichaTreino.id_ficha_treino,
     )
 
     await _execute_delete(
         table=db_mapping.SerieRelatorio,
         where_clause=where_series,
         returning_column=db_mapping.SerieRelatorio.id_relatorio_treino,
-        entity_name="Séries do relatório"
+        entity_name="Séries do relatório",
     )
 
     # Then delete the workout report
@@ -211,13 +229,13 @@ async def delete_workout_report(
         db_mapping.RelatorioTreino.id_relatorio_treino == report_id,
         db_mapping.FichaTreino.id_usuario == user_id,
         # Join
-        db_mapping.RelatorioTreino.id_ficha_treino == db_mapping.FichaTreino.id_ficha_treino,
+        db_mapping.RelatorioTreino.id_ficha_treino
+        == db_mapping.FichaTreino.id_ficha_treino,
     )
 
     await _execute_delete(
         table=db_mapping.RelatorioTreino,
         where_clause=where_report,
         returning_column=db_mapping.RelatorioTreino.id_relatorio_treino,
-        entity_name="Relatório"
+        entity_name="Relatório",
     )
-

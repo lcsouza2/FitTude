@@ -71,7 +71,6 @@ async def _execute_update(
             return "Alterado"
 
 
-
 @DATA_PUT_API.put("/groups/update/{group_name}")
 async def update_group(
     group_name: str,
@@ -327,4 +326,3 @@ async def update_division_exercise(
         ],
         returning_column=db_mapping.FichaTreino.id_ficha_treino,
     )
-

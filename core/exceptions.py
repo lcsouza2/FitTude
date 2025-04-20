@@ -110,6 +110,7 @@ class UnknownAuthError(HTTPException):
     def __init__(self, message: str = "Erro desconhecido durante autenticação"):
         super().__init__(status_code=INTERNAL_SERVER_ERROR, detail=message)
 
+
 class MailServiceError(HTTPException):
     """Raised when there is an error with the mail service."""
 

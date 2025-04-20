@@ -5,13 +5,13 @@ This module handles all user-related operations including:
 - User login and session management
 """
 
+import random
+import string
 from typing import Any
 from uuid import UUID, uuid4
 
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
-import random
-import string
 from fastapi import APIRouter, BackgroundTasks, Depends
 from fastapi.templating import Jinja2Templates
 from pydantic import EmailStr, validate_email
@@ -23,11 +23,11 @@ from core import schemas
 from core.authetication import TokenService
 from core.config import Config
 from core.connections import db_connection, redis_connection
-from core.email_service import send_verification_mail, send_pwd_change_mail
+from core.email_service import send_pwd_change_mail, send_verification_mail
 from core.exceptions import (
     InvalidCredentials,
     InvalidRegisterProtocol,
-    UniqueConstraintViolation
+    UniqueConstraintViolation,
 )
 from core.utils import cached_operation
 
@@ -41,8 +41,11 @@ hasher = PasswordHasher()
 def generate_user_protocol():
     return uuid4()
 
-def generate_pwd_change_protocol(): 
-    return "".join([random.choice(string.ascii_letters + string.digits) for _ in range(6)])
+
+def generate_pwd_change_protocol():
+    return "".join(
+        [random.choice(string.ascii_letters + string.digits) for _ in range(6)]
+    )
 
 
 async def save_register_protocol(user: schemas.User):
@@ -57,6 +60,7 @@ async def save_register_protocol(user: schemas.User):
             1800,  # 30 minutos
         )
 
+
 async def save_pwd_change_protocol(user: schemas.UserPasswordChange):
     protocol = generate_pwd_change_protocol()
 
@@ -68,6 +72,7 @@ async def save_pwd_change_protocol(user: schemas.UserPasswordChange):
             f"protocol:{protocol}",
             1800,  # 30 minutos
         )
+
 
 async def _generate_auth_tokens(
     user_id: int,
@@ -221,7 +226,7 @@ async def create_register(
 
         else:
             session_token = refresh_token = _generate_auth_tokens(
-               created_user, token_service, False
+                created_user, token_service, False
             )
 
             token_service.set_refresh_token_cookie(
@@ -235,9 +240,7 @@ async def create_register(
             default_context = {
                 "acess_token": session_token,
                 "token_type": "Bearer",
-                "expires_in": int(
-                    Config.JWT_ACCESS_TOKEN_EXPIRES.total_seconds()
-                ),
+                "expires_in": int(Config.JWT_ACCESS_TOKEN_EXPIRES.total_seconds()),
             }
 
             return Jinja2Templates("./templates").TemplateResponse(
@@ -302,7 +305,6 @@ async def logout_user(
 
 @USER_ROUTER.post("/password_change")
 async def handle_password_change(background_tasks: BackgroundTasks, user: schemas.User):
-
     background_tasks.add_task(save_pwd_change_protocol, user=user)
 
 
