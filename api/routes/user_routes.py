@@ -238,6 +238,7 @@ async def create_register(
             redis.delete(f"protocol:{protocol}")
 
             default_context = {
+                "request": token_service.request,
                 "acess_token": session_token,
                 "token_type": "Bearer",
                 "expires_in": int(Config.JWT_ACCESS_TOKEN_EXPIRES.total_seconds()),
