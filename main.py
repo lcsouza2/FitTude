@@ -20,6 +20,10 @@ MAIN_APP.include_router(DATA_POST_API, dependencies=[Depends(verify_request_limi
 CORS = CORSMiddleware(
     MAIN_APP,
     ["*"],
+    ["*"],
+    ["*"],
+    True
+
 )
 
 
