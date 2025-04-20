@@ -10,19 +10,22 @@ document.addEventListener('DOMContentLoaded', function() {
         const confirmarSenha = document.getElementById('confirmarSenha').value;
 
         
-        username = "RAFAEL OFICIAL"
+        username = "RAFAEL"
         
         if (senha !== confirmarSenha) {
             exibirMensagem('As senhas não coincidem.', 'error');
 
             return;
         }
-        if (senha.length < 6) {
+        else if (senha.length < 6) {
             exibirMensagem('A senha deve ter pelo menos 6 caracteres.', 'error');
             return;
         }
+        else {
+            
+            realizarCadastro(username, email, senha);
+        }
         
-        realizarCadastro(username, email, senha);
     });
 });
 
@@ -39,39 +42,31 @@ function realizarCadastro(username, email, senha) {
             "password": senha
         })
     })
-    
     .then(response => {
-        setTimeout(() => {
-        } , 3000); // 3 segundos de espera antes do redirecionamento
-        if (response.status === 400) {
-            throw new Error("Email já cadastrado");
-        } else if (response.status === 500) {
-            throw new Error("Erro interno do servidor");
-        } else if (response.status === 200) {
-            return response.json();
-        } else if (response.status === 201) {
-            return response.json();
-        } else if (response.status === 401) {
-            throw new Error("Email ou senha inválidos");
-        } else if (response.status === 403) {
-            throw new Error("Acesso negado");
-        } else if (response.status === 404) {
-            throw new Error("Recurso não encontrado");
+        if (response.ok) {
+            exibirMensagem('Cadastro realizado com sucesso! Verifique seu email para ativar sua conta.', 'sucesso');
+        }
+        if (response.status == 409) {
+            exibirMensagem('Email já cadastrado.', 'error');
+            return;
+        }
+        else if (response.status == 400) {
+            exibirMensagem('Erro ao cadastrar usuário. Tente novamente.', 'error');
+            return;
+        }
+        else if (response.status == 500) {
+            exibirMensagem('Erro interno do servidor. Tente novamente mais tarde.', 'error');
+            return;
         }
         return response.json();
     })
     .then(data => {
-        alert(data.message); // mostra: "Email de verificação enviado..."
         console.log("Sucesso:", data);
-        exibirMensagem('Cadastro realizado com sucesso! Verifique seu email para ativar sua conta.', 'sucesso');
-        setTimeout(() => {
-            // Redirecionar para a página de login após cadastro
-            window.location.href = 'login.html';
-        }, 5000); // 3 segundos de espera antes do redirecionamento
     })
     .catch(error => {
-        console.error("Erro:", error);
-        alert("Erro ao registrar usuário. Tente novamente.");
+        console.error(error);
+        exibirMensagem("MANO DEU RUIM", 'error');
+
     });
 }
 function consoleloger(sela, sela2,sela3) {
@@ -98,10 +93,10 @@ function exibirMensagem(mensagem, tipo) {
         mensagemElement.style.color = '#ff6666'; // Vermelho claro
     }
     setTimeout(() => {
-        mensagemElement.style.opacity = '0';
+        
         setTimeout(() => {
-            mensagemElement.style.display = 'none';
+            
         }, 500); // Tempo para ocultar a mensagem após a animação
-    }, 3000); // Tempo antes de ocultar a mensagem (3 segundos)
+    }, 5000); // Tempo antes de ocultar a mensagem (5 segundos)
     mensagemElement.style.transform = 'translateY(0)';
 }
