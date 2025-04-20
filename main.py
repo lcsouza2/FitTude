@@ -17,14 +17,11 @@ MAIN_APP.include_router(DATA_DELETE_API, dependencies=[Depends(verify_request_li
 MAIN_APP.include_router(DATA_GET_API, dependencies=[Depends(verify_request_limit)])
 MAIN_APP.include_router(DATA_POST_API, dependencies=[Depends(verify_request_limit)])
 
-CORS = CORSMiddleware(
-    MAIN_APP,
-    ["*"],
-    ["*"],
-    ["*"],
-    True
 
+MAIN_APP.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
-
-
-MAIN_APP.add_middleware(CORS)
