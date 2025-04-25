@@ -85,17 +85,21 @@ document.addEventListener('DOMContentLoaded', function() {
     cadastroForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        //const username = document.getElementById('username').value; faça o o campo de username ana julia
+        const username = document.getElementById('username').value;
         const email = document.getElementById('email').value;
         const senha = document.getElementById('senha').value;
         const confirmarSenha = document.getElementById('confirmarSenha').value;
 
         
-        username = "RAFAEL"
+    
         
         function validarSenha(senha) {
             const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
             return regex.test(senha);
+        }
+        if (username.length < 3) {
+            exibirMensagem('O nome de usuário deve ter pelo menos 3 caracteres.', 'error');
+            return;
         }
 
         if (!validarSenha(senha)) {
