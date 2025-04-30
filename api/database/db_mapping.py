@@ -18,8 +18,9 @@ class Usuario:
     __tablename__ = "usuario"
 
     id_usuario: Mapped[int] = mapped_column(primary_key=True, init=False)
-    username: Mapped[str] = mapped_column(unique=True, nullable=False)
+    username: Mapped[str] = mapped_column(nullable=False)
     email: Mapped[str] = mapped_column(unique=True, nullable=False)
+    nome: Mapped[str] = mapped_column(nullable=False)
     password: Mapped[str]
 
 

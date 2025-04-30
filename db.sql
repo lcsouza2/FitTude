@@ -15,13 +15,11 @@ CREATE TABLE usuario(
     id_usuario    INTEGER        GENERATED ALWAYS AS IDENTITY,
     username      VARCHAR(40)    NOT NULL,
     email         VARCHAR(100)   NOT NULL,
+    nome          VARCHAR(100)   NOT NULL,
     password      VARCHAR(512)   NOT NULL,
     
     CONSTRAINT pk_usuario
         PRIMARY KEY (id_usuario),
-    
-    CONSTRAINT uq_usuario_username
-        UNIQUE (username),
     
     CONSTRAINT uq_usuario_email
         UNIQUE (email)

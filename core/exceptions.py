@@ -96,10 +96,10 @@ class RequestLimitExceeded(HTTPException):
         super().__init__(status_code=TOO_MANY_REQUESTS, detail=message)
 
 
-class InvalidRegisterProtocol(HTTPException):
-    """Raised when the register protocol is invalid or expired."""
+class InvalidProtocol(HTTPException):
+    """Raised when the protocol is invalid or expired."""
 
-    def __init__(self, message: str = "Protocolo de registro inválido ou expirado"):
+    def __init__(self, message: str = "Protocolo inválido ou expirado"):
         super().__init__(status_code=NOT_FOUND, detail=message)
 
 

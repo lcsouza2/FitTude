@@ -16,7 +16,7 @@ from fastapi import APIRouter, BackgroundTasks, Depends
 from fastapi.templating import Jinja2Templates
 from pydantic import EmailStr, validate_email
 from pydantic_core import PydanticCustomError
-from sqlalchemy import exc, insert, or_, select
+from sqlalchemy import exc, insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core import schemas
@@ -26,7 +26,7 @@ from core.connections import db_connection, redis_connection
 from core.email_service import send_pwd_change_mail, send_verification_mail
 from core.exceptions import (
     InvalidCredentials,
-    InvalidRegisterProtocol,
+    InvalidProtocol,
     UniqueConstraintViolation,
 )
 from core.utils import cached_operation
@@ -37,37 +37,40 @@ USER_ROUTER = APIRouter(prefix="/api/user")
 
 hasher = PasswordHasher()
 
-
-def generate_user_protocol():
-    return uuid4()
-
-
 def generate_pwd_change_protocol():
     return "".join(
         [random.choice(string.ascii_letters + string.digits) for _ in range(6)]
     )
 
 
-async def save_register_protocol(user: schemas.User):
-    protocol = generate_user_protocol()
+async def save_register_protocol(user: schemas.UserRegistro):
+    protocol = uuid4()
 
-    await send_verification_mail(user.email, protocol=protocol, username=user.username)
+    await send_verification_mail(
+        dest_email=user.email, 
+        protocol=protocol, 
+        username=user.nome.split(" ")[0]
+        )
 
     async with redis_connection() as redis:
-        await redis.hset(f"protocol:{protocol}", mapping=user.model_dump())
+        await redis.hset(f"protocol:{protocol} ; type:register", mapping=user.model_dump())
         await redis.expire(
             f"protocol:{protocol}",
             1800,  # 30 minutos
         )
 
 
-async def save_pwd_change_protocol(user: schemas.UserPasswordChange):
+async def save_pwd_change_protocol(user: schemas.UserPwdChange):
     protocol = generate_pwd_change_protocol()
 
-    await send_pwd_change_mail(user.email, protocol=protocol, username=user.username)
+    await send_pwd_change_mail(
+        dest_email=user.email,
+        protocol=protocol,
+        username=user.nome.split(" ")[0]
+        )
 
     async with redis_connection() as redis:
-        await redis.hset(f"protocol:{protocol}", mapping=user.model_dump())
+        await redis.hset(f"protocol:{protocol} ; type:pwd_change", mapping=user.model_dump())
         await redis.expire(
             f"protocol:{protocol}",
             1800,  # 30 minutos
@@ -100,16 +103,12 @@ async def _generate_auth_tokens(
 
 
 @cached_operation(timeout=3600)
-async def search_for_user(
-    username: str, email: EmailStr, session: AsyncSession = db_connection()
-) -> str:
+async def search_for_user(email: EmailStr) -> str:
     """
     Check if a username or email is already registered in the database.
 
     Args:
-        username (str): The username to check
         email (EmailStr): The email to check
-        session (AsyncSession, optional): Database session. Defaults to db_connection()
 
     Returns:
         str: "Credenciais válidas" if no conflicts found
@@ -117,21 +116,17 @@ async def search_for_user(
     Raises:
         UniqueConstraintViolation: If username or email already exists
     """
-    result = await session.execute(
-        select(db_mapping.Usuario).where(
-            or_(
-                db_mapping.Usuario.username == username,
+    async with db_connection() as session:
+        result = await session.execute(
+            select(db_mapping.Usuario).where(
                 db_mapping.Usuario.email == email,
             )
         )
-    )
 
-    if user := result.scalar_one_or_none():
-        if user.username == username:
-            raise UniqueConstraintViolation("Username já está em uso")
+    if result.scalar_one_or_none():
         raise UniqueConstraintViolation("Email já está em uso")
 
-    return "Credenciais válidas"
+    return True
 
 
 @USER_ROUTER.post("/register")
@@ -164,7 +159,7 @@ async def begin_register(
     except PydanticCustomError:
         raise InvalidCredentials("Email inválido")
 
-    await search_for_user(user.username, user.email)
+    await search_for_user(email=user.email)
 
     bg_tasks.add_task(save_register_protocol, user=user)
 
@@ -199,7 +194,7 @@ async def create_register(
         TemplateResponse: Registration confirmation page with tokens
 
     Raises:
-        InvalidRegisterProtocol: If protocol is invalid/expired
+        InvalidProtocol: If protocol is invalid/expired
         UniqueConstraintViolation: If username/email became taken
     """
 
@@ -207,7 +202,7 @@ async def create_register(
         user_data = await redis.hgetall(f"protocol:{protocol}")
 
         if not user_data:
-            raise InvalidRegisterProtocol()
+            raise InvalidProtocol()
 
         user_data["password"] = hasher.hash(user_data.get("password"))
 
@@ -219,10 +214,8 @@ async def create_register(
             )
 
         except exc.IntegrityError as e:
-            if "uq_usuario_username" in str(e):
-                raise UniqueConstraintViolation("Esse username já está sendo usado!")
-
-            raise UniqueConstraintViolation("Esse email já está sendo usado!")
+            if "uq_" in str(e):
+                raise UniqueConstraintViolation("Esse email já está sendo usado!")
 
         else:
             session_token = refresh_token = _generate_auth_tokens(
@@ -259,10 +252,7 @@ async def login_user(
     Authenticate user and generate session tokens.
     """
     query = select(db_mapping.Usuario.id_usuario, db_mapping.Usuario.password).where(
-        or_(
-            db_mapping.Usuario.username == user.login_key,
-            db_mapping.Usuario.email == user.login_key,
-        )
+        db_mapping.Usuario.email == user.email,
     )
 
     async with session:
@@ -305,9 +295,49 @@ async def logout_user(
 
 
 @USER_ROUTER.post("/password_change")
-async def handle_password_change(background_tasks: BackgroundTasks, user: schemas.User):
+async def handle_pwd_change_req(background_tasks: BackgroundTasks, user: schemas.UserPwdChange):
     background_tasks.add_task(save_pwd_change_protocol, user=user)
 
+@USER_ROUTER.get("/password_change/confirm/{protocol}")
+async def confirm_pwd_change(user: schemas.UserPwdChange, protocol: UUID):
+    """
+        This function confirms the password change by verifying the protocol.
+
+        args:
+            user (schemas.UserPwdChange): User data containing the new password.
+            protocol (UUID): The protocol for the password change.
+
+        returns:
+            dict[str, str]: A message indicating the success of the password change.
+
+        raises:
+            InvalidProtocol: If the protocol is invalid or expired.
+    """
+
+    async with redis_connection() as redis:
+        user_data = await redis.hgetall(f"protocol:{protocol} ; type:pwd_change")
+
+        if not user_data:
+            raise InvalidProtocol()
+
+        new_hashed_pwd = hasher.hash(user.new_password)
+
+        try:
+            async with db_connection() as session:
+                await session.execute(
+                    update(db_mapping.Usuario.password)
+                    .where(db_mapping.Usuario.email == user.email)
+                    .values(new_hashed_pwd)
+                )
+                await session.commit()
+
+        except exc.IntegrityError as e:
+            if "uq_" in str(e):
+                raise UniqueConstraintViolation("Esse email já está sendo usado!")
+
+        redis.delete(f"protocol:{protocol}")
+
+        return {"message": "Senha alterada com sucesso!"}
 
 @USER_ROUTER.post("/refresh_token")
 async def send_refresh_token(

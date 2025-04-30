@@ -9,23 +9,22 @@ class BaseSchema(BaseModel):
         extra = "forbid"
 
 
-class User(BaseSchema):
-    login_key: str | EmailStr
-    password: str
-
-
-class UserPasswordChange(BaseSchema):
+class UserBase(BaseSchema):
     email: EmailStr
     password: str
 
 
-class UserRegistro(BaseSchema):
+class UserRegistro(UserBase):
     username: str
+    nome: str
+
+class UserPwdChange(BaseSchema):
     email: EmailStr
-    password: str
+    nome: str
+    old_password: str
+    new_password: str
 
-
-class UserLogin(User):
+class UserLogin(UserBase):
     keep_login: bool
 
 
