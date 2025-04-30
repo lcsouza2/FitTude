@@ -13,13 +13,13 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function realizarLogin(email, senha) {
-    fetch("https://fittude.onrender.com/api/user/login", {
+    fetch("https://fittude-api.onrender.com/api/user/login", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            "login_key": email,
+            "email": email,
             "password": senha,
             "keep_login": true
             
