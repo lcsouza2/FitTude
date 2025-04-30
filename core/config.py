@@ -3,8 +3,6 @@ from datetime import timedelta
 from typing import Any
 from dotenv import load_dotenv
 
-ambient = load_dotenv(".env")
-
 class Config:
     # Application Settings
     APP_NAME: str = "FitTude"
