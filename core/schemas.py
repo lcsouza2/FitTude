@@ -19,9 +19,6 @@ class UserRegistro(UserBase):
     nome: str
 
 class UserPwdChange(BaseSchema):
-    email: EmailStr
-    nome: str
-    old_password: str
     new_password: str
 
 class UserLogin(UserBase):
