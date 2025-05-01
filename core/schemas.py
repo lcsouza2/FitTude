@@ -1,6 +1,5 @@
 from datetime import date, datetime, timezone
 from typing import Optional, Type, TypedDict
-
 from pydantic import BaseModel, EmailStr
 
 
@@ -19,9 +18,6 @@ class UserRegistro(UserBase):
     nome: str
 
 class UserPwdChange(BaseSchema):
-    email: EmailStr
-    nome: str
-    old_password: str
     new_password: str
 
 class UserLogin(UserBase):
