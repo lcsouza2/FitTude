@@ -1,4 +1,4 @@
-function realizarCadastro(username, email, senha) {
+function realizarCadastro(username, nome, email, senha) {
     fetch("https://fittude.onrender.com/api/user/register", {
         method: "POST",
         headers: {
@@ -6,6 +6,7 @@ function realizarCadastro(username, email, senha) {
         },
         body: JSON.stringify({
             "username": username,
+            "nome": nome,
             "email": email,
             "password": senha
         })
@@ -39,13 +40,11 @@ function realizarCadastro(username, email, senha) {
     })
     .catch(error => {
         console.error(error);
-        exibirMensagem("MANO DEU RUIM", 'error');
+        exibirMensagem("Erro criando seu registro!", 'error');
 
     });
 }
-function consoleloger(sela, sela2,sela3) {
-    console.log(sela,sela2,sela3);
-}
+
 
 function exibirMensagem(mensagem, tipo) {
     const mensagemElement = document.getElementById('mensagem');
@@ -87,6 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const username = document.getElementById('username').value;
         const email = document.getElementById('email').value;
+        const nome = document.getElementById('nome').value;
         const senha = document.getElementById('senha').value;
         const confirmarSenha = document.getElementById('confirmarSenha').value;
 
@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         else {
-            realizarCadastro(username, email, senha);
+            realizarCadastro(username, nome, email, senha);
         }
         
     });
