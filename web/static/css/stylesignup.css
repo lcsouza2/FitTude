@@ -13,21 +13,26 @@ body {
 .register-box {
     background-color: rgba(160, 160, 160, 0.7);
     backdrop-filter: blur(8px);
-    padding: 15px;
+    padding: 15px;  /* Aumentei o padding para dar mais espaço interno */
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); 
-    width: 320px;
+    width: min(90%, 400px);  /* Responsivo: 90% da largura até máximo de 400px */
     display: flex;
     text-align: center;
     flex-direction: column;
     align-items: center;
+    margin: 60px auto 0 auto;  /* Adiciona margem superior para ficar abaixo da header */
+    position: relative;
+    max-height: 85vh;  /* Limita a altura em telas pequenas */
 }
 
 .register-form {
-    width: 80%;
+    width: 100%;  /* Use 100% do container pai */
+    max-width: 350px;  /* Mas não ultrapasse essa largura */
     display: flex;
     flex-direction: column;
     gap: 15px;
+    margin: 0 auto;  /* Centraliza horizontalmente */
 }
 
 form h2 {
@@ -44,7 +49,7 @@ form h2 {
 
 .input-group {
     width: 100%;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 .input-group label {
@@ -56,13 +61,13 @@ form h2 {
 }
 
 .input-group input {
-    width: calc(100% - 20px); 
-    padding: 10px;
+    width: 100%;  /* Usa largura total disponível */
+    box-sizing: border-box;  /* Inclui padding e borda na largura */
+    padding: 12px;  /* Aumentei o padding para melhor usabilidade */
     border: 1px solid #ddd;
     border-radius: 4px;
-    font-size: 14px;
+    font-size: 16px;  /* Fonte maior para melhor legibilidade */
 }
-
 button[type="submit"] {
     width: 90%;
     font-family: 'Kanit', sans-serif;
@@ -134,9 +139,20 @@ header h1, header a {
 }
 
 .error-message {
-    color: red;
+    color: #ff6666;
     font-size: 14px;
-    margin-top: 10px;
+    min-height: 20px;  /* Altura mínima fixa */
+    width: 100%;  /* Usa largura total */
+    margin: 8px 0;
+    padding: 0 5px;  /* Um pouco de padding horizontal */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    overflow: hidden;  /* Previne overflow */
+    text-align: center;  /* Centraliza texto */
+}
+
+.error-message.visible {
+    opacity: 1;
 }
 
 .terms {
