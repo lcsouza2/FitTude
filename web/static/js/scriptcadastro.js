@@ -1,5 +1,5 @@
 function realizarCadastro(username, nome, email, senha) {
-    fetch("https://fittude.onrender.com/api/user/register", {
+    fetch("https://fittude-api.onrender.com/api/user/register", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
