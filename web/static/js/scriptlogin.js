@@ -6,6 +6,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const email = document.getElementById('email').value;
         const senha = document.getElementById('senha').value;
+        const lembrar = document.getElementById('remember').checked;
+        const token = sessionStorage.getItem('token');
+        if (token) {
+            window.location.href = "dashboard.html"; // Redireciona para a página de dashboard se o token estiver presente
+        }
         
         
         realizarLogin(email, senha);
@@ -21,8 +26,8 @@ function realizarLogin(email, senha) {
         body: JSON.stringify({
             "email": email,
             "password": senha,
-            "keep_login": true
-            
+            "keep_login": lembrar // Adiciona o campo "lembrar" no corpo da requisição
+
         })
     })
     
@@ -56,7 +61,6 @@ function realizarLogin(email, senha) {
                 setTimeout(() => {
                     window.location.href = "dashboard.html"; 
                 }, 2000); // Aguarda 2 segundos antes de redirecionar
-                
                 
             } else {
                 exibirMensagem('Erro ao realizar login. Tente novamente.', 'error');
