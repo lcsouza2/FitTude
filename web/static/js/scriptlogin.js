@@ -11,13 +11,15 @@ document.addEventListener('DOMContentLoaded', function() {
         if (token) {
             window.location.href = "dashboard.html"; // Redireciona para a página de dashboard se o token estiver presente
         }
-        
-        
-        realizarLogin(email, senha);
+        else {
+            if (email && senha) {
+                realizarLogin(email, senha, lembrar);
+            }
+        }
     });
 });
 
-function realizarLogin(email, senha) {
+function realizarLogin(email, senha, lembrar) {
     fetch("https://fittude-api.onrender.com/api/user/login", {
         method: 'POST',
         headers: {
@@ -37,7 +39,7 @@ function realizarLogin(email, senha) {
         }
        
         else if (response.status == 400) {
-            exibirMensagem('Erro ao realizar login. Tente novamente.', 'error');
+            exibirMensagem('Erro ao realizar login. Tente novamente.: 01', 'error');
             return;
         }
         else if (response.status == 500) {
@@ -73,7 +75,7 @@ function realizarLogin(email, senha) {
         }
     })
     .catch(error => {
-        exibirMensagem('Erro ao realizar login', 'error');
+        exibirMensagem('Erro ao realizar login: 01', 'error');
         console.error('Erro:', error);
     });
 }

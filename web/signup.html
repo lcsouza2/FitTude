@@ -20,7 +20,10 @@
     </header>
 
     <div class="register-box">
-        <form id="registerForm" class="register-form">
+        <!-- 
+        Se for modificar o formulario, nao mude os IDs do input, nao mude o ID de nada, a nao ser que queira um erro na tua cara, ai tu resolve. 
+         -->
+        <form id="registerForm" class="register-form responsive-form">
             <h2>Cadastre-se</h2>
             <div class="input-group">
                 <label for="nome">Nome de Usuário</label>
@@ -29,7 +32,7 @@
             <div class="input-group">
                 <label for="nome">Nome Completo</label>
                 <input type="text" id="nome" required>
-            </div>
+            </div> 
             <div class="input-group">
                 <label for="email">E-mail</label>
                 <input type="email" id="email" required>
@@ -42,7 +45,7 @@
                 <label for="confirmarSenha">Confirmar senha</label>
                 <input type="password" id="confirmarSenha" required>
             </div>
-            <div id="mensagem" class="error-message">
+            <div id="mensagem" class="alert alert-success" role="alert">
                 <!-- Mensagem de erro será exibida aqui -->
             </div>
             <div class="terms">

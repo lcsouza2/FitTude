@@ -12,70 +12,58 @@ function realizarCadastro(username, nome, email, senha) {
         })
     })
     .then(response => {
+        console.log("Resposta do servidor");
         if (response.ok) {
             console.log("200 OK:", response);
         }
-        if (response.status == 409) {
-            exibirMensagem('Email já cadastrado.', 'error');
+        else if(response.status == 409) {
+            exibirMensagem('Email já cadastrado.', 'danger');
             return;
         }
         else if (response.status == 400) {
-            exibirMensagem('Erro ao cadastrar usuário. Tente novamente.', 'error');
+            exibirMensagem('Erro ao cadastrar usuário. Tente novamente.', 'danger');
             return;
-        }
+        }else if (response.status == 404) {
+            exibirMensagem('Falha na comunição com o servido', 'danger');
+            return;
+        }   
         else if (response.status == 500) {
-            exibirMensagem('Erro interno do servidor. Tente novamente mais tarde.', 'error');
+            exibirMensagem('Erro interno do servidor. Tente novamente mais tarde.', 'danger');
             return;
         }
-        return response.json();
+        else {
+            return response.json();
+        }
+        
     })
     .then(data => {
-        console.log("Sucesso:", data);
+
         if (data.sucesso) {
-            exibirMensagem('Cadastro realizado com sucesso!', 'sucesso');
+            exibirMensagem('Cadastro realizado com sucesso!', 'success');
             
         } else {
-            exibirMensagem('Erro ao cadastrar usuário. Tente novamente.', 'error');
+            exibirMensagem('Erro ao cadastrar usuário. Tente novamente.', 'danger');
         }
     })
     .catch(error => {
-        console.error(error);
-        exibirMensagem("Erro criando seu registro!", 'error');
+        console.error("Erro informado:",error);
+        exibirMensagem("Erro criando seu registro!", 'danger');
 
     });
 }
 
-
 function exibirMensagem(mensagem, tipo) {
     const mensagemElement = document.getElementById('mensagem');
-
-    if (mensagemElement.style.opacity === '1') {
-        // Se a mensagem já está visível, não reinicia a animação
-        return;
-    }
-
     mensagemElement.textContent = mensagem;
     mensagemElement.style.transition = 'none'; // Remove transições anteriores
     mensagemElement.style.opacity = '0'; // Reseta a opacidade
     mensagemElement.style.transform = 'translateY(-100%)'; // Reseta a posição
     void mensagemElement.offsetWidth; // Força o reflow para reiniciar a animação
-
     mensagemElement.style.transition = 'transform 0.5s ease-in-out, opacity 0.5s ease-in-out';
     mensagemElement.style.opacity = '1';
     mensagemElement.style.transform = 'translateY(0)';
-    mensagemElement.className = `mensagem ${tipo}`; 
+    mensagemElement.className = `alert-${tipo}`; 
     mensagemElement.style.display = 'block';
-
-    if (tipo == 'sucesso') {
-        mensagemElement.style.color = 'lightgreen';
-    } else if (tipo == 'error') {
-        mensagemElement.style.color = '#ff6666'; // Vermelho claro
-    }
-
-    setTimeout(() => {
-        mensagemElement.style.opacity = '0';
-        mensagemElement.style.transform = 'translateY(-100%)';
-    }, 10000); // Tempo antes de ocultar a mensagem (10 segundos)
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -91,23 +79,21 @@ document.addEventListener('DOMContentLoaded', function() {
         const confirmarSenha = document.getElementById('confirmarSenha').value;
 
         
-    
-        
         function validarSenha(senha) {
             const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
             return regex.test(senha);
         }
         if (username.length < 3) {
-            exibirMensagem('O nome de usuário deve ter pelo menos 3 caracteres.', 'error');
+            exibirMensagem('O nome de usuário deve ter pelo menos 3 caracteres.', 'danger');
             return;
         }
 
         if (!validarSenha(senha)) {
-            exibirMensagem('A senha deve ter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e símbolos.', 'error');
+            exibirMensagem('A senha deve ter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e símbolos.', 'danger');
             return;
         }
         if (senha !== confirmarSenha) {
-            exibirMensagem('As senhas não coincidem.', 'error');
+            exibirMensagem('As senhas não coincidem.', 'danger');
             return;
         }
         else {
