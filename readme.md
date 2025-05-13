@@ -16,7 +16,6 @@
 FitTude é uma plataforma web moderna para gerenciamento e acompanhamento de treinos, desenvolvida para proporcionar uma experiência intuitiva e eficiente aos usuários.
 
 ## ⚡ Funcionalidades Principais
-
 - 🔐 Sistema de autenticação seguro
 - 📊 Dashboard personalizado
 - 💪 Acompanhamento de treinos
@@ -26,10 +25,12 @@ FitTude é uma plataforma web moderna para gerenciamento e acompanhamento de tre
 
 ## 🛠️ Tecnologias
 
-- ![React](https://img.shields.io/badge/React-20232A?style=flat&logo=react&logoColor=61DAFB)
-- ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white)
-- ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat&logo=tailwind-css&logoColor=white)
-- ![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat&logo=next.js&logoColor=white)
+- !
+Html
+CSS
+javascript
+Bootstrap
+python
 
 ## 🚀 Começando
 
