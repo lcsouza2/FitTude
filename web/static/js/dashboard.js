@@ -2,31 +2,32 @@
 
 const ctx = document.getElementById('progressChart').getContext('2d');
 
-const token = sessionStorage.getItem('token');
-if (!token) {
-    window.location.href = "login.html"; // Redireciona para a página de login se o token não estiver presente
-}
-else {
-    fetch("https://fittude-api.onrender.com/api/user/me", {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-    })
-    .then(response => {
-        if (response.ok) {
-            console.log("200 OK:", response);
-        } else if (response.status == 401) {
-            exibirMensagem('Token inválido ou expirado. Faça login novamente.', 'error');
-            sessionStorage.removeItem('token'); // Remove o token do sessionStorage
-            window.location.href = "login.html"; // Redireciona para a página de login
-            return;
-        } else if (response.status == 500) {
-            exibirMensagem('Erro interno do servidor. Tente novamente mais tarde.', 'error');
-            return;
-        }
-        return response.json();
-    })};
+// const token = sessionStorage.getItem('token');
+// if (!token) {
+//     window.location.href = "login.html"; // Redireciona para a página de login se o token não estiver presente
+// }
+// else {
+//     fetch("https://fittude-api.onrender.com/api/user/me", {
+//         method: 'GET',
+//         headers: {
+//             'Authorization': `Bearer ${token}`
+//         }
+//     })
+//     .then(response => {
+//         if (response.ok) {
+//             console.log("200 OK:", response);
+//         } else if (response.status == 401) {
+//             exibirMensagem('Token inválido ou expirado. Faça login novamente.', 'error');
+//             sessionStorage.removeItem('token'); // Remove o token do sessionStorage
+//             window.location.href = "login.html"; // Redireciona para a página de login
+//             return;
+//         } else if (response.status == 500) {
+//             exibirMensagem('Erro interno do servidor. Tente novamente mais tarde.', 'error');
+//             return;
+//         }
+//         return response.json();
+// })};
+https://prod.liveshare.vsengsaas.visualstudio.com/join?736891C353F78512611A237C1DE90DE43A8B
         
 
 const progressChart = new Chart(ctx, {
