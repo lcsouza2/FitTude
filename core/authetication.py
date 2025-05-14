@@ -8,7 +8,7 @@ from core.utils import actual_datetime
 
 
 class TokenService:
-    security = HTTPBearer(auto_error=False)
+    security = HTTPBearer()
 
     def __init__(self, request: Request, response: Response):
         self.request = request
@@ -20,7 +20,13 @@ class TokenService:
         self.refresh_expires = Config.JWT_REFRESH_TOKEN_EXPIRES
 
     async def generate_refresh_token(self, id: int) -> str:
-        """Retorna um token JWT válido por 7 dias"""
+        """
+        Create a JWT refresh token with the user id and expiration time.
+        Args:
+            id (int): User ID to be included in the token payload.
+        Returns:
+            str: Encoded JWT refresh token.
+        """
 
         return jwt.encode(
             payload={"sub": str(id), "exp": self.refresh_expires + actual_datetime()},
@@ -29,7 +35,13 @@ class TokenService:
         )
 
     async def generate_session_token(self, id: int) -> str:
-        """Retorna um token JWT válido pelo tempo definido"""
+        """
+        Create a JWT session token with the user id and expiration time.
+        Args:
+            id (int): User ID to be included in the token payload.
+        Returns:
+            str: Encoded JWT session token.
+        """
 
         return jwt.encode(
             payload={
@@ -41,6 +53,13 @@ class TokenService:
         )
 
     async def set_refresh_token_cookie(self, response: Response, token: str):
+        """
+        Sets the refresh token in the response cookies.
+        Args:
+            response (Response): The response object to set the cookie on.
+            token (str): The refresh token to be set in the cookie.
+        """
+
         response.set_cookie(
             key="refresh_token",
             value=token,
@@ -51,7 +70,17 @@ class TokenService:
             samesite="strict",
         )
 
-    def get_refresh_token(self, request: Request):
+    def get_refresh_token(self, request: Request) -> str:
+        """
+        Get the refresh token from the request cookies.
+        Args:
+            request (Request): The request object to get the cookie from.
+        Returns:
+            str: The refresh token from the request cookies.
+        Raises:
+            MissingToken: If the refresh token is not found in the cookies.
+        """
+
         token = request.cookies.get("refresh_token")
 
         if token:
@@ -60,9 +89,24 @@ class TokenService:
             raise MissingToken("Refresh token não encontrado")
 
     def delete_refresh_token_cookie(self, response: Response):
+        """
+        Deletes the refresh token cookie from the response. (like a logout action)
+        Args:
+            response (Response): The response object to delete the cookie from.
+        """
         response.delete_cookie("refresh_token")
 
-    async def renew_token(self, request: Request):
+    async def renew_token(self, request: Request) -> str:
+        """
+        Gets the refresh token from the request and generates a new session token.
+        Args:
+            request (Request): The request object to get the refresh token from.
+        Returns:
+            str: The new session token.
+        Raises:
+            SessionExpired: If the refresh token has expired.
+            InvalidToken: If the refresh token is invalid.
+        """
         token = self.get_refresh_token(request)
 
         try:
@@ -82,7 +126,18 @@ class TokenService:
     async def validate_token(
         token: HTTPAuthorizationCredentials = Depends(security),
     ) -> int:
-        """Valida o token JWT e retorna o id do usuário"""
+        """
+        Validates the JWT token and returns the user ID.
+        Args:
+            token (HTTPAuthorizationCredentials): The JWT token to be validated.
+        Returns:
+            int: The user ID from the token payload.
+        Raises:
+            MissingToken: If the token is not found.
+            SessionExpired: If the token has expired.
+            InvalidToken: If the token is invalid.
+            UnknownAuthError: If the token cannot be decoded.
+        """
 
         token = token.credentials
 
