@@ -2,20 +2,22 @@ from datetime import date, datetime, timezone
 from typing import Optional, Type, TypedDict
 from pydantic import BaseModel, EmailStr
 
+class ConstraintErrorHandling(TypedDict):
+    constraint: str
+    error: Type[Exception]
+    message: str
 
 class BaseSchema(BaseModel):
     class Config:
         extra = "forbid"
 
-
 class UserBase(BaseSchema):
     email: EmailStr
     password: str
 
-
-class UserRegistro(UserBase):
+class UserRegister(UserBase):
     username: str
-    nome: str
+    name: str
 
 class UserPwdChange(BaseSchema):
     new_password: str
@@ -24,113 +26,107 @@ class UserLogin(UserBase):
     keep_login: bool
 
 
-class Grupamento(BaseSchema):
-    nome_grupamento: str
-    id_usuario: Optional[int]
+class MucleGroup(BaseSchema):
+    group_name: str
+    user_id: Optional[int]
 
 
-class GrupamentoAlterar(BaseSchema):
-    nome_grupamento: str
+class UpdateMuscleGroup(BaseSchema):
+    group_name: str
 
 
-class Aparelho(BaseSchema):
-    nome_grupamento: str
-    nome_aparelho: str
+class Equipment(BaseSchema):
+    group_name: str
+    equipment_name: str
 
 
-class Musculo(BaseSchema):
-    nome_grupamento: str
-    nome_musculo: str
+class Muscle(BaseSchema):
+    muscle_group: str
+    muscle_name: str
 
 
-class Exercicio(BaseSchema):
-    nome_exercicio: str
-    id_musculo: int
-    id_aparelho: Optional[int]
-    descricao: Optional[str]
+class Exercise(BaseSchema):
+    exercise_name: str
+    muscle_id: int
+    equipment_id: Optional[int]
+    description: Optional[str]
 
 
-class FichaTreino(BaseSchema):
-    nome_ficha_treino: str
-    objetivo_ficha_treino: str
+class WorkoutPlan(BaseSchema):
+    workout_plan_name: str
+    workout_plan_goal: str
 
 
-class DivisaoTreino(BaseSchema):
-    divisao: str
-    id_ficha_treino: int
+class WorkoutSplit(BaseSchema):
+    split: str
+    workout_plan_id: int
 
 
-class DivisaoExercicio(BaseSchema):
-    divisao: str
-    id_ficha_treino: int
-    id_exercicio: int
-    ordem_execucao: int
-    series: int
-    repeticoes: str | int
-    tecnica_avancada: Optional[str]
-    descanso: int
+class SplitExercise(BaseSchema):
+    split: str
+    workout_plan_id: int
+    exercise_id: int
+    execution_order: int
+    sets: int
+    reps: str | int
+    advanced_technique: Optional[str]
+    rest_time: int
 
 
-class RelatorioTreino(BaseSchema):
-    data_relatorio: date = datetime.now(timezone.utc).date()
-    divisao: str
-    id_ficha_treino: int
+class WorkoutReport(BaseSchema):
+    report_date: date = datetime.now(timezone.utc).date()
+    split: str
+    workout_plan_id: int
 
 
-class SerieRelatorio(BaseSchema):
-    divisao: str
-    id_ficha_treino: int
-    id_exercicio: int
-    ordem_execucao: int
-    numero_serie: int
-    id_relatorio_treino: int
-    repeticoes: str
-    carga: int
-    observacao: str
+class SetReport(BaseSchema):
+    split: str
+    workout_plan_id: int
+    exercise_id: int
+    execution_order: int
+    set_number: int
+    workout_report_id: int
+    reps: str
+    weight: int
+    notes: str
 
 
-class MusculoAlterar(BaseSchema):
-    nome_grupamento: Optional[str] = None
-    nome_musculo: Optional[str] = None
+class UpdateMuscle(BaseSchema):
+    muscle_group: Optional[str] = None
+    muscle_name: Optional[str] = None
 
 
-class AparelhoAlterar(BaseSchema):
-    nome_grupamento: Optional[str] = None
-    nome_aparelho: Optional[str] = None
+class UpdateEquipment(BaseSchema):
+    group_name: Optional[str] = None
+    equipment_name: Optional[str] = None
 
 
-class ExercicioAlterar(BaseSchema):
-    nome_exercicio: Optional[str] = None
-    id_musculo: Optional[int] = None
-    id_aparelho: Optional[int] = None
-    descricao: Optional[str] = None
+class UpdateExercise(BaseSchema):
+    exercise_name: Optional[str] = None
+    muscle_id: Optional[int] = None
+    equipment_id: Optional[int] = None
+    description: Optional[str] = None
 
 
-class FichaTreinoAlterar(BaseSchema):
-    nome_ficha_treino: Optional[str] = None
-    objetivo_ficha_treino: Optional[str] = None
+class UpdateWorkoutPlan(BaseSchema):
+    workout_plan_name: Optional[str] = None
+    workout_plan_goal: Optional[str] = None
 
 
-class DivisaoExercicioAlterar(BaseSchema):
-    divisao: str
-    id_ficha_treino: int
-    id_exercicio: int
-    ordem_execucao_atual: int  # ordem de execução no banco de dados
-    ordem_execucao: Optional[int]  # nova ordem de execução do exercício
-    series: Optional[int] = None
-    repeticoes: Optional[str] = None
-    tecnica_avancada: Optional[str] = None
-    descanso: Optional[int] = None
+class UpdateSplitExercise(BaseSchema):
+    split: str
+    workout_plan_id: int
+    exercise_id: int
+    current_execution_order: int  # execution order in database
+    execution_order: Optional[int]  # new execution order
+    sets: Optional[int] = None
+    reps: Optional[str] = None
+    advanced_technique: Optional[str] = None
+    rest_time: Optional[int] = None
 
 
-class DivisaoExercicioInativar(BaseSchema):
-    divisao: str
-    id_ficha_treino: int
-    id_exercicio: int
-    ordem_execucao: int
-
-
-class ConstraintErrorHandling(TypedDict):
-    constraint: str
-    error: Type[Exception]
-    message: str
+class InactivateSplitExercise(BaseSchema):
+    split: str
+    workout_plan_id: int
+    exercise_id: int
+    execution_order: int
