@@ -5,6 +5,7 @@ from typing import Callable
 
 from core.connections import redis_connection
 
+from core.config import Config
 
 def actual_datetime():
     return datetime.now(timezone.utc)
@@ -15,8 +16,7 @@ def exclude_falsy_from_dict(payload: dict):
         key: value for key, value in payload.items() if value or isinstance(value, bool)
     }
 
-
-def cached_operation(timeout: int = 3600):
+def cached_operation(timeout: int = Config.CACHE_DEFAULT_TIMEOUT):
     def decorator(
         func: Callable,
     ):
@@ -26,7 +26,6 @@ def cached_operation(timeout: int = 3600):
                 parameters = dumps({"args": args, "kwargs": kwargs}, sort_keys=True)
 
                 key = f"{func.__name__}:{parameters}"
-                print(key)
                 result = await redis.get(key)
 
                 if result:
