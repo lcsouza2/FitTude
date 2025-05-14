@@ -25,7 +25,7 @@ class UserRegister(UserBase):
     name: str
 
 
-class UserPwdChange(BaseSchema):
+class UserPwdChange(UserBase):
     new_password: str
 
 
