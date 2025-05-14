@@ -26,6 +26,7 @@ class UserRegister(UserBase):
 
 
 class UserPwdChange(UserBase):
+    name: str
     new_password: str
 
 
