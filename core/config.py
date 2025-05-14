@@ -40,19 +40,16 @@ class Config:
     JWT_BLACKLIST_TOKEN_CHECKS: set[str] = {"access", "refresh"}
 
     # Security Settings
-    CORS_ORIGINS: list[str] = ["http://localhost:3000", "https://fittude.com"]
+    CORS_ORIGINS: list[str] = ["http://localhost:8000", "https://fittude.onrender.com"]
     ALLOWED_HOSTS: list[str] = ["localhost", "fittude.com"]
     MAX_REQUESTS: int = 100
     REQUEST_TIME_WINDOW: timedelta = timedelta(minutes=1)
 
-    # Cache Settings
-    CACHE_TYPE: str = "redis"
-    _CACHE_REDIS_URL: str = "redis://localhost:63790"
     CACHE_DEFAULT_TIMEOUT: int = 300  # 5 minutes
 
     # Pagination Settings
     DEFAULT_PAGE_SIZE: int = 20
-    MAX_PAGE_SIZE: int = 100
+    MAX_PAGE_SIZE: int = 50
 
     @classmethod
     def get_mail_password(cls) -> str:
