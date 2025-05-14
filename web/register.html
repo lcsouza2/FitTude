@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Cadastro</title>
     <link rel="stylesheet" href="static/css/stylesignup.css">
     <link rel="shortcut icon" href="static/assets/img/favicon2.png" type="image/x-icon">
@@ -19,43 +20,40 @@
         </a>
     </header>
 
-    <div class="register-box">
-        <!-- 
-        Se for modificar o formulario, nao mude os IDs do input, nao mude o ID de nada, a nao ser que queira um erro na tua cara, ai tu resolve. 
-         -->
-        <form id="registerForm" class="register-form responsive-form">
-            <h2>Cadastre-se</h2>
-            <div class="input-group">
-                <label for="nome">Nome de Usuário</label>
-                <input type="text" id="username" required>
-            </div>
-            <div class="input-group">
-                <label for="nome">Nome Completo</label>
-                <input type="text" id="nome" required>
-            </div> 
-            <div class="input-group">
-                <label for="email">E-mail</label>
-                <input type="email" id="email" required>
-            </div>
-            <div class="input-group">
-                <label for="senha">Senha</label>
-                <input type="password" id="senha" required>
-            </div>
-            <div class="input-group">
-                <label for="confirmarSenha">Confirmar senha</label>
-                <input type="password" id="confirmarSenha" required>
-            </div>
-            <div id="mensagem" class="alert alert-success" role="alert">
-                <!-- Mensagem de erro será exibida aqui -->
-            </div>
-            <div class="terms">
-                <input type="checkbox" id="terms" required>
-                <label for="terms">Concordo com os termos de uso do FitTude</label>
-            </div>
-            <button type="submit">Continuar</button>
+    <div class="container d-flex justify-content-center align-items-center min-vh-100">
+        <div class="col-11 col-sm-9 col-md-7 col-lg-5 col-xl-4 register-box">
+            <!-- Se for modificar o formulario, nao mude os IDs do input, nao mude o ID de nada, a nao ser que queira um erro na tua cara, ai tu resolve.  -->
+            <form id="registerForm" class="register-form">
+                <h2>Cadastre-se</h2>
+                <div class="input-group">
+                    <label for="nome">Nome de Usuário</label>
+                    <input type="text" id="username" required>
+                </div>
+                <div class="input-group">
+                    <label for="nome">Nome Completo</label>
+                    <input type="text" id="nome" required>
+                </div> 
+                <div class="input-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="input-group">
+                    <label for="senha">Senha</label>
+                    <input type="password" id="senha" required>
+                </div>
+                <div class="input-group">
+                    <label for="confirmarSenha">Confirmar senha</label>
+                    <input type="password" id="confirmarSenha" required>
+                </div>
+                <div id="mensagem" class="alert alert-success" role="alert">
+                    <!-- Mensagem de erro será exibida aqui  -->
+                </div>
+                <div class="terms">
+                    <input type="checkbox" id="terms" required>
+                    <label for="terms">Concordo com os termos de uso do FitTude</label>
+                </div>
+                <button type="submit">Continuar</button>
         </form>
-        <div class="login-link">
-            <a href="login.html">Já tem conta? Login</a>
         </div>
     </div>
     <script src="./static/js/scriptcadastro.js"></script>
