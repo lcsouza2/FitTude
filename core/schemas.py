@@ -1,26 +1,33 @@
 from datetime import date, datetime, timezone
 from typing import Optional, Type, TypedDict
+
 from pydantic import BaseModel, EmailStr
+
 
 class ConstraintErrorHandling(TypedDict):
     constraint: str
     error: Type[Exception]
     message: str
 
+
 class BaseSchema(BaseModel):
     class Config:
         extra = "forbid"
+
 
 class UserBase(BaseSchema):
     email: EmailStr
     password: str
 
+
 class UserRegister(UserBase):
     username: str
     name: str
 
+
 class UserPwdChange(BaseSchema):
     new_password: str
+
 
 class UserLogin(UserBase):
     keep_login: bool
