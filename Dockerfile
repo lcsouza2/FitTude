@@ -27,10 +27,6 @@ RUN poetry config virtualenvs.create false \
 # Copiar o restante do código
 COPY . .
 
-# Criar e trocar para usuário não root
-RUN adduser --disabled-password appuser
-USER appuser
-
 # Expor a porta
 EXPOSE 8000
 

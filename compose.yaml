@@ -4,16 +4,8 @@ services:
       context: .
     ports:
       - 8000:8000
-    environment:
-      environment:
-      - DATABASE_URL=${DATABASE_URL}
-      - JWT_REFRESH_KEY=${JWT_REFRESH_KEY}
-      - JWT_SESSION_KEY=${JWT_SESSION_KEY}
-      - MAIL_FROM=${MAIL_FROM}
-      - MAIL_PASSWORD=${MAIL_PASSWORD}
-      - MAIL_SERVER=${MAIL_SERVER}
-      - MAIL_USERNAME=${MAIL_USERNAME}
-      - REDIS_URL=${REDIS_URL}
+    env_file: 
+      - .env
 
     depends_on:
       db:
