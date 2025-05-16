@@ -7,148 +7,146 @@ reg = registry()
 
 
 @reg.mapped_as_dataclass
-class Grupamento:
-    __tablename__ = "grupamento"
+class MuscleGroup:
+    __tablename__ = "muscle_group"
 
-    nome_grupamento: Mapped[str] = mapped_column(primary_key=True)
+    group_name: Mapped[str] = mapped_column(primary_key=True)
 
 
 @reg.mapped_as_dataclass
-class Usuario:
-    __tablename__ = "usuario"
+class User:
+    __tablename__ = "user"
 
-    id_usuario: Mapped[int] = mapped_column(primary_key=True, init=False)
-    username: Mapped[str] = mapped_column(nullable=False)
+    user_id: Mapped[int] = mapped_column(primary_key=True, init=False)
     email: Mapped[str] = mapped_column(unique=True, nullable=False)
-    nome: Mapped[str] = mapped_column(nullable=False)
+    name: Mapped[str] = mapped_column(nullable=False)
     password: Mapped[str]
 
 
 @reg.mapped_as_dataclass
-class Musculo:
-    __tablename__ = "musculo"
+class Muscle:
+    __tablename__ = "muscle"
 
-    id_musculo: Mapped[int] = mapped_column(primary_key=True, init=False)
-    nome_grupamento: Mapped[str] = mapped_column(
-        ForeignKey("grupamento.nome_grupamento"), unique=True
+    muscle_id: Mapped[int] = mapped_column(primary_key=True, init=False)
+    group_name: Mapped[str] = mapped_column(
+        ForeignKey("muscle_group.group_name"), unique=True
     )
-    id_usuario: Mapped[int] = mapped_column(
-        ForeignKey("usuario.id_usuario"), unique=True, nullable=True
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("user.user_id"), unique=True, nullable=True
     )
-    nome_musculo: Mapped[str] = mapped_column(unique=True)
-    ativo: Mapped[bool] = mapped_column(default=True)
+    muscle_name: Mapped[str] = mapped_column(unique=True)
+    active: Mapped[bool] = mapped_column(default=True)
 
 
 @reg.mapped_as_dataclass
-class Aparelho:
-    __tablename__ = "aparelho"
+class Equipment:
+    __tablename__ = "equipment"
 
-    id_aparelho: Mapped[int] = mapped_column(primary_key=True, init=False)
-    id_usuario: Mapped[int] = mapped_column(
-        ForeignKey("usuario.id_usuario"), unique=True, nullable=True
+    equipment_id: Mapped[int] = mapped_column(primary_key=True, init=False)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("user.user_id"), unique=True, nullable=True
     )
-    nome_grupamento: Mapped[str] = mapped_column(
-        ForeignKey("grupamento.nome_grupamento"), unique=True
+    group_name: Mapped[str] = mapped_column(
+        ForeignKey("muscle_group.group_name"), unique=True
     )
-    nome_aparelho: Mapped[str] = mapped_column(unique=True)
-    ativo: Mapped[bool] = mapped_column(default=True)
+    equipment_name: Mapped[str] = mapped_column(unique=True)
+    active: Mapped[bool] = mapped_column(default=True)
 
 
 @reg.mapped_as_dataclass
-class Exercicio:
-    __tablename__ = "exercicio"
+class Exercise:
+    __tablename__ = "exercise"
 
-    id_exercicio: Mapped[int] = mapped_column(primary_key=True, init=False)
-    id_musculo: Mapped[int] = mapped_column(
-        ForeignKey("musculo.id_musculo"), unique=True
+    exercise_id: Mapped[int] = mapped_column(primary_key=True, init=False)
+    muscle_id: Mapped[int] = mapped_column(
+        ForeignKey("muscle.muscle_id"), unique=True
     )
-    id_usuario: Mapped[int] = mapped_column(
-        ForeignKey("usuario.id_usuario"), unique=True, nullable=True
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("user.user_id"), unique=True, nullable=True
     )
-    id_aparelho: Mapped[int] = mapped_column(
-        ForeignKey("aparelho.id_aparelho"), unique=True, nullable=True
+    equipment_id: Mapped[int] = mapped_column(
+        ForeignKey("equipment.equipment_id"), unique=True, nullable=True
     )
-    nome_exercicio: Mapped[str] = mapped_column(unique=True)
-
-    descricao: Mapped[str]
-    ativo: Mapped[bool] = mapped_column(default=True)
+    exercise_name: Mapped[str] = mapped_column(unique=True)
+    description: Mapped[str]
+    active: Mapped[bool] = mapped_column(default=True)
 
 
 @reg.mapped_as_dataclass
-class FichaTreino:
-    __tablename__ = "ficha_treino"
+class WorkoutPlan:
+    __tablename__ = "workout_plan"
 
-    id_ficha_treino: Mapped[int] = mapped_column(primary_key=True, init=False)
-    id_usuario: Mapped[int] = mapped_column(
-        ForeignKey("usuario.id_usuario"), unique=True
+    workout_plan_id: Mapped[int] = mapped_column(primary_key=True, init=False)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("user.user_id"), unique=True
     )
-    nome_ficha_treino: Mapped[str] = mapped_column(unique=True)
-    objetivo_ficha_treino: Mapped[str]
-    ativo: Mapped[bool] = mapped_column(default=True)
+    workout_plan_name: Mapped[str] = mapped_column(unique=True)
+    workout_plan_goal: Mapped[str]
+    active: Mapped[bool] = mapped_column(default=True)
 
 
 @reg.mapped_as_dataclass
-class DivisaoTreino:
-    __tablename__ = "divisao_treino"
+class WorkoutSplit:
+    __tablename__ = "workout_split"
 
-    divisao: Mapped[str] = mapped_column(primary_key=True)
-    id_ficha_treino: Mapped[int] = mapped_column(
-        ForeignKey("ficha_treino.id_ficha_treino"), primary_key=True
+    split: Mapped[str] = mapped_column(primary_key=True)
+    workout_plan_id: Mapped[int] = mapped_column(
+        ForeignKey("workout_plan.workout_plan_id"), primary_key=True
     )
-    ativo: Mapped[bool] = mapped_column(default=True)
+    active: Mapped[bool] = mapped_column(default=True)
 
 
 @reg.mapped_as_dataclass
-class DivisaoExercicio:
-    __tablename__ = "divisao_exercicio"
+class SplitExercise:
+    __tablename__ = "split_exercise"
 
-    id_ficha_treino: Mapped[int] = mapped_column(
-        ForeignKey("divisao_treino.id_ficha_treino"), primary_key=True
+    workout_plan_id: Mapped[int] = mapped_column(
+        ForeignKey("workout_split.workout_plan_id"), primary_key=True
     )
-    divisao: Mapped[str] = mapped_column(
-        ForeignKey("divisao_treino.divisao"), primary_key=True
+    split: Mapped[str] = mapped_column(
+        ForeignKey("workout_split.split"), primary_key=True
     )
-    id_exercicio: Mapped[int] = mapped_column(
-        ForeignKey("exercicio.id_exercicio"), primary_key=True
+    exercise_id: Mapped[int] = mapped_column(
+        ForeignKey("exercise.exercise_id"), primary_key=True
     )
-    ordem_execucao: Mapped[int] = mapped_column(primary_key=True)
-    series: Mapped[int]
-    repeticoes: Mapped[str]
-    tecnica_avancada: Mapped[str] = mapped_column(nullable=True)
-    descanso: Mapped[int]
-    ativo: Mapped[bool] = mapped_column(default=True)
-
-
-@reg.mapped_as_dataclass
-class RelatorioTreino:
-    __tablename__ = "relatorio_treino"
-
-    data_relatorio: Mapped[date]
-    id_relatorio_treino: Mapped[int] = mapped_column(primary_key=True, init=False)
-    id_ficha_treino: Mapped[int] = mapped_column(
-        ForeignKey("divisao_treino.id_ficha_treino")
-    )
-    divisao: Mapped[str] = mapped_column(ForeignKey("divisao_treino.divisao"))
+    execution_order: Mapped[int] = mapped_column(primary_key=True)
+    sets: Mapped[int]
+    reps: Mapped[str]
+    advanced_technique: Mapped[str] = mapped_column(nullable=True)
+    rest_time: Mapped[int]
+    active: Mapped[bool] = mapped_column(default=True)
 
 
 @reg.mapped_as_dataclass
-class SerieRelatorio:
-    __tablename__ = "serie_relatorio"
+class WorkoutReport:
+    __tablename__ = "workout_report"
 
-    id_relatorio_treino: Mapped[int] = mapped_column(
-        ForeignKey("relatorio_treino.id_relatorio_treino"), primary_key=True
+    report_date: Mapped[date]
+    workout_report_id: Mapped[int] = mapped_column(primary_key=True, init=False)
+    workout_plan_id: Mapped[int] = mapped_column(
+        ForeignKey("workout_split.workout_plan_id")
     )
-    id_exercicio: Mapped[int] = mapped_column(
-        ForeignKey("divisao_exercicio.id_exercicio"), primary_key=True
+    split: Mapped[str] = mapped_column(ForeignKey("workout_split.split"))
+
+
+@reg.mapped_as_dataclass
+class SetReport:
+    __tablename__ = "set_report"
+
+    workout_report_id: Mapped[int] = mapped_column(
+        ForeignKey("workout_report.workout_report_id"), primary_key=True
     )
-    divisao: Mapped[str] = mapped_column(
-        ForeignKey("divisao_exercicio.divisao"), primary_key=True
+    exercise_id: Mapped[int] = mapped_column(
+        ForeignKey("split_exercise.exercise_id"), primary_key=True
     )
-    id_ficha_treino: Mapped[int] = mapped_column(
-        ForeignKey("divisao_exercicio.id_ficha_treino"), primary_key=True
+    split: Mapped[str] = mapped_column(
+        ForeignKey("split_exercise.split"), primary_key=True
     )
-    ordem_execucao: Mapped[int]
-    numero_serie: Mapped[int] = mapped_column(primary_key=True)
-    repeticoes: Mapped[str]
-    carga: Mapped[int]
-    observacao: Mapped[str] = mapped_column(nullable=True)
+    workout_plan_id: Mapped[int] = mapped_column(
+        ForeignKey("split_exercise.workout_plan_id"), primary_key=True
+    )
+    execution_order: Mapped[int]
+    set_number: Mapped[int] = mapped_column(primary_key=True)
+    reps: Mapped[str]
+    weight: Mapped[int]
+    notes: Mapped[str] = mapped_column(nullable=True)
