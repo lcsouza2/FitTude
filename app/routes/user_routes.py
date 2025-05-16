@@ -129,7 +129,6 @@ async def _generate_auth_tokens(
     return session_token, refresh_token
 
 
-@cached_operation()
 async def search_for_user(email: EmailStr) -> str:
     """
     Check if a username or email is already registered in the database.
@@ -158,10 +157,10 @@ async def search_for_user(email: EmailStr) -> str:
 
 
 @USER_ROUTER.post("/register")
-async def begin_register(
+async def handle_register_req(
     user: schemas.UserRegister, bg_tasks: BackgroundTasks
 ) -> dict[str, str]:
-    """ 
+    """
     Start user registration process by sending verification email.
 
     This function:
@@ -180,7 +179,6 @@ async def begin_register(
 
     Raises:
         InvalidCredentials: If email format is invalid
-        UniqueConstraintViolation: If username/email already exists
     """
     try:
         validate_email(user.email)
@@ -198,7 +196,7 @@ async def begin_register(
 
 
 @USER_ROUTER.get("/register/confirm/{protocol}")
-async def create_register(
+async def handle_register_confirm_req(
     protocol: UUID,
     token_service: TokenService = Depends(TokenService),
     session: AsyncSession = Depends(db_connection),
@@ -215,8 +213,8 @@ async def create_register(
 
     Args:
         protocol (UUID): Registration verification protocol
-        token_service (TokenService): Service for token operations
-        session (AsyncSession): Database session
+        token_service (TokenService): Service for token operations (injected by FastAPI)
+        session (AsyncSession): Database session (injected by FastAPI)
 
     Returns:
         TemplateResponse: Registration confirmation page with tokens
@@ -227,7 +225,7 @@ async def create_register(
     """
 
     async with redis_connection() as redis:
-        user_data = await redis.hgetall(f"protocol:{protocol}")
+        user_data = await redis.hgetall(f"protocol:{protocol};type:register")
 
         if not user_data:
             raise InvalidProtocol()
@@ -256,7 +254,7 @@ async def create_register(
 
             await session.commit()
 
-            redis.delete(f"protocol:{protocol}")
+            redis.delete(f"protocol:{protocol};type:register")
 
             default_context = {
                 "request": token_service.request,
@@ -271,20 +269,34 @@ async def create_register(
 
 
 @USER_ROUTER.post("/login")
-async def login_user(
+async def handle_user_login_req(
     user: schemas.UserLogin,
     session: AsyncSession = Depends(db_connection),
     token_service: TokenService = Depends(TokenService),
 ) -> dict[str, Any]:
     """
-    Authenticate user and generate session tokens.
+    Verify user credentials and generate authentication tokens.
+    This function:
+    1. Checks if the user exists in the database
+    2. Verifies the password
+    3. Generates session and refresh tokens
+    4. Sets the refresh token cookie
+    Args:
+        user (schemas.UserLogin): User login data
+        session (AsyncSession): Database session (injected by FastAPI)
+        token_service (TokenService): Token service instance (injected by FastAPI)
+    Returns:
+        dict[str, Any]: Authentication tokens and their metadata
+    Raises:
+        InvalidCredentials: If email format is invalid or credentials are incorrect
     """
-    query = select(db_mapping.Usuario.id_usuario, db_mapping.Usuario.password).where(
-        db_mapping.Usuario.email == user.email,
-    )
 
     async with session:
-        result = await session.execute(query)
+        result = await session.execute(
+            select(db_mapping.Usuario.id_usuario, db_mapping.Usuario.password).where(
+                db_mapping.Usuario.email == user.email,
+            )
+        )
         if not (found := result.first()):
             raise InvalidCredentials("Usuário não encontrado")
 
@@ -311,11 +323,15 @@ async def login_user(
 
 
 @USER_ROUTER.post("/logout")
-async def logout_user(
+async def handle_user_logout_req(
     token_service: TokenService = Depends(TokenService),
 ) -> dict[str, str]:
     """
-    Logout user by deleting session and refresh tokens.
+    Logout user by deleting the refresh token cookie.
+    Args:
+        token_service (TokenService): Token service instance (injected by FastAPI)
+    Returns:
+        dict[str, str]: Success message indicating logout completion
     """
     token_service.delete_refresh_token_cookie(token_service.response)
 
@@ -326,16 +342,18 @@ async def logout_user(
 async def handle_pwd_change_req(
     background_tasks: BackgroundTasks, user: schemas.UserPwdChange
 ):
+    """
+    Handle password change request by sending verification email.
+    """
     background_tasks.add_task(save_pwd_change_protocol, user=user)
 
 
 @USER_ROUTER.get("/password_change/confirm/{protocol}")
-async def confirm_pwd_change(user: schemas.UserPwdChange, protocol: UUID):
+async def handle_pwd_change_confirm_req(protocol: UUID):
     """
     This function confirms the password change by verifying the protocol.
 
     args:
-        user (schemas.UserPwdChange): User data containing the new password.
         protocol (UUID): The protocol for the password change.
 
     returns:
@@ -346,18 +364,18 @@ async def confirm_pwd_change(user: schemas.UserPwdChange, protocol: UUID):
     """
 
     async with redis_connection() as redis:
-        user_data = await redis.hgetall(f"protocol:{protocol} ; type:pwd_change")
+        user_data = await redis.hgetall(f"protocol:{protocol};type:pwd_change")
 
         if not user_data:
             raise InvalidProtocol()
 
-        new_hashed_pwd = hasher.hash(user.new_password)
+        new_hashed_pwd = hasher.hash(user_data.new_password)
 
         try:
             async with db_connection() as session:
                 await session.execute(
                     update(db_mapping.Usuario.password)
-                    .where(db_mapping.Usuario.email == user.email)
+                    .where(db_mapping.Usuario.email == user_data.email)
                     .values(new_hashed_pwd)
                 )
                 await session.commit()
@@ -372,13 +390,17 @@ async def confirm_pwd_change(user: schemas.UserPwdChange, protocol: UUID):
 
 
 @USER_ROUTER.post("/refresh_token")
-async def send_refresh_token(
+async def handle_refresh_token_req(
     token_service: TokenService = Depends(TokenService),
 ) -> dict[str, str]:
     """
     Refresh user session token.
 
     This function checks the validity of the refresh token and generates a new session token.
+    Args:
+        token_service (TokenService): Token service instance (injected by FastAPI)
+    Returns:
+        dict[str, str]: New session token and its metadata
     """
 
     return {
