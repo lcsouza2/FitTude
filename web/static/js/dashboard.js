@@ -27,8 +27,7 @@ const ctx = document.getElementById('progressChart').getContext('2d');
 //         }
 //         return response.json();
 // })};
-https://prod.liveshare.vsengsaas.visualstudio.com/join?736891C353F78512611A237C1DE90DE43A8B
-        
+ 
 
 const progressChart = new Chart(ctx, {
     type: 'line',

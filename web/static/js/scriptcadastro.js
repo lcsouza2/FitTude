@@ -52,15 +52,6 @@ function realizarCadastro(username, nome, email, senha) {
     });
 }
 
-class Main {
-
-    constructor(main) {
-        this.main = main;
-    }
-
-}
-
-
 function exibirMensagem(mensagem, tipo) {
     const mensagemElement = document.getElementById('mensagem');
     mensagemElement.textContent = mensagem;
