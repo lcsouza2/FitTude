@@ -28,6 +28,8 @@ fastapi-mail = "^1.4.2"
 taskipy = "^1.14.1"
 ruff = "^0.8.6"
 pytest = "^8.3.5"
+pytest-asyncio = "^0.26.0"
+pytest-tornasync = "^0.6.0.post2"
 
 [build-system]
 requires = ["poetry-core"]
