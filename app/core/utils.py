@@ -2,6 +2,8 @@ from datetime import datetime, timezone
 from functools import wraps
 from json import dumps
 from typing import Callable
+import random 
+import string
 
 from app.core.config import Config
 from app.core.connections import redis_connection
@@ -41,3 +43,17 @@ def cached_operation(timeout: int = Config.CACHE_DEFAULT_TIMEOUT):
         return wrapper
 
     return decorator
+
+def generate_random_protocol(char_amount: int = 6):
+    """
+    Generate a random char alphanumeric string as a protocol.
+    This protocol is used for password change requests.
+    Args:
+        char_amount (int): Number of characters in the protocol string. Default is 6.
+    Returns:
+        str: Randomly generated protocol string
+    """
+
+    return "".join(
+        [random.choice(string.ascii_letters + string.digits) for _ in range(6)]
+    )

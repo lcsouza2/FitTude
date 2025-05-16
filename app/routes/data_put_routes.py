@@ -7,7 +7,7 @@ from sqlalchemy.orm import InstrumentedAttribute, MappedAsDataclass
 from sqlalchemy.sql.expression import BinaryExpression
 
 from core import schemas
-from core.authetication import TokenService
+from app.core.authentication import TokenService
 from core.connections import db_connection
 from core.exceptions import (
     EntityNotFound,

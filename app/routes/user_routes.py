@@ -5,8 +5,6 @@ This module handles all user-related operations including:
 - User login and session management
 """
 
-import random
-import string
 from typing import Any
 from uuid import UUID, uuid4
 
@@ -19,37 +17,22 @@ from pydantic_core import PydanticCustomError
 from sqlalchemy import exc, insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..core import schemas
-from ..core.authetication import TokenService
-from ..core.config import Config
-from ..core.connections import db_connection, redis_connection
-from ..core.email_service import send_pwd_change_mail, send_verification_mail
-from ..core.exceptions import (
+from app.core import schemas
+from app.core.authentication import TokenService
+from app.core.config import Config
+from app.core.connections import db_connection, redis_connection
+from app.core.email_service import EmailClient
+from app.core.exceptions import (
     InvalidCredentials,
     InvalidProtocol,
     UniqueConstraintViolation,
 )
-from ..core.utils import cached_operation
+from app.core.utils import generate_random_protocol
 
-from database import db_mapping
+from app.database import db_mapping
 
 USER_ROUTER = APIRouter(prefix="/api/user")
-
-hasher = PasswordHasher()
-
-
-def generate_pwd_change_protocol():
-    """
-    Generate a random 6-char alphanumeric string as a protocol.
-    This protocol is used for password change requests.
-    Returns:
-        str: Randomly generated protocol string
-    """
-
-    return "".join(
-        [random.choice(string.ascii_letters + string.digits) for _ in range(6)]
-    )
-
+HASHER = PasswordHasher()
 
 async def save_register_protocol(user: schemas.UserRegister):
     """
@@ -64,7 +47,7 @@ async def save_register_protocol(user: schemas.UserRegister):
 
     protocol = uuid4()
 
-    await send_verification_mail(
+    await EmailClient().send_register_verify_mail(
         dest_email=user.email, protocol=protocol, username=user.name.split(" ")[0]
     )
 
@@ -88,10 +71,10 @@ async def save_pwd_change_protocol(user: schemas.UserPwdChange):
     Args:
         user (schemas.UserPwdChange): User registration data
     """
-    protocol = generate_pwd_change_protocol()
+    protocol = generate_random_protocol()
 
-    await send_pwd_change_mail(
-        dest_email=user.email, protocol=protocol, username=user.name.split(" ")[0]
+    await EmailClient().send_pwd_change_mail(
+        dest_email=user.email, char_protocol=protocol, username=user.name.split(" ")[0]
     )
 
     async with redis_connection() as redis:
@@ -230,7 +213,7 @@ async def handle_register_confirm_req(
         if not user_data:
             raise InvalidProtocol()
 
-        user_data["password"] = hasher.hash(user_data.get("password"))
+        user_data["password"] = HASHER.hash(user_data.get("password"))
 
         try:
             created_user = await session.execute(
@@ -301,7 +284,7 @@ async def handle_user_login_req(
             raise InvalidCredentials("Usuário não encontrado")
 
         try:
-            hasher.verify(found.password, user.password)
+            HASHER.verify(found.password, user.password)
         except VerifyMismatchError:
             raise InvalidCredentials("Senha inválida")
 
@@ -369,7 +352,7 @@ async def handle_pwd_change_confirm_req(protocol: UUID):
         if not user_data:
             raise InvalidProtocol()
 
-        new_hashed_pwd = hasher.hash(user_data.new_password)
+        new_hashed_pwd = HASHER.hash(user_data.new_password)
 
         try:
             async with db_connection() as session:

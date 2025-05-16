@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy import BinaryExpression, and_, or_, select
 from sqlalchemy.orm import InstrumentedAttribute, MappedAsDataclass, joinedload
 
-from core.authetication import TokenService
+from app.core.authentication import TokenService
 from core.connections import db_connection
 from core.utils import cached_operation
 

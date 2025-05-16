@@ -3,7 +3,7 @@ from sqlalchemy import BinaryExpression, and_, delete, update
 from sqlalchemy.orm import InstrumentedAttribute, MappedAsDataclass
 
 from ..core import schemas
-from ..core.authetication import TokenService
+from ..core.authentication import TokenService
 from ..core.connections import db_connection
 from ..core.exceptions import EntityNotFound
 

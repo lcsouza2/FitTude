@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import MappedAsDataclass
 
 from core import schemas
-from core.authetication import TokenService
+from app.core.authentication import TokenService
 from core.connections import AsyncSession
 from core.exceptions import (
     ForeignKeyViolation,
