@@ -5,6 +5,13 @@ description = "App para acompanhar a rotina de treinos"
 authors = ["Luiz Souza <lcsouzagarcia@gmail.com>"]
 readme = "README.md"
 
+[[tool.poetry.packages]]
+include = "app"
+
+[[tool.poetry.packages]]
+include = "tests"
+
+
 [tool.poetry.dependencies]
 python = "^3.12"
 fastapi = {extras = ["standard"], version = "^0.115.6"}
