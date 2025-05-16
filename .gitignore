@@ -1,3 +1,11 @@
 .env
 __pycache__
 .ruff_cache
+.pytest_cache
+*.egg-info
+*.egg
+*.whl
+*.pyc
+*.pyo
+*.pyd
+*.db
