@@ -2,12 +2,12 @@ from fastapi import APIRouter, Depends
 from sqlalchemy import BinaryExpression, and_, delete, update
 from sqlalchemy.orm import InstrumentedAttribute, MappedAsDataclass
 
-from core import schemas
-from core.authetication import TokenService
-from core.connections import db_connection
-from core.exceptions import EntityNotFound
+from ..core import schemas
+from ..core.authetication import TokenService
+from ..core.connections import db_connection
+from ..core.exceptions import EntityNotFound
 
-from ..database import db_mapping
+from database import db_mapping
 
 DATA_DELETE_API = APIRouter(prefix="/api/data")
 

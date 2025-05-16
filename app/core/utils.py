@@ -3,8 +3,8 @@ from functools import wraps
 from json import dumps
 from typing import Callable
 
-from core.config import Config
-from core.connections import redis_connection
+from ..core.config import Config
+from ..core.connections import redis_connection
 
 
 def actual_datetime():
