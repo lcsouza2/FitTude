@@ -5,6 +5,14 @@ from app.core.email_service import EmailClient
 
 @patch("app.core.email_service.FastMail.send_message")
 async def test_send_pwd_change_mail(send_message_mock: MagicMock):
+    """
+    Create a mock for the send_message method of FastMail.
+    This test simulates sending a password change email.
+    It checks if the send_message method is called once
+    and verifies that the function returns True.
+    """
+
+
     instance = send_message_mock.return_value
 
     call_result = await EmailClient().send_pwd_change_mail(
@@ -18,6 +26,13 @@ async def test_send_pwd_change_mail(send_message_mock: MagicMock):
 
 @patch("app.core.email_service.FastMail.send_message")
 async def test_send_register_verify_mail(send_message_mock: MagicMock):
+    """
+    Create a mock for the send_message method of FastMail.
+    This test simulates sending a register confirm email.
+    It checks if the send_message method is called once
+    and verifies that the function returns True.
+    """
+
     instance = send_message_mock.return_value
 
     call_result = await EmailClient().send_register_verify_mail(
