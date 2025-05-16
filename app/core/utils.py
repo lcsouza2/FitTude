@@ -3,12 +3,12 @@ from functools import wraps
 from json import dumps
 from typing import Callable
 
-from ..core.config import Config
-from ..core.connections import redis_connection
+from app.core.config import Config
+from app.core.connections import redis_connection
 
 
 def actual_datetime():
-    return datetime.now(timezone.utc)
+    return datetime.now(timezone.utc).replace(microsecond=0)
 
 
 def exclude_falsy_from_dict(payload: dict):
