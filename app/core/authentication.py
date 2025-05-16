@@ -2,14 +2,14 @@ import jwt
 from fastapi import Depends, Request, Response
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
-from ..core.config import Config
-from ..core.exceptions import (
+from app.core.config import Config
+from app.core.exceptions import (
     InvalidToken,
     MissingToken,
     SessionExpired,
     UnknownAuthError,
 )
-from ..core.utils import actual_datetime
+from app.core.utils import actual_datetime
 
 
 class TokenService:
@@ -152,7 +152,7 @@ class TokenService:
         try:
             decoded = jwt.decode(
                 token,
-                Config.get_jwt_session_key(),
+                key=Config.get_jwt_session_key(),
                 algorithms=Config.JWT_ALGORITHM,
             )
 
