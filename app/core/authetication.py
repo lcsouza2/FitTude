@@ -2,9 +2,14 @@ import jwt
 from fastapi import Depends, Request, Response
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
-from core.config import Config
-from core.exceptions import InvalidToken, MissingToken, SessionExpired, UnknownAuthError
-from core.utils import actual_datetime
+from ..core.config import Config
+from ..core.exceptions import (
+    InvalidToken,
+    MissingToken,
+    SessionExpired,
+    UnknownAuthError,
+)
+from ..core.utils import actual_datetime
 
 
 class TokenService:
