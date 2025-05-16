@@ -32,7 +32,6 @@ def test_exclude_falsy_from_dict():
         "key11": "non-empty",
         "key12": 3.14,
         "key13": -1,
-
     }
 
     result = exclude_falsy_from_dict(test_dict)
