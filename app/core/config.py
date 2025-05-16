@@ -38,8 +38,6 @@ class Config:
     JWT_ALGORITHM: str = "HS256"
     JWT_HEADER_TYPE: str = "Bearer"
     JWT_HEADER_NAME: str = "Authorization"
-    JWT_BLACKLIST_ENABLED: bool = True
-    JWT_BLACKLIST_TOKEN_CHECKS: set[str] = {"access", "refresh"}
 
     # Security Settings
     CORS_ORIGINS: list[str] = ["http://localhost:8000", "https://fittude.onrender.com"]
