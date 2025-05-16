@@ -19,19 +19,19 @@ from pydantic_core import PydanticCustomError
 from sqlalchemy import exc, insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core import schemas
-from core.authetication import TokenService
-from core.config import Config
-from core.connections import db_connection, redis_connection
-from core.email_service import send_pwd_change_mail, send_verification_mail
-from core.exceptions import (
+from ..core import schemas
+from ..core.authetication import TokenService
+from ..core.config import Config
+from ..core.connections import db_connection, redis_connection
+from ..core.email_service import send_pwd_change_mail, send_verification_mail
+from ..core.exceptions import (
     InvalidCredentials,
     InvalidProtocol,
     UniqueConstraintViolation,
 )
-from core.utils import cached_operation
+from ..core.utils import cached_operation
 
-from ..database import db_mapping
+from database import db_mapping
 
 USER_ROUTER = APIRouter(prefix="/api/user")
 
@@ -39,12 +39,29 @@ hasher = PasswordHasher()
 
 
 def generate_pwd_change_protocol():
+    """
+    Generate a random 6-char alphanumeric string as a protocol.
+    This protocol is used for password change requests.
+    Returns:
+        str: Randomly generated protocol string
+    """
+
     return "".join(
         [random.choice(string.ascii_letters + string.digits) for _ in range(6)]
     )
 
 
 async def save_register_protocol(user: schemas.UserRegister):
+    """
+    Save user registration data in Redis and send verification email.
+    This function:
+    1. Generates a unique protocol
+    2. Sends verification email
+    3. Stores user data in Redis with 30 min expiration time
+    Args:
+        user (schemas.UserRegister): User registration data
+    """
+
     protocol = uuid4()
 
     await send_verification_mail(
@@ -57,11 +74,20 @@ async def save_register_protocol(user: schemas.UserRegister):
         )
         await redis.expire(
             f"protocol:{protocol};type:register",
-            1800,  # 30 minutos
+            1800,  # 30 min
         )
 
 
 async def save_pwd_change_protocol(user: schemas.UserPwdChange):
+    """
+    Save user data in Redis and send verification email.
+    This function:
+    1. Generates a unique protocol
+    2. Sends verification email
+    3. Stores user data in Redis with 30 min expiration time
+    Args:
+        user (schemas.UserPwdChange): User registration data
+    """
     protocol = generate_pwd_change_protocol()
 
     await send_pwd_change_mail(
@@ -70,11 +96,11 @@ async def save_pwd_change_protocol(user: schemas.UserPwdChange):
 
     async with redis_connection() as redis:
         await redis.hset(
-            f"protocol:{protocol} ; type:pwd_change", mapping=user.model_dump()
+            f"protocol:{protocol};type:pwd_change", mapping=user.model_dump()
         )
         await redis.expire(
-            f"protocol:{protocol}",
-            1800,  # 30 minutos
+            f"protocol:{protocol};type:pwd_change",
+            1800,  # 30 min
         )
 
 
@@ -103,7 +129,7 @@ async def _generate_auth_tokens(
     return session_token, refresh_token
 
 
-@cached_operation(timeout=3600)
+@cached_operation()
 async def search_for_user(email: EmailStr) -> str:
     """
     Check if a username or email is already registered in the database.
@@ -112,11 +138,12 @@ async def search_for_user(email: EmailStr) -> str:
         email (EmailStr): The email to check
 
     Returns:
-        str: "Credenciais válidas" if no conflicts found
+        bool: True if no conflicts found
 
     Raises:
         UniqueConstraintViolation: If username or email already exists
     """
+
     async with db_connection() as session:
         result = await session.execute(
             select(db_mapping.Usuario).where(
@@ -134,7 +161,7 @@ async def search_for_user(email: EmailStr) -> str:
 async def begin_register(
     user: schemas.UserRegister, bg_tasks: BackgroundTasks
 ) -> dict[str, str]:
-    """
+    """ 
     Start user registration process by sending verification email.
 
     This function:
