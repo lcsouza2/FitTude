@@ -13,7 +13,9 @@ def actual_datetime():
 
 def exclude_falsy_from_dict(payload: dict):
     return {
-        key: value for key, value in payload.items() if value or (isinstance(value, bool) and value is True)
+        key: value
+        for key, value in payload.items()
+        if value or (isinstance(value, bool) and value is True)
     }
 
 
