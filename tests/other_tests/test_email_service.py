@@ -12,7 +12,6 @@ async def test_send_pwd_change_mail(send_message_mock: MagicMock):
     and verifies that the function returns True.
     """
 
-
     instance = send_message_mock.return_value
 
     call_result = await EmailClient().send_pwd_change_mail(

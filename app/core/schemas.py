@@ -21,7 +21,6 @@ class UserBase(BaseSchema):
 
 
 class UserRegister(UserBase):
-    username: str
     name: str
 
 
