@@ -5,10 +5,10 @@ from sqlalchemy import BinaryExpression, and_, or_, select
 from sqlalchemy.orm import InstrumentedAttribute, MappedAsDataclass, joinedload
 
 from app.core.authentication import TokenService
-from core.connections import db_connection
-from core.utils import cached_operation
+from app.core.connections import db_connection
+from app.core.utils import cached_operation
 
-from ..database import db_mapping
+from app.database import db_mapping
 
 DATA_GET_API = APIRouter(prefix="/api/data", tags=["data"])
 
