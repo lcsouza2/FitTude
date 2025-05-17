@@ -5,17 +5,17 @@ from sqlalchemy import insert
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import MappedAsDataclass
 
-from core import schemas
+from app.core import schemas
 from app.core.authentication import TokenService
-from core.connections import AsyncSession
-from core.exceptions import (
+from app.core.connections import AsyncSession
+from app.core.exceptions import (
     ForeignKeyViolation,
     PrimaryKeyViolation,
     UniqueConstraintViolation,
 )
-from core.utils import exclude_falsy_from_dict
+from app.core.utils import exclude_falsy_from_dict
 
-from ..database import db_mapping
+from database import db_mapping
 
 DATA_POST_API = APIRouter(prefix="/api/data")
 
