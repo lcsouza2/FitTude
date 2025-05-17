@@ -33,7 +33,7 @@ class UserLogin(UserBase):
     keep_login: bool
 
 
-class MucleGroup(BaseSchema):
+class Musclegroup(BaseSchema):
     group_name: str
     user_id: Optional[int]
 

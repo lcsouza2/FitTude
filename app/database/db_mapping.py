@@ -10,6 +10,9 @@ reg = registry()
 class MuscleGroup:
     __tablename__ = "muscle_group"
 
+    user_id: Mapped[int] = mapped_column(
+        
+    )
     group_name: Mapped[str] = mapped_column(primary_key=True)
 
 
