@@ -105,12 +105,12 @@ async def _execute_select(
 
 @DATA_GET_API.get("/groups")
 @cached_operation(timeout=3600)
-async def get_all_muscular_groups(user_id: int = Depends(TokenService.validate_token)):
+async def get_all_muscle_groups(user_id: int = Depends(TokenService.validate_token)):
     return await _execute_select(
-        table_or_columns=db_mapping.Grupamento,
+        table_or_columns=db_mapping.MuscleGroup,
         where_clause=or_(
-            db_mapping.Grupamento.id_usuario == user_id,
-            db_mapping.Grupamento.id_usuario == None,
+            db_mapping.MuscleGroup.user_id == user_id,
+            db_mapping.MuscleGroup.user_id == None,
         ),
     )
 
@@ -118,80 +118,74 @@ async def get_all_muscular_groups(user_id: int = Depends(TokenService.validate_t
 @DATA_GET_API.get("/muscles")
 @cached_operation(timeout=3600)
 async def get_all_muscles(user_id: int = Depends(TokenService.validate_token)):
-    """Busca os músuclos referentes a um usuário e retorna eles"""
     return await _execute_select(
-        table_or_columns=db_mapping.Musculo,
+        table_or_columns=db_mapping.Muscle,
         where_clause=or_(
-            db_mapping.Musculo.id_usuario == user_id,
-            db_mapping.Musculo.id_usuario == None,
+            db_mapping.Muscle.user_id == user_id,
+            db_mapping.Muscle.user_id == None,
         ),
     )
 
 
 @DATA_GET_API.get("/equipment")
 @cached_operation(timeout=3600)
-async def get_all_equipments(user_id: int = Depends(TokenService.validate_token)):
-    """Busca os equipamentos referentes a um usuário e retorna eles"""
+async def get_all_equipment(user_id: int = Depends(TokenService.validate_token)):
     return await _execute_select(
-        table_or_columns=db_mapping.Aparelho,
+        table_or_columns=db_mapping.Equipment,
         where_clause=or_(
-            db_mapping.Aparelho.id_usuario == user_id,
-            db_mapping.Aparelho.id_usuario == None,
+            db_mapping.Equipment.user_id == user_id,
+            db_mapping.Equipment.user_id == None,
         ),
     )
 
 
 @DATA_GET_API.get("/exercises")
 async def get_all_exercises(user_id: int = Depends(TokenService.validate_token)):
-    """Valida o token e busca os exercicios relativos aquele usuário"""
     return await _execute_select(
-        table_or_columns=db_mapping.Exercicio,
+        table_or_columns=db_mapping.Exercise,
         where_clause=or_(
-            db_mapping.Exercicio.id_usuario == user_id,
-            db_mapping.Exercicio.id_usuario == None,
+            db_mapping.Exercise.user_id == user_id,
+            db_mapping.Exercise.user_id == None,
         ),
     )
 
 
-@DATA_GET_API.get("/workout/sheets")
-async def get_all_workout_sheets(user_id: int = Depends(TokenService.validate_token)):
+@DATA_GET_API.get("/workout/plans")
+async def get_all_workout_plans(user_id: int = Depends(TokenService.validate_token)):
     return await _execute_select(
-        table_or_columns=db_mapping.FichaTreino,
-        where_clause=db_mapping.FichaTreino.id_usuario == user_id,
+        table_or_columns=db_mapping.WorkoutPlan,
+        where_clause=db_mapping.WorkoutPlan.user_id == user_id,
     )
 
 
-@DATA_GET_API.get("/workout/divisions")
-async def get_all_workout_divisions(
-    user_id: int = Depends(TokenService.validate_token),
-):
+@DATA_GET_API.get("/workout/splits")
+async def get_all_workout_splits(user_id: int = Depends(TokenService.validate_token)):
     return await _execute_select(
-        table_or_columns=db_mapping.DivisaoTreino,
-        joins=[(db_mapping.FichaTreino, None)],
-        where_clause=db_mapping.FichaTreino.id_usuario == user_id,
+        table_or_columns=db_mapping.WorkoutSplit,
+        joins=[(db_mapping.WorkoutPlan, None)],
+        where_clause=db_mapping.WorkoutPlan.user_id == user_id,
     )
 
 
-@DATA_GET_API.get("/workout/division-exercises")
-async def get_all_division_exercises(
-    user_id: int = Depends(TokenService.validate_token),
-):
+@DATA_GET_API.get("/workout/split-exercises")
+async def get_all_split_exercises(user_id: int = Depends(TokenService.validate_token)):
     return await _execute_select(
-        table_or_columns=db_mapping.DivisaoExercicio,
+        table_or_columns=db_mapping.SplitExercise,
         joins=[
             (
-                db_mapping.DivisaoTreino,
-                db_mapping.DivisaoTreino.divisao == db_mapping.DivisaoExercicio.divisao,
+                db_mapping.WorkoutSplit,
+                db_mapping.WorkoutSplit.split == db_mapping.SplitExercise.split,
             ),
-            (db_mapping.FichaTreino, None),
+            (db_mapping.WorkoutPlan, None),
         ],
-        where_clause=db_mapping.FichaTreino.id_usuario == user_id,
+        where_clause=db_mapping.WorkoutPlan.user_id == user_id,
     )
 
 
 @DATA_GET_API.get("/workout/reports")
 async def get_all_workout_reports(user_id: int = Depends(TokenService.validate_token)):
     return await _execute_select(
-        table_or_columns=db_mapping.RelatorioTreino,
-        where_clause=db_mapping.RelatorioTreino.id_usuario == user_id,
+        table_or_columns=db_mapping.WorkoutReport,
+        joins=[(db_mapping.WorkoutPlan, None)],
+        where_clause=db_mapping.WorkoutPlan.user_id == user_id,
     )

@@ -15,7 +15,7 @@ from app.core.exceptions import (
 )
 from app.core.utils import exclude_falsy_from_dict
 
-from database import db_mapping
+from app.database import db_mapping
 
 DATA_POST_API = APIRouter(prefix="/api/data")
 
@@ -28,279 +28,275 @@ async def _execute_insert(
     entity_name: str,
 ) -> str:
     """
-    Executa uma operação de inserção genérica no banco de dados.
+    Executes a generic insert operation in the database.
 
     Args:
-        table: Classe do modelo SQLAlchemy a ser inserido
-        values: Dicionário com os valores a serem inseridos
-        error_mapping: Lista de dicionários com mapeamento de erros
-        entity_name: Nome da entidade para mensagens de erro
+        table: SQLAlchemy model class to insert into
+        values: Dictionary with the values to insert
+        error_mapping: List of dictionaries mapping database constraints to errors
+        entity_name: Name of the entity for error messages
 
     Returns:
-        str: Mensagem de sucesso
+        str: Success message
 
     Raises:
-        HTTPException: Para violações de constraint do banco
+        HTTPException: For database constraint violations
     """
     async with AsyncSession() as session:
         try:
             await session.execute(insert(table).values(values))
             await session.commit()
-            return f"{entity_name} criado com sucesso"
+            return f"{entity_name} created successfully"
 
         except IntegrityError as exc:
             await session.rollback()
             for error in error_mapping:
                 if error.get("constraint") in str(exc):
                     raise error.get("error")(error.get("message"))
-            # Se não encontrou erro mapeado, re-raise a exceção original
+            # If no mapped error is found, re-raise the original exception
             raise
 
 
 @DATA_POST_API.post("/groups/new")
 async def create_new_group(
-    group: schemas.Grupamento, user_id: int = Depends(TokenService.validate_token)
+    group: schemas.Musclegroup, user_id: int = Depends(TokenService.validate_token)
 ):
-    """Adiciona um novo grupamento muscular personalizado pelo usuário"""
+    """Add a new muscle group"""
     return await _execute_insert(
-        table=db_mapping.Grupamento,
-        values={**group.model_dump(), "id_usuario": user_id},
+        table=db_mapping.MuscleGroup,
+        values={**group.model_dump(), "user_id": user_id},
         error_mapping=[
             {
-                "constraint": "uq_grupamento",
+                "constraint": "uq_muscle_group",
                 "error": UniqueConstraintViolation,
-                "message": "Esse grupamento já existe",
+                "message": "This muscle group already exists",
             },
             {
-                "constraint": "fk_grupamento_usuario",
+                "constraint": "fk_muscle_group_user",
                 "error": ForeignKeyViolation,
-                "message": "Usuário referenciado não existe",
+                "message": "Referenced user not found",
             },
         ],
-        entity_name="Grupamento",
+        entity_name="Muscle Group",
     )
 
 
 @DATA_POST_API.post("/equipment/new")
 async def create_new_equipment(
-    equipment: schemas.Aparelho, user_id: int = Depends(TokenService.validate_token)
+    equipment: schemas.Equipment, user_id: int = Depends(TokenService.validate_token)
 ):
-    """
-    Tenta criar o aparelho enviado pelo usuário no banco de dados
-    """
+    """Create new equipment"""
     return await _execute_insert(
-        table=db_mapping.Aparelho,
-        values={**equipment.model_dump(), "id_usuario": user_id},
+        table=db_mapping.Equipment,
+        values={**equipment.model_dump(), "user_id": user_id},
         error_mapping=[
             {
-                "constraint": "uq_aparelho",
+                "constraint": "uq_equipment",
                 "error": UniqueConstraintViolation,
-                "message": "Esse aparelho já existe",
+                "message": "This equipment already exists",
             },
             {
-                "constraint": "fk_aparelho_usuario",
+                "constraint": "fk_equipment_user",
                 "error": ForeignKeyViolation,
-                "message": "Usuário referenciado não existe",
+                "message": "Referenced user not found",
             },
             {
-                "constraint": "fk_aparelho_grupamento",
+                "constraint": "fk_equipment_muscle_group",
                 "error": ForeignKeyViolation,
-                "message": "O grupamento referenciado não existe",
+                "message": "Referenced muscle group not found",
             },
         ],
-        entity_name="Aparelho",
+        entity_name="Equipment",
     )
 
 
 @DATA_POST_API.post("/muscle/new")
 async def create_new_muscle(
-    muscle: schemas.Musculo, user_id: int = Depends(TokenService.validate_token)
+    muscle: schemas.Muscle, user_id: int = Depends(TokenService.validate_token)
 ):
-    """Adiciona um novo músculo personalizado pelo usuário ao banco de dados"""
+    """Add a new muscle"""
     return await _execute_insert(
-        table=db_mapping.Musculo,
-        values={**muscle.model_dump(), "id_usuario": user_id},
+        table=db_mapping.Muscle,
+        values={**muscle.model_dump(), "user_id": user_id},
         error_mapping=[
             {
-                "constraint": "uq_musculo",
+                "constraint": "uq_muscle",
                 "error": UniqueConstraintViolation,
-                "message": "Esse músculo já existe",
+                "message": "This muscle already exists",
             },
             {
-                "constraint": "fk_musculo_usuario",
+                "constraint": "fk_muscle_user",
                 "error": ForeignKeyViolation,
-                "message": "Usuário referenciado não existe",
+                "message": "Referenced user not found",
             },
             {
-                "constraint": "fk_musculo_grupamento",
+                "constraint": "fk_muscle_muscle_group",
                 "error": ForeignKeyViolation,
-                "message": "O grupamento referenciado não existe",
+                "message": "Referenced muscle group not found",
             },
         ],
-        entity_name="Musculo",
+        entity_name="Muscle",
     )
 
 
 @DATA_POST_API.post("/exercise/new")
 async def create_new_exercise(
-    exercise: schemas.Exercicio, user_id: int = Depends(TokenService.validate_token)
+    exercise: schemas.Exercise, user_id: int = Depends(TokenService.validate_token)
 ):
-    """Adiciona um exercício personalizado pelo usuário ao banco de dados"""
+    """Add a new exercise"""
     return await _execute_insert(
-        table=db_mapping.Exercicio,
-        values={**exercise.model_dump(), "id_usuario": user_id},
+        table=db_mapping.Exercise,
+        values={**exercise.model_dump(), "user_id": user_id},
         error_mapping=[
             {
-                "constraint": "uq_exercicio",
+                "constraint": "uq_exercise",
                 "error": UniqueConstraintViolation,
-                "message": "Esse exercício já existe",
+                "message": "This exercise already exists",
             },
             {
-                "constraint": "fk_exercicio_usuario",
+                "constraint": "fk_exercise_user",
                 "error": ForeignKeyViolation,
-                "message": "Usuário referenciado não existe",
+                "message": "Referenced user not found",
             },
             {
-                "constraint": "fk_exercicio_aparelho",
+                "constraint": "fk_exercise_equipment",
                 "error": ForeignKeyViolation,
-                "message": "O aparelho referenciado não existe",
+                "message": "Referenced equipment not found",
             },
             {
-                "constraint": "fk_exercicio_musculo",
+                "constraint": "fk_exercise_muscle",
                 "error": ForeignKeyViolation,
-                "message": "O musculo referenciado não existe",
+                "message": "Referenced muscle not found",
             },
         ],
-        entity_name="Exercicio",
+        entity_name="Exercise",
     )
 
 
-@DATA_POST_API.post("/workout/sheet/new")
-async def create_new_workout_sheet(
-    sheet: schemas.FichaTreino, user_id: int = Depends(TokenService.validate_token)
+@DATA_POST_API.post("/workout/plan/new")
+async def create_new_workout_plan(
+    plan: schemas.WorkoutPlan, user_id: int = Depends(TokenService.validate_token)
 ):
-    """Cria uma nova ficha de treino"""
+    """Create a new workout plan"""
     return await _execute_insert(
-        table=db_mapping.FichaTreino,
-        values={**sheet.model_dump(), "id_usuario": user_id},
+        table=db_mapping.WorkoutPlan,
+        values={**plan.model_dump(), "user_id": user_id},
         error_mapping=[
             {
-                "constraint": "uq_ficha_treino",
+                "constraint": "uq_workout_plan",
                 "error": UniqueConstraintViolation,
-                "message": "Essa ficha de treino já existe",
+                "message": "This workout plan already exists",
             },
             {
-                "constraint": "fk_ficha_treino_usuario",
+                "constraint": "fk_workout_plan_user",
                 "error": ForeignKeyViolation,
-                "message": "O usuario referenciado não existe",
+                "message": "Referenced user not found",
             },
         ],
-        entity_name="FichaTreino",
+        entity_name="Workout Plan",
     )
 
 
-@DATA_POST_API.post("/workout/division/new")
-async def criar_nova_divisao_treino(
-    division: schemas.DivisaoTreino, user_id: int = Depends(TokenService.validate_token)
+@DATA_POST_API.post("/workout/split/new")
+async def create_new_workout_split(
+    split: schemas.WorkoutSplit, user_id: int = Depends(TokenService.validate_token)
 ):
-    """Adiciona uma nova divisão de treino a uma ficha de treino"""
+    """Create a new workout split"""
     return await _execute_insert(
-        table=db_mapping.DivisaoTreino,
-        values=division.model_dump(),
+        table=db_mapping.WorkoutSplit,
+        values=split.model_dump(),
         error_mapping=[
             {
-                "constraint": "pk_divisao_treino",
+                "constraint": "pk_workout_split",
                 "error": PrimaryKeyViolation,
-                "message": "Essa divisão de treino já existe nessa ficha",
+                "message": "This workout split already exists in the plan",
             },
             {
-                "constraint": "fk_divisao_treino_ficha_treino",
+                "constraint": "fk_workout_split_workout_plan",
                 "error": ForeignKeyViolation,
-                "message": "A ficha de treino referenciada não existe",
+                "message": "Referenced workout plan not found",
             },
         ],
-        entity_name="DivisaoTreino",
+        entity_name="Workout Split",
     )
 
 
-@DATA_POST_API.post("/workout/division/add_exercise")
-async def add_exercise_to_division(
-    exercises: List[schemas.DivisaoExercicio],
+@DATA_POST_API.post("/workout/split/add_exercise")
+async def add_exercise_to_split(
+    exercises: List[schemas.SplitExercise],
     user_id: int = Depends(TokenService.validate_token),
 ):
-    """Adiciona uma lista de exercícios a uma divisão de treino"""
-
+    """Add a list of exercises to a workout split"""
     await _execute_insert(
-        table=db_mapping.DivisaoExercicio,
+        table=db_mapping.SplitExercise,
         values=[i.model_dump() for i in exercises],
         error_mapping=[
             {
-                "constraint": "pk_divisao_exercicio",
+                "constraint": "pk_split_exercise",
                 "error": PrimaryKeyViolation,
-                "message": "Esse exercicio já foi adicionado a essa divisão",
+                "message": "This exercise already exists in the split",
             },
             {
-                "constraint": "fk_divisao_exercicio_divisao_treino",
+                "constraint": "fk_split_exercise_workout_split",
                 "error": ForeignKeyViolation,
-                "message": "A divisão de treino referenciada não existe",
+                "message": "Referenced workout split not found",
             },
             {
-                "constraint": "fk_divisao_exercicio_exercicio",
+                "constraint": "fk_split_exercise_exercise",
                 "error": ForeignKeyViolation,
-                "message": "O exercício referenciado não existe",
+                "message": "Referenced exercise not found",
             },
         ],
-        entity_name="Exercício na divisão",
+        entity_name="Split Exercise",
     )
 
 
-@DATA_POST_API.post("/workout/report/new_report")
-async def create_new_report(
-    report: schemas.RelatorioTreino, user_id: int = Depends(TokenService.validate_token)
+@DATA_POST_API.post("/workout/report/new")
+async def create_new_workout_report(
+    report: schemas.WorkoutReport, user_id: int = Depends(TokenService.validate_token)
 ):
-    """Cria um relatório de treino"""
+    """Create a new workout report"""
     return await _execute_insert(
-        table=db_mapping.RelatorioTreino,
+        table=db_mapping.WorkoutReport,
         values=report.model_dump(),
         error_mapping=[
             {
-                "constraint": "fk_relatorio_treino_divisao_treino",
+                "constraint": "fk_workout_report_workout_split",
                 "error": ForeignKeyViolation,
-                "message": "A divisão de treino referenciada não existe",
+                "message": "Referenced workout split not found",
             },
         ],
-        entity_name="Relatorio de treino",
+        entity_name="Workout Report",
     )
 
 
-@DATA_POST_API.post("/workout/report/add_exercise")
-async def add_exercise_to_report(
-    exercises: List[schemas.SerieRelatorio],
+@DATA_POST_API.post("/workout/report/add_set")
+async def add_set_to_report(
+    sets: List[schemas.SetReport],
     user_id: int = Depends(TokenService.validate_token),
 ):
-    """Adiciona uma lista de exercícios feitos a um relatório de treino"""
-
+    """Add a list of sets to a workout report"""
     await _execute_insert(
-        table=db_mapping.SerieRelatorio,
+        table=db_mapping.SetReport,
         values=[
-            exclude_falsy_from_dict(i.model_dump(exclude_none=True)) for i in exercises
+            exclude_falsy_from_dict(i.model_dump(exclude_none=True)) for i in sets
         ],
         error_mapping=[
             {
-                "constraint": "pk_serie_relatorio",
+                "constraint": "pk_set_report",
                 "error": PrimaryKeyViolation,
-                "message": "Esse exercício já existe nesse relatório",
+                "message": "This set already exists in the report",
             },
             {
-                "constraint": "fk_serie_relatorio_divisao_exercicio",
+                "constraint": "fk_set_report_split_exercise",
                 "error": ForeignKeyViolation,
-                "message": "Exercício não encontrado na divisão referenciada",
+                "message": "Referenced split exercise not found",
             },
             {
-                "constraint": "fk_serie_relatorio_relatorio_treino",
+                "constraint": "fk_set_report_workout_report",
                 "error": ForeignKeyViolation,
-                "message": "Relatório referenciado não encontrado",
+                "message": "Referenced workout report not found",
             },
         ],
-        entity_name="Série no relatório",
+        entity_name="Set Report",
     )
