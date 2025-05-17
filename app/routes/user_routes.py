@@ -10,7 +10,7 @@ from uuid import UUID, uuid4
 
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
-from fastapi import APIRouter, BackgroundTasks, Depends
+from fastapi import APIRouter, BackgroundTasks, Depends, Response
 from fastapi.templating import Jinja2Templates
 from pydantic import EmailStr, validate_email
 from pydantic_core import PydanticCustomError
@@ -128,13 +128,13 @@ async def search_for_user(email: EmailStr) -> str:
 
     async with db_connection() as session:
         result = await session.execute(
-            select(db_mapping.Usuario).where(
-                db_mapping.Usuario.email == email,
+            select(db_mapping.User).where(
+                db_mapping.User.email == email,
             )
         )
 
     if result.scalar_one_or_none():
-        raise UniqueConstraintViolation("Email já está em uso")
+        raise UniqueConstraintViolation("E-mail already in use")
 
     return True
 
@@ -166,16 +166,13 @@ async def handle_register_req(
     try:
         validate_email(user.email)
     except PydanticCustomError:
-        raise InvalidCredentials("Email inválido")
+        raise InvalidCredentials("Invalid E-mail")
 
     await search_for_user(email=user.email)
 
     bg_tasks.add_task(save_register_protocol, user=user)
 
-    return {
-        "message": """Email de verificação enviado.
-        Por favor verifique sua caixa de entrada."""
-    }
+    return Response("Verification mail sent successfully!")
 
 
 @USER_ROUTER.get("/register/confirm/{protocol}")
@@ -217,14 +214,14 @@ async def handle_register_confirm_req(
 
         try:
             created_user = await session.execute(
-                insert(db_mapping.Usuario)
+                insert(db_mapping.User)
                 .values(user_data)
-                .returning(db_mapping.Usuario.id_usuario)
+                .returning(db_mapping.User.user_id)
             )
 
         except exc.IntegrityError as e:
             if "uq_" in str(e):
-                raise UniqueConstraintViolation("Esse email já está sendo usado!")
+                raise UniqueConstraintViolation("E-mail already in use")
 
         else:
             session_token = refresh_token = _generate_auth_tokens(
@@ -241,13 +238,14 @@ async def handle_register_confirm_req(
 
             default_context = {
                 "request": token_service.request,
-                "acess_token": session_token,
                 "token_type": "Bearer",
                 "expires_in": int(Config.JWT_ACCESS_TOKEN_EXPIRES.total_seconds()),
             }
 
             return Jinja2Templates("./templates").TemplateResponse(
-                "confirm_register.html", default_context
+                name="confirm_register.html", 
+                context=default_context,
+                headers={"Authorization": f"Bearer {session_token}"},
             )
 
 
@@ -276,20 +274,20 @@ async def handle_user_login_req(
 
     async with session:
         result = await session.execute(
-            select(db_mapping.Usuario.id_usuario, db_mapping.Usuario.password).where(
-                db_mapping.Usuario.email == user.email,
+            select(db_mapping.User.user_id, db_mapping.User.password).where(
+                db_mapping.User.email == user.email,
             )
         )
         if not (found := result.first()):
-            raise InvalidCredentials("Usuário não encontrado")
+            raise InvalidCredentials("User not found")
 
         try:
             HASHER.verify(found.password, user.password)
         except VerifyMismatchError:
-            raise InvalidCredentials("Senha inválida")
+            raise InvalidCredentials("Invalid password")
 
         session_token, refresh_token = await _generate_auth_tokens(
-            user_id=found.id_usuario,
+            user_id=found.user_id,
             token_service=token_service,
             long_session=user.keep_login,
         )
@@ -298,12 +296,14 @@ async def handle_user_login_req(
             token_service.response, refresh_token
         )
 
-        return {
-            "access_token": session_token,
-            "token_type": "Bearer",
-            "expires_in": int(token_service.session_expires.total_seconds()),
-        }
-
+        return Response(
+            content={
+                "message": "Login successful!",
+                "token_type": "Bearer",
+                "expires_in": int(token_service.session_expires.total_seconds()),
+            },
+            headers={"Authorization": f"Bearer {session_token}"},
+        ) 
 
 @USER_ROUTER.post("/logout")
 async def handle_user_logout_req(
@@ -318,7 +318,7 @@ async def handle_user_logout_req(
     """
     token_service.delete_refresh_token_cookie(token_service.response)
 
-    return {"message": "Logout realizado com sucesso!"}
+    return Response("Logout completed successfully!")
 
 
 @USER_ROUTER.post("/password_change")
@@ -329,6 +329,7 @@ async def handle_pwd_change_req(
     Handle password change request by sending verification email.
     """
     background_tasks.add_task(save_pwd_change_protocol, user=user)
+    return Response("Verification mail send successfully!")
 
 
 @USER_ROUTER.get("/password_change/confirm/{protocol}")
@@ -357,19 +358,19 @@ async def handle_pwd_change_confirm_req(protocol: UUID):
         try:
             async with db_connection() as session:
                 await session.execute(
-                    update(db_mapping.Usuario.password)
-                    .where(db_mapping.Usuario.email == user_data.email)
+                    update(db_mapping.User.password)
+                    .where(db_mapping.User.email == user_data.email)
                     .values(new_hashed_pwd)
                 )
                 await session.commit()
 
         except exc.IntegrityError as e:
             if "uq_" in str(e):
-                raise UniqueConstraintViolation("Esse email já está sendo usado!")
+                raise UniqueConstraintViolation("E-mail already in use")
 
-        redis.delete(f"protocol:{protocol}")
+        redis.delete(f"protocol:{protocol};type:pwd_change")
 
-        return {"message": "Senha alterada com sucesso!"}
+        return Response("Password changed successfully!")
 
 
 @USER_ROUTER.post("/refresh_token")
@@ -386,8 +387,14 @@ async def handle_refresh_token_req(
         dict[str, str]: New session token and its metadata
     """
 
-    return {
-        "access_token": await token_service.renew_token(token_service.request),
-        "token_type": "Bearer",
-        "expires_in": int(token_service.session_expires.total_seconds()),
-    }
+    new_token = await token_service.renew_token(token_service.request)
+
+    return Response(
+        content={
+            "message": "Token refreshed successfully!",
+            "token_type": "Bearer",
+            "expires_in": int(token_service.session_expires.total_seconds()),
+        },
+        headers={"Authorization": f"Bearer {new_token}"},
+        )
+
