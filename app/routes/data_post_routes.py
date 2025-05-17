@@ -17,7 +17,7 @@ from app.core.utils import exclude_falsy_from_dict
 
 from app.database import db_mapping
 
-DATA_POST_API = APIRouter(prefix="/api/data")
+DATA_POST_API = APIRouter(prefix="/api/data", tags=["Data Post Routes"])
 
 
 async def _execute_insert(

@@ -17,7 +17,7 @@ from app.core.exceptions import (
 from app.core.utils import exclude_falsy_from_dict
 from app.database import db_mapping
 
-DATA_PUT_API = APIRouter(prefix="/api/data")
+DATA_PUT_API = APIRouter(prefix="/api/data", tags=["Data Put Routes"])
 
 
 async def _execute_update(

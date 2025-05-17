@@ -9,7 +9,7 @@ from ..core.exceptions import EntityNotFound
 
 from ..database import db_mapping
 
-DATA_DELETE_API = APIRouter(prefix="/api/data")
+DATA_DELETE_API = APIRouter(prefix="/api/data", tags=["Data Delete Routes"])
 
 
 async def _execute_inactivate_entity(

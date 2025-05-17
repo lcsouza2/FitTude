@@ -10,7 +10,7 @@ from app.core.utils import cached_operation
 
 from app.database import db_mapping
 
-DATA_GET_API = APIRouter(prefix="/api/data", tags=["data"])
+DATA_GET_API = APIRouter(prefix="/api/data", tags=["Data Get Routes"])
 
 
 async def _execute_select(

@@ -31,7 +31,7 @@ from app.core.utils import generate_random_protocol
 
 from app.database import db_mapping
 
-USER_ROUTER = APIRouter(prefix="/api/user")
+USER_ROUTER = APIRouter(prefix="/api/user", tags=["User Related Routes"])
 HASHER = PasswordHasher()
 
 async def save_register_protocol(user: schemas.UserRegister):
