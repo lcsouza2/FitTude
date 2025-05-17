@@ -10,6 +10,12 @@ def mock_uuid():
         yield mock
 
 @pytest.fixture
+def mock_char_protocol():
+    with patch("app.routes.user_routes.generate_random_protocol") as mock:
+        mock.return_value = "ab@123"
+        yield mock
+
+@pytest.fixture
 def mock_redis():
     redis_instance = AsyncMock()
     redis_instance.hset = AsyncMock()
@@ -27,7 +33,7 @@ def mock_email_client():
     with patch('app.routes.user_routes.EmailClient') as mock_email:
         email_instance = MagicMock()
         email_instance.send_register_verify_mail = AsyncMock()
-        email_instance.send_password_change_mail = AsyncMock()
+        email_instance.send_pwd_change_mail = AsyncMock()
         mock_email.return_value = email_instance
         yield email_instance
 
@@ -49,6 +55,36 @@ async def test_save_register_protocol(
     mock_email_client.send_register_verify_mail.assert_called_once_with(
         dest_email=fake_user.email,
         protocol=mock_uuid.return_value,
+        username=fake_user.name.split()[0],
+    )
+
+    mock_redis.hset.assert_called_once_with(
+        protocol_key,
+        mapping=fake_user.model_dump(),
+    )
+
+    mock_redis.expire.assert_called_once_with(
+        protocol_key,
+        1800,
+    )
+
+@pytest.mark.asyncio
+async def test_save_pwd_change_protocol(
+    mock_char_protocol, mock_redis, mock_email_client
+):
+
+    fake_user = UserRegister(
+        email="randomuser@gmail.com",
+        name="Random User",
+        password="RandomPassword"
+    )
+    protocol_key = f"protocol:{mock_char_protocol.return_value};type:pwd_change"
+
+    await save_pwd_change_protocol(fake_user)
+
+    mock_email_client.send_pwd_change_mail.assert_called_once_with(
+        dest_email=fake_user.email,
+        char_protocol=mock_char_protocol.return_value,
         username=fake_user.name.split()[0],
     )
 
