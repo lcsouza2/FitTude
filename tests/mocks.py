@@ -2,21 +2,38 @@ import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
 from uuid import UUID
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession, AsyncEngine
+from app.database.db_mapping import registry
 
 @pytest.fixture
 def mock_uuid():
+    """
+    Fixture to mock the uuid4 function.
+    This mock will replace the actual function with a MagicMock instance.
+    The mock instance will return a specific uuid when called.
+    """
     with patch("app.routes.user_routes.uuid4") as mock:
         mock.return_value = UUID("80e82bbc-9dee-424d-aafb-7559bcac15e5")
         yield mock
 
 @pytest.fixture
 def mock_char_protocol():
+    """
+    Fixture to mock the generate_random_protocol function.
+    This mock will replace the actual function with a MagicMock instance.
+    The mock instance will return a specific string when called.
+    """
     with patch("app.routes.user_routes.generate_random_protocol") as mock:
         mock.return_value = "ab@123"
         yield mock
 
 @pytest.fixture
 def mock_redis():
+    """
+    Fixture to mock the Redis connection.
+    This mock will replace the actual Redis connection with an AsyncMock instance.
+    The mock instance will have its hset and expire methods replaced with AsyncMock instances.
+    This allows you to test the behavior of your code without needing a real Redis instance.
+    """
     redis_instance = AsyncMock()
     redis_instance.hset = AsyncMock()
     redis_instance.expire = AsyncMock()
@@ -30,6 +47,14 @@ def mock_redis():
 
 @pytest.fixture
 def mock_email_client():
+    """
+    Fixture to mock the EmailClient class.
+    This mock will replace the actual EmailClient with a MagicMock instance.
+    The mock instance will have its send_register_verify_mail and send_pwd_change_mail methods
+    replaced with AsyncMock instances.
+    This allows you to test the behavior of your code without sending actual emails.
+    """
+
     with patch('app.routes.user_routes.EmailClient') as mock_email:
         email_instance = MagicMock()
         email_instance.send_register_verify_mail = AsyncMock()
@@ -38,6 +63,14 @@ def mock_email_client():
         yield email_instance
 
 @pytest.fixture
-def mock_database():
-    session_maker = async_sessionmaker(AsyncEngine("sqlite+aiosqlite:///:memory:"))
+def test_database():
+    """
+    Fixture to create a test database.
+    This uses an in-memory SQLite database for testing purposes.
+    """
+    engine = AsyncEngine("sqlite+aiosqlite:///:memory:")
+    session_maker = async_sessionmaker(engine)
     session = AsyncSession(session_maker)
+    registry.metadata.create_all(engine)
+
+    return session, engine
