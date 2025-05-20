@@ -1,6 +1,6 @@
 from typing import Any, Dict, List
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy import insert
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import MappedAsDataclass
@@ -12,6 +12,7 @@ from app.core.exceptions import (
     ForeignKeyViolation,
     PrimaryKeyViolation,
     UniqueConstraintViolation,
+    MissingParameters
 )
 from app.core.utils import exclude_falsy_from_dict
 
@@ -25,7 +26,7 @@ async def _execute_insert(
     table: MappedAsDataclass,
     values: Dict[str, Any],
     error_mapping: List[schemas.ConstraintErrorHandling],
-    entity_name: str,
+    sucess_message: str,
 ) -> str:
     """
     Executes a generic insert operation in the database.
@@ -34,7 +35,7 @@ async def _execute_insert(
         table: SQLAlchemy model class to insert into
         values: Dictionary with the values to insert
         error_mapping: List of dictionaries mapping database constraints to errors
-        entity_name: Name of the entity for error messages
+        success_message: Name of the entity for error messages
 
     Returns:
         str: Success message
@@ -46,14 +47,13 @@ async def _execute_insert(
         try:
             await session.execute(insert(table).values(values))
             await session.commit()
-            return f"{entity_name} created successfully"
+            return sucess_message
 
         except IntegrityError as exc:
             await session.rollback()
             for error in error_mapping:
                 if error.get("constraint") in str(exc):
                     raise error.get("error")(error.get("message"))
-            # If no mapped error is found, re-raise the original exception
             raise
 
 
@@ -77,7 +77,7 @@ async def create_new_group(
                 "message": "Referenced user not found",
             },
         ],
-        entity_name="Muscle Group",
+        success_message="Muscle Group created succefully!",
     )
 
 
@@ -106,7 +106,7 @@ async def create_new_equipment(
                 "message": "Referenced muscle group not found",
             },
         ],
-        entity_name="Equipment",
+        success_message="Equipment created succesfully",
     )
 
 
@@ -135,7 +135,7 @@ async def create_new_muscle(
                 "message": "Referenced muscle group not found",
             },
         ],
-        entity_name="Muscle",
+        success_message="Muscle created succesfully",
     )
 
 
@@ -169,8 +169,29 @@ async def create_new_exercise(
                 "message": "Referenced muscle not found",
             },
         ],
-        entity_name="Exercise",
+        success_message="Exercise created succesfully",
     )
+
+@DATA_POST_API.post("/exercise/bind_muscle")
+async def bind_muscle_to_exercise(
+    exercise_id = Query(default=None),
+    muscle_id = Query(default=None),
+    user_id: int = Depends(TokenService.validate_token)
+): 
+    if not exercise_id or not muscle_id:
+        raise MissingParameters()
+    
+    await _execute_insert(
+        table=db_mapping.ExerciseMuscle,
+        values={
+            "exercise_id": exercise_id,
+            "muscle_id": muscle_id
+        },
+        error_mapping={
+            
+        }
+    )
+
 
 
 @DATA_POST_API.post("/workout/plan/new")
@@ -193,7 +214,7 @@ async def create_new_workout_plan(
                 "message": "Referenced user not found",
             },
         ],
-        entity_name="Workout Plan",
+        success_message="Workout Plan",
     )
 
 
@@ -217,7 +238,7 @@ async def create_new_workout_split(
                 "message": "Referenced workout plan not found",
             },
         ],
-        entity_name="Workout Split",
+        success_message="Workout Split",
     )
 
 
@@ -247,7 +268,7 @@ async def add_exercise_to_split(
                 "message": "Referenced exercise not found",
             },
         ],
-        entity_name="Split Exercise",
+        success_message="Split Exercise",
     )
 
 
@@ -266,7 +287,7 @@ async def create_new_workout_report(
                 "message": "Referenced workout split not found",
             },
         ],
-        entity_name="Workout Report",
+        success_message="Workout Report",
     )
 
 
@@ -298,5 +319,5 @@ async def add_set_to_report(
                 "message": "Referenced workout report not found",
             },
         ],
-        entity_name="Set Report",
+        success_message="Set Report",
     )
