@@ -1,8 +1,8 @@
 import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
 from uuid import UUID
-from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession, AsyncEngine
-from app.database.db_mapping import registry
+from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+from app.database.db_mapping import reg
 
 @pytest.fixture
 def mock_uuid():
@@ -42,8 +42,7 @@ def mock_redis():
     context_manager.__aenter__.return_value = redis_instance
     context_manager.__aexit__.return_value = None
 
-    with patch('app.routes.user_routes.redis_connection', return_value=context_manager):
-        yield redis_instance
+    return (redis_instance, context_manager)
 
 @pytest.fixture
 def mock_email_client():
@@ -62,15 +61,13 @@ def mock_email_client():
         mock_email.return_value = email_instance
         yield email_instance
 
-@pytest.fixture
-def test_database():
-    """
-    Fixture to create a test database.
-    This uses an in-memory SQLite database for testing purposes.
-    """
-    engine = AsyncEngine("sqlite+aiosqlite:///:memory:")
-    session_maker = async_sessionmaker(engine)
-    session = AsyncSession(session_maker)
-    registry.metadata.create_all(engine)
 
-    return session, engine
+async def setup_db_conn():
+    engine = create_async_engine("sqlite+aiosqlite:///:memory:")
+    session_factory = async_sessionmaker(engine, expire_on_commit=False)
+
+
+    async with engine.connect() as conn:
+        await conn.run_sync(reg.metadata.create_all)
+
+        return conn
