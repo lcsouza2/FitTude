@@ -11,10 +11,8 @@ class MuscleGroup:
     __tablename__ = "muscle_group"
 
     user_id: Mapped[int] = mapped_column(
-        
     )
     group_name: Mapped[str] = mapped_column(primary_key=True)
-
 
 @reg.mapped_as_dataclass
 class User:
@@ -24,7 +22,6 @@ class User:
     email: Mapped[str] = mapped_column(unique=True, nullable=False)
     name: Mapped[str] = mapped_column(nullable=False)
     password: Mapped[str]
-
 
 @reg.mapped_as_dataclass
 class Muscle:
@@ -40,7 +37,6 @@ class Muscle:
     muscle_name: Mapped[str] = mapped_column(unique=True)
     active: Mapped[bool] = mapped_column(default=True)
 
-
 @reg.mapped_as_dataclass
 class Equipment:
     __tablename__ = "equipment"
@@ -54,7 +50,6 @@ class Equipment:
     )
     equipment_name: Mapped[str] = mapped_column(unique=True)
     active: Mapped[bool] = mapped_column(default=True)
-
 
 @reg.mapped_as_dataclass
 class Exercise:
@@ -74,6 +69,19 @@ class Exercise:
     description: Mapped[str]
     active: Mapped[bool] = mapped_column(default=True)
 
+@reg.mapped_as_dataclass
+class ExerciseMuscle:
+    __tablename__ = "exercise_muscle"
+
+    exercise_id: Mapped[int] = mapped_column(ForeignKey("exercise.exercise_id"), primary_key=True)
+    muscle_id: Mapped[int] = mapped_column(ForeignKey("muscle.muscle_id"), primary_key=True)
+
+@reg.mapped_as_dataclass
+class ExerciseEquipment:
+    __tablename__ = "exercise_equipment"
+
+    exercise_id: Mapped[int] = mapped_column(ForeignKey("exercise.exercise_id"), primary_key=True)
+    equipment_id: Mapped[int] = mapped_column(ForeignKey("equipment.equipment_id"), primary_key=True)
 
 @reg.mapped_as_dataclass
 class WorkoutPlan:
@@ -87,7 +95,6 @@ class WorkoutPlan:
     workout_plan_goal: Mapped[str]
     active: Mapped[bool] = mapped_column(default=True)
 
-
 @reg.mapped_as_dataclass
 class WorkoutSplit:
     __tablename__ = "workout_split"
@@ -97,7 +104,6 @@ class WorkoutSplit:
         ForeignKey("workout_plan.workout_plan_id"), primary_key=True
     )
     active: Mapped[bool] = mapped_column(default=True)
-
 
 @reg.mapped_as_dataclass
 class SplitExercise:
@@ -119,7 +125,6 @@ class SplitExercise:
     rest_time: Mapped[int]
     active: Mapped[bool] = mapped_column(default=True)
 
-
 @reg.mapped_as_dataclass
 class WorkoutReport:
     __tablename__ = "workout_report"
@@ -130,7 +135,6 @@ class WorkoutReport:
         ForeignKey("workout_split.workout_plan_id")
     )
     split: Mapped[str] = mapped_column(ForeignKey("workout_split.split"))
-
 
 @reg.mapped_as_dataclass
 class SetReport:
