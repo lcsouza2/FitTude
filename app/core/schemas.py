@@ -54,10 +54,7 @@ class Muscle(BaseSchema):
 
 class Exercise(BaseSchema):
     exercise_name: str
-    muscle_id: int
-    equipment_id: Optional[int]
     description: Optional[str]
-
 
 class WorkoutPlan(BaseSchema):
     workout_plan_name: str
