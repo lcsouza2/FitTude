@@ -10,10 +10,10 @@ from uuid import UUID, uuid4
 
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
+from email_validator import EmailNotValidError, validate_email
 from fastapi import APIRouter, BackgroundTasks, Depends, Response
 from fastapi.templating import Jinja2Templates
 from pydantic import EmailStr
-from email_validator import validate_email, EmailNotValidError
 from sqlalchemy import exc, insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -28,11 +28,11 @@ from app.core.exceptions import (
     UniqueConstraintViolation,
 )
 from app.core.utils import generate_random_protocol
-
 from app.database import db_mapping
 
 USER_ROUTER = APIRouter(prefix="/api/user", tags=["User Related Routes"])
 HASHER = PasswordHasher()
+
 
 async def save_register_protocol(user: schemas.UserRegister):
     """
@@ -243,7 +243,7 @@ async def handle_register_confirm_req(
             }
 
             return Jinja2Templates("./templates").TemplateResponse(
-                name="confirm_register.html", 
+                name="confirm_register.html",
                 context=default_context,
                 headers={"Authorization": f"Bearer {session_token}"},
             )
@@ -303,7 +303,8 @@ async def handle_user_login_req(
                 "expires_in": int(token_service.session_expires.total_seconds()),
             },
             headers={"Authorization": f"Bearer {session_token}"},
-        ) 
+        )
+
 
 @USER_ROUTER.post("/logout")
 async def handle_user_logout_req(
@@ -396,5 +397,4 @@ async def handle_refresh_token_req(
             "expires_in": int(token_service.session_expires.total_seconds()),
         },
         headers={"Authorization": f"Bearer {new_token}"},
-        )
-
+    )

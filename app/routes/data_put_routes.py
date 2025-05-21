@@ -1,5 +1,6 @@
 from typing import Any, Dict, List, Optional
-from fastapi import APIRouter, Depends, Path
+
+from fastapi import APIRouter, Depends
 from sqlalchemy import and_, update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import InstrumentedAttribute, MappedAsDataclass
@@ -252,8 +253,10 @@ async def update_split_exercise(
         db_mapping.WorkoutPlan.user_id == user_id,
         db_mapping.WorkoutPlan.workout_plan_id == updates.workout_plan_id,
         # Joins
-        db_mapping.SplitExercise.workout_plan_id == db_mapping.WorkoutSplit.workout_plan_id,
-        db_mapping.WorkoutSplit.workout_plan_id == db_mapping.WorkoutPlan.workout_plan_id,
+        db_mapping.SplitExercise.workout_plan_id
+        == db_mapping.WorkoutSplit.workout_plan_id,
+        db_mapping.WorkoutSplit.workout_plan_id
+        == db_mapping.WorkoutPlan.workout_plan_id,
     )
 
     update_values = updates.model_dump(

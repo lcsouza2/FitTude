@@ -56,6 +56,7 @@ class Exercise(BaseSchema):
     exercise_name: str
     description: Optional[str]
 
+
 class WorkoutPlan(BaseSchema):
     workout_plan_name: str
     workout_plan_goal: str

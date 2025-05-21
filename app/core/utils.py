@@ -1,9 +1,9 @@
+import random
+import string
 from datetime import datetime, timezone
 from functools import wraps
 from json import dumps
 from typing import Callable
-import random 
-import string
 
 from app.core.config import Config
 from app.core.connections import redis_connection
@@ -43,6 +43,7 @@ def cached_operation(timeout: int = Config.CACHE_DEFAULT_TIMEOUT):
         return wrapper
 
     return decorator
+
 
 def generate_random_protocol(char_amount: int = 6):
     """

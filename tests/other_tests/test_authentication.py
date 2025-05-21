@@ -1,11 +1,11 @@
-from app.core.authentication import TokenService
-from fastapi import Request, Response
 from unittest.mock import MagicMock, patch
+
+from fastapi import Request, Response
 from fastapi.security import HTTPAuthorizationCredentials
-
 from jwt import encode
-
 from pytest import raises
+
+from app.core.authentication import TokenService
 from app.core.exceptions import (
     InvalidToken,
     MissingToken,

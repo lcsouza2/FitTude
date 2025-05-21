@@ -1,5 +1,6 @@
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 from uuid import uuid4
+
 from app.core.email_service import EmailClient
 
 

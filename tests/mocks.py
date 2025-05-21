@@ -1,8 +1,11 @@
-import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
 from uuid import UUID
+
+import pytest
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+
 from app.database.db_mapping import reg
+
 
 @pytest.fixture
 def mock_uuid():
@@ -15,6 +18,7 @@ def mock_uuid():
         mock.return_value = UUID("80e82bbc-9dee-424d-aafb-7559bcac15e5")
         yield mock
 
+
 @pytest.fixture
 def mock_char_protocol():
     """
@@ -25,6 +29,7 @@ def mock_char_protocol():
     with patch("app.routes.user_routes.generate_random_protocol") as mock:
         mock.return_value = "ab@123"
         yield mock
+
 
 @pytest.fixture
 def mock_redis():
@@ -37,12 +42,13 @@ def mock_redis():
     redis_instance = AsyncMock()
     redis_instance.hset = AsyncMock()
     redis_instance.expire = AsyncMock()
-    
+
     context_manager = AsyncMock()
     context_manager.__aenter__.return_value = redis_instance
     context_manager.__aexit__.return_value = None
 
     return (redis_instance, context_manager)
+
 
 @pytest.fixture
 def mock_email_client():
@@ -54,7 +60,7 @@ def mock_email_client():
     This allows you to test the behavior of your code without sending actual emails.
     """
 
-    with patch('app.routes.user_routes.EmailClient') as mock_email:
+    with patch("app.routes.user_routes.EmailClient") as mock_email:
         email_instance = MagicMock()
         email_instance.send_register_verify_mail = AsyncMock()
         email_instance.send_pwd_change_mail = AsyncMock()
@@ -73,9 +79,10 @@ class MockDatabase:
         self.connection = await self.engine.connect()
         await self.connection.run_sync(reg.metadata.create_all)
 
-        self.session_factory = async_sessionmaker(bind=self.connection, expire_on_commit=False)
+        self.session_factory = async_sessionmaker(
+            bind=self.connection, expire_on_commit=False
+        )
         return self.session_factory()
-    
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await self.connection.close()

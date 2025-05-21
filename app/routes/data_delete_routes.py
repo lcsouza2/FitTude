@@ -6,7 +6,6 @@ from ..core import schemas
 from ..core.authentication import TokenService
 from ..core.connections import db_connection
 from ..core.exceptions import EntityNotFound
-
 from ..database import db_mapping
 
 DATA_DELETE_API = APIRouter(prefix="/api/data", tags=["Data Delete Routes"])
@@ -214,8 +213,10 @@ async def inactivate_split_exercise(
         db_mapping.WorkoutPlan.user_id == user_id,
         db_mapping.WorkoutPlan.workout_plan_id == exercise.workout_plan_id,
         # Joins
-        db_mapping.SplitExercise.workout_plan_id == db_mapping.WorkoutSplit.workout_plan_id,
-        db_mapping.WorkoutSplit.workout_plan_id == db_mapping.WorkoutPlan.workout_plan_id,
+        db_mapping.SplitExercise.workout_plan_id
+        == db_mapping.WorkoutSplit.workout_plan_id,
+        db_mapping.WorkoutSplit.workout_plan_id
+        == db_mapping.WorkoutPlan.workout_plan_id,
     )
 
     returning = db_mapping.WorkoutPlan.workout_plan_id
@@ -237,8 +238,10 @@ async def delete_workout_report(
         db_mapping.SetReport.workout_report_id == report_id,
         db_mapping.WorkoutPlan.user_id == user_id,
         # Joins
-        db_mapping.SetReport.workout_report_id == db_mapping.WorkoutReport.workout_report_id,
-        db_mapping.WorkoutReport.workout_plan_id == db_mapping.WorkoutPlan.workout_plan_id,
+        db_mapping.SetReport.workout_report_id
+        == db_mapping.WorkoutReport.workout_report_id,
+        db_mapping.WorkoutReport.workout_plan_id
+        == db_mapping.WorkoutPlan.workout_plan_id,
     )
 
     await _execute_delete(
@@ -253,7 +256,8 @@ async def delete_workout_report(
         db_mapping.WorkoutReport.workout_report_id == report_id,
         db_mapping.WorkoutPlan.user_id == user_id,
         # Join
-        db_mapping.WorkoutReport.workout_plan_id == db_mapping.WorkoutPlan.workout_plan_id,
+        db_mapping.WorkoutReport.workout_plan_id
+        == db_mapping.WorkoutPlan.workout_plan_id,
     )
 
     await _execute_delete(

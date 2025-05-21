@@ -1,5 +1,6 @@
 from app.core.utils import exclude_falsy_from_dict
 
+
 def test_exclude_falsy_from_dict():
     """
     Test the exclude_falsy_from_dict function to ensure it correctly excludes falsy values.

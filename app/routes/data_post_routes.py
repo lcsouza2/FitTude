@@ -10,12 +10,11 @@ from app.core.authentication import TokenService
 from app.core.connections import AsyncSession
 from app.core.exceptions import (
     ForeignKeyViolation,
+    MissingParameters,
     PrimaryKeyViolation,
     UniqueConstraintViolation,
-    MissingParameters
 )
 from app.core.utils import exclude_falsy_from_dict
-
 from app.database import db_mapping
 
 DATA_POST_API = APIRouter(prefix="/api/data", tags=["Data Post Routes"])
@@ -109,7 +108,7 @@ async def create_new_equipment(
     group and user.
 
     Args:
-        equipment (schemas.Equipment): The equipment data to be created, containing name and 
+        equipment (schemas.Equipment): The equipment data to be created, containing name and
             muscle group ID
         user_id (int): User ID for authentication (injected by FastAPI)
 
@@ -240,12 +239,13 @@ async def create_new_exercise(
         success_message="Exercise created succesfully",
     )
 
+
 @DATA_POST_API.post("/exercise/bind_muscle")
 async def bind_muscle_to_exercise(
     exercise_id: int = Query(default=None),
     muscle_id: int = Query(default=None),
-    user_id: int = Depends(TokenService.validate_token)
-): 
+    user_id: int = Depends(TokenService.validate_token),
+):
     """
     Bind a muscle to an exercise.
 
@@ -270,10 +270,7 @@ async def bind_muscle_to_exercise(
 
     return await _execute_insert(
         table=db_mapping.ExerciseMuscle,
-        values={
-            "exercise_id": exercise_id,
-            "muscle_id": muscle_id
-        },
+        values={"exercise_id": exercise_id, "muscle_id": muscle_id},
         error_mapping=[
             {
                 "constraint": "pk_exercise_muscle",
@@ -291,15 +288,17 @@ async def bind_muscle_to_exercise(
                 "message": "Referenced exercise not found",
             },
         ],
-        succes_message="Muscle binded to exercise succesfully"
+        succes_message="Muscle binded to exercise succesfully",
     )
 
 
 @DATA_POST_API.post("/exercise/bind_equipment")
 async def bind_equipment_to_exercise(
-    exercise_id: int = Query(default=None, description="ID of the exercise to bind equipment to"),
+    exercise_id: int = Query(
+        default=None, description="ID of the exercise to bind equipment to"
+    ),
     equipment_id: int = Query(default=None, description="ID of the equipment to bind"),
-    user_id: int = Depends(TokenService.validate_token)
+    user_id: int = Depends(TokenService.validate_token),
 ):
     """
     Bind equipment to an exercise.
@@ -323,10 +322,7 @@ async def bind_equipment_to_exercise(
 
     return await _execute_insert(
         table=db_mapping.ExerciseEquipment,
-        values={
-            "exercise_id": exercise_id,
-            "equipment_id": equipment_id
-        },
+        values={"exercise_id": exercise_id, "equipment_id": equipment_id},
         error_mapping=[
             {
                 "constraint": "pk_exercise_equipment",
@@ -344,29 +340,27 @@ async def bind_equipment_to_exercise(
                 "message": "Referenced exercise not found",
             },
         ],
-        success_message="Equipment bound to exercise successfully"
+        success_message="Equipment bound to exercise successfully",
     )
 
 
 @DATA_POST_API.post("/workout/plan/new")
 async def create_new_workout_plan(
-    
     plan: schemas.WorkoutPlan, user_id: int = Depends(TokenService.validate_token)
 ):
-
     """
     Create a new workout plan in the database.
-    
-    This endpoint allows users to create a new workout plan, which serves as a container for 
+
+    This endpoint allows users to create a new workout plan, which serves as a container for
     workout splits and exercises. Each plan is unique and associated with the user who created it.
-    
+
     Args:
         plan (schemas.WorkoutPlan): The workout plan data to be created, containing the plan details
         user_id (int): User ID for authentication (injected by FastAPI)
-    
+
     Returns:
         str: Success message indicating the workout plan was created
-    
+
     Raises:
         UniqueConstraintViolation: If a workout plan with the same name already exists for this user
         ForeignKeyViolation: If the referenced user does not exist in the database
@@ -395,12 +389,11 @@ async def create_new_workout_plan(
 async def create_new_workout_split(
     split: schemas.WorkoutSplit, user_id: int = Depends(TokenService.validate_token)
 ):
-
     """
     Create a new workout split in the database.
 
-    This endpoint allows users to create a new workout split within a workout plan. A workout split 
-    represents a specific training day or session within the overall workout plan (e.g., "Push Day", 
+    This endpoint allows users to create a new workout split within a workout plan. A workout split
+    represents a specific training day or session within the overall workout plan (e.g., "Push Day",
     "Pull Day", "Legs Day").
 
     Args:
@@ -437,15 +430,13 @@ async def create_new_workout_split(
 
 @DATA_POST_API.post("/workout/split/add_exercise")
 async def bind_exercise_to_split(
-    
     exercises: List[schemas.SplitExercise],
     user_id: int = Depends(TokenService.validate_token),
 ):
-
     """
     Add exercises to a workout split.
 
-    This endpoint allows users to add one or more exercises to a workout split, defining the 
+    This endpoint allows users to add one or more exercises to a workout split, defining the
     exercises that should be performed in that specific training session. Each exercise addition
     includes details like sets, reps and rest time.
 
@@ -490,12 +481,11 @@ async def bind_exercise_to_split(
 async def create_new_workout_report(
     report: schemas.WorkoutReport, user_id: int = Depends(TokenService.validate_token)
 ):
-
     """
     Create a new workout report in the database.
 
     This endpoint allows users to create a new workout report, which tracks the execution of a workout
-    split session. The report serves as a container for recording sets, reps, weights and other 
+    split session. The report serves as a container for recording sets, reps, weights and other
     training details performed during a workout.
 
     Args:
@@ -533,7 +523,7 @@ async def bind_set_to_report(
     Add sets to a workout report.
 
     This endpoint allows users to record the sets performed during a workout session, including details
-    like reps completed, weights used, and any notes about the set execution. Multiple sets can be 
+    like reps completed, weights used, and any notes about the set execution. Multiple sets can be
     added at once to efficiently track a complete exercise performance.
 
     Args:
@@ -555,9 +545,7 @@ async def bind_set_to_report(
     """
     await _execute_insert(
         table=db_mapping.SetReport,
-        values=[
-            exclude_falsy_from_dict(i.model_dump(exclude_none=True)) for i in sets
-        ],
+        values=[exclude_falsy_from_dict(i.model_dump(exclude_none=True)) for i in sets],
         error_mapping=[
             {
                 "constraint": "pk_set_report",
