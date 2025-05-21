@@ -4,15 +4,10 @@ body {
     background-size: cover; 
     background-position: center; 
     margin: 0;
-    padding: 0;
-    padding-top: 30px;
-    min-height: 100vh;
-    justify-content: center;
-    align-items: center;
-    overflow: auto; 
 }
 
 .register-box {
+
     background-color: rgba(160, 160, 160, 0.7);
     backdrop-filter: blur(8px);
     padding: 20px;
@@ -35,6 +30,10 @@ body {
     gap: 15px;
 }
 
+.container-main {
+    margin-top: 2rem; /* Adicione margem extra se necessário */
+}
+
 form h2 {
     font-family: "Kanit", sans-serif;
     font-weight: 700;
@@ -49,6 +48,7 @@ form h2 {
 
 .navbar {
     background-color: #000000;
+     height: 60px; /* Definir altura fixa da navbar */
 }
 
 nav h1 {
