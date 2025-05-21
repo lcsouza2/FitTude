@@ -14,6 +14,6 @@ def redis_connection():
     return Redis.from_pool(REDIS_POOL)
 
 
-def db_connection():
+async def db_connection():
     connection = AsyncSession()
     return connection
