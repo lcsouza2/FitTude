@@ -4,6 +4,7 @@ from typing import Any
 
 from dotenv import load_dotenv
 
+load_dotenv()
 class Config:
     # Application Settings
     APP_NAME: str = "FitTude"
