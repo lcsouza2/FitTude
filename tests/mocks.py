@@ -62,12 +62,20 @@ def mock_email_client():
         yield email_instance
 
 
-async def setup_db_conn():
-    engine = create_async_engine("sqlite+aiosqlite:///:memory:")
-    session_factory = async_sessionmaker(engine, expire_on_commit=False)
+class MockDatabase:
+    def __init__(self):
+        self.engine = create_async_engine("sqlite+aiosqlite:///:memory:")
 
+        self.connection = None
+        self.session_factory = None
 
-    async with engine.connect() as conn:
-        await conn.run_sync(reg.metadata.create_all)
+    async def __aenter__(self):
+        self.connection = await self.engine.connect()
+        await self.connection.run_sync(reg.metadata.create_all)
 
-        return conn
+        self.session_factory = async_sessionmaker(bind=self.connection, expire_on_commit=False)
+        return self.session_factory()
+    
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        await self.connection.close()
