@@ -4,8 +4,13 @@ import pytest
 from fastapi.testclient import TestClient
 from ..mocks import *
 from unittest.mock import patch
+from sqlalchemy import insert
+from app.database import db_mapping
+from app.core.exceptions import UniqueConstraintViolation, InvalidCredentials
+from app.core import schemas
+from app.main import MAIN_APP
 
-fastapi_test_client = TestClient(user_routes.USER_ROUTER)
+fastapi_test_client = TestClient(MAIN_APP)
 
 
 @pytest.mark.asyncio
@@ -73,11 +78,47 @@ async def test_save_pwd_change_protocol(
     )
 
 async def test_search_for_user_return_true():
+    """
+    This test simulate the original function behavior
+    """
+
+    mock_database = MockDatabase()
+
+    fake_user = db_mapping.User(
+        name="Random User",
+        email="test_email@gmail.com",
+        password="hashedpassword",
+    )
+
+    async with mock_database as conn:
+        with patch("app.routes.user_routes.db_connection", return_value=conn):
+            await conn.execute(
+                insert(db_mapping.User).values(
+                    name=fake_user.name,
+                    email=fake_user.email,
+                    password=fake_user.password
+                )
+            )
+            await conn.commit()
+
+            assert await user_routes.search_for_user("non_existing_email@gmail.com") is True
+
+            with pytest.raises(UniqueConstraintViolation):
+                assert await user_routes.search_for_user(fake_user.email) is True
 
 
+def test_handle_register_req():
+    fake_user = schemas.UserRegister(
+        email="test_mail@gmail.com",
+        password="test_password",
+        name="Test User"
+    )
+    
+    response = fastapi_test_client.post("/api/user/register", json=fake_user.model_dump())
 
-    with patch("app.routes.user_routes.db_connection",new_callable=setup_db_conn) as mock:
-        await user_routes.search_for_user("test_mail@gmail.com") == True
+    assert response.status_code == 200
 
-
-
+    fake_user.email = "Non-valid@email.com"
+    with pytest.raises(InvalidCredentials):
+        response = fastapi_test_client.post("/api/user/register", json=fake_user.model_dump())
+        print(response)
