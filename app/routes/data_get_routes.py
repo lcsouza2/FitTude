@@ -97,7 +97,7 @@ async def _execute_select(
     if offset is not None:
         query = query.offset(offset)
 
-    async with db_connection() as session:
+    async with await db_connection() as session:
         # Execute the query
         result = await session.scalars(query)
     return result.fetchall()

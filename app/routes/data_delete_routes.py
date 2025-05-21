@@ -19,7 +19,7 @@ async def _execute_inactivate_entity(
     returning_column: InstrumentedAttribute,
     entity_name: str,
 ):
-    async with db_connection() as session:
+    async with await db_connection() as session:
         result = await session.execute(
             update(table)
             .values(active=False)
@@ -43,7 +43,7 @@ async def _execute_delete(
     returning_column: InstrumentedAttribute,
     entity_name: str,
 ):
-    async with db_connection() as session:
+    async with await db_connection() as session:
         result = await session.execute(
             delete(table).where(where_clause).returning(returning_column)
         )

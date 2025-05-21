@@ -47,7 +47,7 @@ async def _execute_update(
         EntityNotFound: Se o registro não for encontrado
         IntegrityError: Para violações de constraint do banco
     """
-    async with db_connection() as session:
+    async with await db_connection() as session:
         try:
             result = await session.execute(
                 update(table)

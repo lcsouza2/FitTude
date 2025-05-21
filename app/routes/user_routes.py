@@ -12,8 +12,8 @@ from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 from fastapi import APIRouter, BackgroundTasks, Depends, Response
 from fastapi.templating import Jinja2Templates
-from pydantic import EmailStr, validate_email
-from pydantic_core import PydanticCustomError
+from pydantic import EmailStr
+from email_validator import validate_email, EmailNotValidError
 from sqlalchemy import exc, insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -126,7 +126,7 @@ async def search_for_user(email: EmailStr) -> str:
         UniqueConstraintViolation: If username or email already exists
     """
 
-    async with db_connection() as session:
+    async with await db_connection() as session:
         result = await session.execute(
             select(db_mapping.User).where(
                 db_mapping.User.email == email,
@@ -164,8 +164,8 @@ async def handle_register_req(
         InvalidCredentials: If email format is invalid
     """
     try:
-        validate_email(user.email)
-    except PydanticCustomError:
+        validate_email(user.email, check_deliverability=True)
+    except EmailNotValidError:
         raise InvalidCredentials("Invalid E-mail")
 
     await search_for_user(email=user.email)
@@ -356,7 +356,7 @@ async def handle_pwd_change_confirm_req(protocol: UUID):
         new_hashed_pwd = HASHER.hash(user_data.new_password)
 
         try:
-            async with db_connection() as session:
+            async with await db_connection() as session:
                 await session.execute(
                     update(db_mapping.User.password)
                     .where(db_mapping.User.email == user_data.email)
