@@ -12,15 +12,13 @@ from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 from email_validator import EmailNotValidError, validate_email
 from fastapi import APIRouter, BackgroundTasks, Depends
-from fastapi.responses import Response, RedirectResponse
-from fastapi.templating import Jinja2Templates
+from fastapi.responses import JSONResponse, RedirectResponse
 from pydantic import EmailStr
 from sqlalchemy import exc, insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core import schemas
 from app.core.authentication import TokenService
-from app.core.config import Config
 from app.core.connections import db_connection, redis_connection
 from app.core.email_service import EmailClient
 from app.core.exceptions import (
@@ -173,7 +171,7 @@ async def handle_register_req(
 
     bg_tasks.add_task(save_register_protocol, user=user)
 
-    return Response("Verification mail sent successfully!")
+    return JSONResponse("Verification mail sent successfully!")
 
 
 @USER_ROUTER.get("/register/confirm/{protocol}")
@@ -287,7 +285,7 @@ async def handle_user_login_req(
             token_service.response, refresh_token
         )
 
-        return Response(
+        return JSONResponse(
             content={
                 "message": "Login successful!",
                 "token_type": "Bearer",
@@ -310,7 +308,7 @@ async def handle_user_logout_req(
     """
     token_service.delete_refresh_token_cookie(token_service.response)
 
-    return Response("Logout completed successfully!")
+    return JSONResponse("Logout completed successfully!")
 
 
 @USER_ROUTER.post("/password_change")
@@ -321,7 +319,7 @@ async def handle_pwd_change_req(
     Handle password change request by sending verification email.
     """
     background_tasks.add_task(save_pwd_change_protocol, user=user)
-    return Response("Verification mail send successfully!")
+    return JSONResponse("Verification mail send successfully!")
 
 
 @USER_ROUTER.get("/password_change/confirm/{protocol}")
@@ -362,7 +360,7 @@ async def handle_pwd_change_confirm_req(protocol: UUID):
 
         redis.delete(f"protocol:{protocol};type:pwd_change")
 
-        return Response("Password changed successfully!")
+        return JSONResponse("Password changed successfully!")
 
 
 @USER_ROUTER.post("/refresh_token")
@@ -381,7 +379,7 @@ async def handle_refresh_token_req(
 
     new_token = await token_service.renew_token(token_service.request)
 
-    return Response(
+    return JSONResponse(
         content={
             "message": "Token refreshed successfully!",
             "token_type": "Bearer",
