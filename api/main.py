@@ -4,13 +4,13 @@ from fastapi.staticfiles import StaticFiles
 
 
 MAIN_APP = FastAPI()
-MAIN_APP.mount("/static", StaticFiles(directory="web/static"), name="static")
+MAIN_APP.mount("/static", StaticFiles(directory="./web/static"), name="static")
 
-templates = Jinja2Templates(directory="web")
+templates = Jinja2Templates(directory="./web/")
 
 @MAIN_APP.get("/")
 async def return_root_page(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse("landingpage.html", {"request": request})
 
 @MAIN_APP.get("/login")
 async def return_login_page(request: Request):
