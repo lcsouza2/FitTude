@@ -11,7 +11,8 @@ from uuid import UUID, uuid4
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 from email_validator import EmailNotValidError, validate_email
-from fastapi import APIRouter, BackgroundTasks, Depends, Response
+from fastapi import APIRouter, BackgroundTasks, Depends
+from fastapi.responses import Response, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import EmailStr
 from sqlalchemy import exc, insert, select, update
@@ -242,11 +243,12 @@ async def handle_register_confirm_req(
                 "expires_in": int(Config.JWT_ACCESS_TOKEN_EXPIRES.total_seconds()),
             }
 
-            return Jinja2Templates("./templates").TemplateResponse(
-                name="confirm_register.html",
-                context=default_context,
-                headers={"Authorization": f"Bearer {session_token}"},
-            )
+            return RedirectResponse("https://fittude-api-wn11.onrender.com/dashboard") 
+            # Jinja2Templates("./templates").TemplateResponse(
+            #     name="confirm_register.html",
+            #     context=default_context,
+            #     headers={"Authorization": f"Bearer {session_token}"},
+            # )
 
 
 @USER_ROUTER.post("/login")
