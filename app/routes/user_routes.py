@@ -348,9 +348,9 @@ async def handle_pwd_change_confirm_req(protocol: str):
         try:
             async with await db_connection() as session:
                 await session.execute(
-                    update(db_mapping.User.password)
+                    update(db_mapping.User)
                     .where(db_mapping.User.email == user_data.email)
-                    .values(new_hashed_pwd)
+                    .values(password=new_hashed_pwd)
                 )
                 await session.commit()
 
