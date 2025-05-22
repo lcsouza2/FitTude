@@ -343,7 +343,7 @@ async def handle_pwd_change_confirm_req(protocol: str):
         if not user_data:
             raise InvalidProtocol()
 
-        new_hashed_pwd = HASHER.hash(user_data.new_password)
+        new_hashed_pwd = HASHER.hash(user_data.get("new_password"))
 
         try:
             async with await db_connection() as session:
