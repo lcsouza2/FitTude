@@ -18,7 +18,7 @@ from app.core.exceptions import (
 from app.core.utils import exclude_falsy_from_dict
 from app.database import db_mapping
 
-DATA_PUT_API = APIRouter(prefix="/api/data", tags=["Data Put Routes"])
+DATA_PUT_ROUTER = APIRouter(prefix="/api/data", tags=["Data Put Routes"])
 
 
 async def _execute_update(
@@ -70,7 +70,7 @@ async def _execute_update(
             return "Alterado"
 
 
-@DATA_PUT_API.put("/groups/update/{group_name}")
+@DATA_PUT_ROUTER.put("/groups/update/{group_name}")
 async def update_group(
     group_name: str,
     updates: schemas.UpdateMuscleGroup,
@@ -101,7 +101,7 @@ async def update_group(
     )
 
 
-@DATA_PUT_API.put("/muscle/update/{muscle_id}")
+@DATA_PUT_ROUTER.put("/muscle/update/{muscle_id}")
 async def update_muscle(
     muscle_id: int,
     updates: schemas.UpdateMuscle,
@@ -136,7 +136,7 @@ async def update_muscle(
     )
 
 
-@DATA_PUT_API.put("/equipment/update/{equipment_id}")
+@DATA_PUT_ROUTER.put("/equipment/update/{equipment_id}")
 async def update_equipment(
     equipment_id: int,
     updates: schemas.UpdateEquipment,
@@ -171,7 +171,7 @@ async def update_equipment(
     )
 
 
-@DATA_PUT_API.put("/exercise/update/{exercise_id}")
+@DATA_PUT_ROUTER.put("/exercise/update/{exercise_id}")
 async def update_exercise(
     exercise_id: int,
     updates: schemas.UpdateExercise,
@@ -211,7 +211,7 @@ async def update_exercise(
     )
 
 
-@DATA_PUT_API.put("/workout/plan/update/{plan_id}")
+@DATA_PUT_ROUTER.put("/workout/plan/update/{plan_id}")
 async def update_workout_plan(
     plan_id: int,
     updates: schemas.UpdateWorkoutPlan,
@@ -241,7 +241,7 @@ async def update_workout_plan(
     )
 
 
-@DATA_PUT_API.put("/workout/split/exercise/update/")
+@DATA_PUT_ROUTER.put("/workout/split/exercise/update/")
 async def update_split_exercise(
     updates: schemas.UpdateSplitExercise,
     user_id: int = Depends(TokenService.validate_token),

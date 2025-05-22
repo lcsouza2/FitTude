@@ -17,7 +17,7 @@ from app.core.exceptions import (
 from app.core.utils import exclude_falsy_from_dict
 from app.database import db_mapping
 
-DATA_POST_API = APIRouter(prefix="/api/data", tags=["Data Post Routes"])
+DATA_POST_ROUTER = APIRouter(prefix="/api/data", tags=["Data Post Routes"])
 
 
 async def _execute_insert(
@@ -56,7 +56,7 @@ async def _execute_insert(
             raise
 
 
-@DATA_POST_API.post("/groups/new")
+@DATA_POST_ROUTER.post("/groups/new")
 async def create_new_group(
     group: schemas.Musclegroup, user_id: int = Depends(TokenService.validate_token)
 ):
@@ -96,7 +96,7 @@ async def create_new_group(
     )
 
 
-@DATA_POST_API.post("/equipment/new")
+@DATA_POST_ROUTER.post("/equipment/new")
 async def create_new_equipment(
     equipment: schemas.Equipment, user_id: int = Depends(TokenService.validate_token)
 ):
@@ -143,7 +143,7 @@ async def create_new_equipment(
     )
 
 
-@DATA_POST_API.post("/muscle/new")
+@DATA_POST_ROUTER.post("/muscle/new")
 async def create_new_muscle(
     muscle: schemas.Muscle, user_id: int = Depends(TokenService.validate_token)
 ):
@@ -188,7 +188,7 @@ async def create_new_muscle(
     )
 
 
-@DATA_POST_API.post("/exercise/new")
+@DATA_POST_ROUTER.post("/exercise/new")
 async def create_new_exercise(
     exercise: schemas.Exercise, user_id: int = Depends(TokenService.validate_token)
 ):
@@ -240,7 +240,7 @@ async def create_new_exercise(
     )
 
 
-@DATA_POST_API.post("/exercise/bind_muscle")
+@DATA_POST_ROUTER.post("/exercise/bind_muscle")
 async def bind_muscle_to_exercise(
     bind_element: schemas.BindMuscleExercise,
     user_id: int = Depends(TokenService.validate_token),
@@ -288,7 +288,7 @@ async def bind_muscle_to_exercise(
     )
 
 
-@DATA_POST_API.post("/exercise/bind_equipment")
+@DATA_POST_ROUTER.post("/exercise/bind_equipment")
 async def bind_equipment_to_exercise(
     bind_element: schemas.BindEquipmentExercise,
     user_id: int = Depends(TokenService.validate_token),
@@ -333,7 +333,7 @@ async def bind_equipment_to_exercise(
     )
 
 
-@DATA_POST_API.post("/workout/plan/new")
+@DATA_POST_ROUTER.post("/workout/plan/new")
 async def create_new_workout_plan(
     plan: schemas.WorkoutPlan, user_id: int = Depends(TokenService.validate_token)
 ):
@@ -374,7 +374,7 @@ async def create_new_workout_plan(
     )
 
 
-@DATA_POST_API.post("/workout/split/new")
+@DATA_POST_ROUTER.post("/workout/split/new")
 async def create_new_workout_split(
     split: schemas.WorkoutSplit, user_id: int = Depends(TokenService.validate_token)
 ):
@@ -417,7 +417,7 @@ async def create_new_workout_split(
     )
 
 
-@DATA_POST_API.post("/workout/split/add_exercise")
+@DATA_POST_ROUTER.post("/workout/split/add_exercise")
 async def bind_exercise_to_split(
     exercises: List[schemas.SplitExercise],
     user_id: int = Depends(TokenService.validate_token),
@@ -466,7 +466,7 @@ async def bind_exercise_to_split(
     )
 
 
-@DATA_POST_API.post("/workout/report/new")
+@DATA_POST_ROUTER.post("/workout/report/new")
 async def create_new_workout_report(
     report: schemas.WorkoutReport, user_id: int = Depends(TokenService.validate_token)
 ):
@@ -503,7 +503,7 @@ async def create_new_workout_report(
     )
 
 
-@DATA_POST_API.post("/workout/report/add_set")
+@DATA_POST_ROUTER.post("/workout/report/add_set")
 async def bind_set_to_report(
     sets: List[schemas.SetReport],
     user_id: int = Depends(TokenService.validate_token),

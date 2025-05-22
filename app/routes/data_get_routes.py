@@ -10,7 +10,7 @@ from app.core.connections import db_connection
 from app.core.utils import cached_operation
 from app.database import db_mapping
 
-DATA_GET_API = APIRouter(prefix="/api/data", tags=["Data Get Routes"])
+DATA_GET_ROUTER = APIRouter(prefix="/api/data", tags=["Data Get Routes"])
 
 
 async def _execute_select(
@@ -149,7 +149,7 @@ async def get_default_exercises() -> list:
     )
 
 
-@DATA_GET_API.get("/groups")
+@DATA_GET_ROUTER.get("/groups")
 async def get_all_muscle_groups(user_id: int = Depends(TokenService.validate_token)):
     """
     Get all muscle groups available to a user.
@@ -164,7 +164,7 @@ async def get_all_muscle_groups(user_id: int = Depends(TokenService.validate_tok
     return [*default_groups, *user_groups]
 
 
-@DATA_GET_API.get("/muscles")
+@DATA_GET_ROUTER.get("/muscles")
 async def get_all_muscles(user_id: int = Depends(TokenService.validate_token)):
     """
     Get all muscles available to a user.
@@ -179,7 +179,7 @@ async def get_all_muscles(user_id: int = Depends(TokenService.validate_token)):
     return [*default_muscles, *user_muscles]
 
 
-@DATA_GET_API.get("/equipment")
+@DATA_GET_ROUTER.get("/equipment")
 async def get_all_equipment(user_id: int = Depends(TokenService.validate_token)):
     """
     Get all equipment available to a user.
@@ -194,7 +194,7 @@ async def get_all_equipment(user_id: int = Depends(TokenService.validate_token))
     return [*default_equipment, *user_equipment]
 
 
-@DATA_GET_API.get("/exercises")
+@DATA_GET_ROUTER.get("/exercises")
 async def get_all_exercises(user_id: int = Depends(TokenService.validate_token)):
     """
     Get all exercises available to a user.
@@ -209,7 +209,7 @@ async def get_all_exercises(user_id: int = Depends(TokenService.validate_token))
     return [*default_exercises, *user_exercises]
 
 
-@DATA_GET_API.get("/workout/plans")
+@DATA_GET_ROUTER.get("/workout/plans")
 async def get_all_workout_plans(user_id: int = Depends(TokenService.validate_token)):
     """
     Get all workout planscreated by user.
@@ -223,7 +223,7 @@ async def get_all_workout_plans(user_id: int = Depends(TokenService.validate_tok
     )
 
 
-@DATA_GET_API.get("/workout/splits")
+@DATA_GET_ROUTER.get("/workout/splits")
 async def get_all_workout_splits(user_id: int = Depends(TokenService.validate_token)):
     """
     Get all workout split created by user.
@@ -237,7 +237,7 @@ async def get_all_workout_splits(user_id: int = Depends(TokenService.validate_to
     )
 
 
-@DATA_GET_API.get("/workout/split-exercises")
+@DATA_GET_ROUTER.get("/workout/split-exercises")
 async def get_all_split_exercises(user_id: int = Depends(TokenService.validate_token)):
     """
     Get all exercises bound to a split.
@@ -257,7 +257,7 @@ async def get_all_split_exercises(user_id: int = Depends(TokenService.validate_t
     )
 
 
-@DATA_GET_API.get("/workout/reports")
+@DATA_GET_ROUTER.get("/workout/reports")
 async def get_all_workout_reports(user_id: int = Depends(TokenService.validate_token)):
     """
     Get all user workout reports.
