@@ -57,12 +57,12 @@ class Exercise(BaseSchema):
     description: Optional[str]
 
 
-class BindMuscleExecise(BaseSchema):
+class BindMuscleExercise(BaseSchema):
     exercise_id: int
     muscle_id: int
 
 
-class BindEquipmentExecise(BaseSchema):
+class BindEquipmentExercise(BaseSchema):
     exercise_id: int
     equipment_id: int
 

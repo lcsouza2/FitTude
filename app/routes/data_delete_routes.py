@@ -232,7 +232,7 @@ async def inactivate_exercise(
 
 @DATA_DELETE_ROUTER.delete("/exercise/unbind_muscle")
 async def unbind_muscle_exercise(
-    bound_element: schemas.BindMuscleExecise,
+    bound_element: schemas.BindMuscleExercise,
     user_id: int = Depends(TokenService.validate_token)
 ):
     """
@@ -240,7 +240,7 @@ async def unbind_muscle_exercise(
     This operation can only be performed by the owner of both the muscle and exercise.
 
     Args:
-        bound_element (BindMuscleExecise): Schema containing exercise_id and muscle_id
+        bound_element (BindMuscleExercise): Schema containing exercise_id and muscle_id
         user_id (int): The ID of the authenticated user, obtained from the JWT token
 
     Returns:
@@ -272,7 +272,7 @@ async def unbind_muscle_exercise(
 @DATA_DELETE_ROUTER.delete("/exercise/unbind_equipment")
 async def unbind_equipment_exercise(
 
-    bound_element: schemas.BindEquipmentExecise,
+    bound_element: schemas.BindEquipmentExercise,
     user_id: int = Depends(TokenService.validate_token)
 ):
     """
@@ -281,7 +281,7 @@ async def unbind_equipment_exercise(
     This operation can only be performed by the owner of both the equipment and exercise.
 
     Args:
-        bound_element (BindEquipmentExecise): Schema containing exercise_id and equipment_id
+        bound_element (BindEquipmentExercise): Schema containing exercise_id and equipment_id
             for the association to be removed
         user_id (int): The ID of the authenticated user, obtained from the JWT token
 
