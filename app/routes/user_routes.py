@@ -323,12 +323,12 @@ async def handle_pwd_change_req(
 
 
 @USER_ROUTER.get("/password_change/confirm/{protocol}")
-async def handle_pwd_change_confirm_req(protocol: UUID):
+async def handle_pwd_change_confirm_req(protocol: str):
     """
     This function confirms the password change by verifying the protocol.
 
     args:
-        protocol (UUID): The protocol for the password change.
+        protocol (str): The protocol for the password change.
 
     returns:
         dict[str, str]: A message indicating the success of the password change.
