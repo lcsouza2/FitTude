@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy import BinaryExpression, and_, delete, update
 from sqlalchemy.orm import InstrumentedAttribute, MappedAsDataclass
 
@@ -8,7 +8,7 @@ from ..core.connections import db_connection
 from ..core.exceptions import EntityNotFound
 from ..database import db_mapping
 
-DATA_DELETE_API = APIRouter(prefix="/api/data", tags=["Data Delete Routes"])
+DATA_DELETE_ROUTER = APIRouter(prefix="/api/data", tags=["Data Delete Routes"])
 
 
 async def _execute_inactivate_entity(
@@ -94,7 +94,7 @@ async def _execute_delete(
         return f"{entity_name} deleted successfully"
 
 
-@DATA_DELETE_API.delete("/groups/inactivate/{group_name}")
+@DATA_DELETE_ROUTER.delete("/groups/inactivate/{group_name}")
 async def inactivate_group(
     group_name: str, user_id: int = Depends(TokenService.validate_token)
 ):
@@ -131,7 +131,7 @@ async def inactivate_group(
     )
 
 
-@DATA_DELETE_API.delete("/muscle/inactivate/{muscle_id}")
+@DATA_DELETE_ROUTER.delete("/muscle/inactivate/{muscle_id}")
 async def inactivate_muscle(
     muscle_id: int, user_id: int = Depends(TokenService.validate_token)
 ):
@@ -164,7 +164,7 @@ async def inactivate_muscle(
     )
 
 
-@DATA_DELETE_API.delete("/equipment/inactivate/{equipment_id}")
+@DATA_DELETE_ROUTER.delete("/equipment/inactivate/{equipment_id}")
 async def inactivate_equipment(
     equipment_id: int, user_id: int = Depends(TokenService.validate_token)
 ):
@@ -197,7 +197,7 @@ async def inactivate_equipment(
     )
 
 
-@DATA_DELETE_API.delete("/exericse/inactivate/{exercise_id}")
+@DATA_DELETE_ROUTER.delete("/exericse/inactivate/{exercise_id}")
 async def inactivate_exercise(
     exercise_id: int, user_id: int = Depends(TokenService.validate_token)
 ):
@@ -230,7 +230,91 @@ async def inactivate_exercise(
     )
 
 
-@DATA_DELETE_API.delete("/workout/sheet/inactivate/{sheet_id}")
+@DATA_DELETE_ROUTER.delete("/exercise/unbind_muscle")
+async def unbind_muscle_exercise(
+    bound_element: schemas.BindMuscleExecise,
+    user_id: int = Depends(TokenService.validate_token)
+):
+    """
+    Permanently deletes the association between a muscle and an exercise.
+    This operation can only be performed by the owner of both the muscle and exercise.
+
+    Args:
+        bound_element (BindMuscleExecise): Schema containing exercise_id and muscle_id
+        user_id (int): The ID of the authenticated user, obtained from the JWT token
+
+    Returns:
+        str: Success message confirming the association was deleted
+
+    Raises:
+        EntityNotFound: If no association is found or if user doesn't own both elements
+        HTTPException: If authentication fails or user lacks permissions
+    """
+    where = and_(
+        db_mapping.ExerciseMuscle.exercise_id == bound_element.exercise_id,
+        db_mapping.ExerciseMuscle.muscle_id == bound_element.muscle_id,
+        db_mapping.Exercise.user_id == user_id,
+        db_mapping.Muscle.user_id == user_id,
+        # Joins to verify ownership
+        db_mapping.ExerciseMuscle.exercise_id == db_mapping.Exercise.exercise_id,
+        db_mapping.ExerciseMuscle.muscle_id == db_mapping.Muscle.muscle_id,
+    )
+
+    returning = db_mapping.ExerciseMuscle.exercise_id
+
+    return await _execute_delete(
+        table=db_mapping.ExerciseMuscle,
+        where_clause=where,
+        returning_column=returning,
+        entity_name="Muscle-Exercise association",
+    )
+
+@DATA_DELETE_ROUTER.delete("/exercise/unbind_equipment")
+async def unbind_equipment_exercise(
+
+    bound_element: schemas.BindEquipmentExecise,
+    user_id: int = Depends(TokenService.validate_token)
+):
+    """
+    Permanently deletes the association between an equipment and an exercise.
+
+    This operation can only be performed by the owner of both the equipment and exercise.
+
+    Args:
+        bound_element (BindEquipmentExecise): Schema containing exercise_id and equipment_id
+            for the association to be removed
+        user_id (int): The ID of the authenticated user, obtained from the JWT token
+
+    Returns:
+        str: Success message confirming the association was deleted
+
+    Raises:
+        EntityNotFound: If no association is found or if user doesn't own both elements
+        HTTPException: If authentication fails or user lacks permissions
+    """
+
+
+    where = and_(
+        db_mapping.ExerciseEquipment.exercise_id == bound_element.exercise_id,
+        db_mapping.ExerciseEquipment.equipment_id == bound_element.equipment_id,
+        db_mapping.Exercise.user_id == user_id,
+        db_mapping.Equipment.user_id == user_id,
+        # Joins to verify ownership
+        db_mapping.ExerciseEquipment.exercise_id == db_mapping.Exercise.exercise_id,
+        db_mapping.ExerciseEquipment.equipment_id == db_mapping.Equipment.equipment_id,
+    )
+
+    returning = db_mapping.ExerciseEquipment.exercise_id
+
+    return await _execute_delete(
+        table=db_mapping.ExerciseEquipment,
+        where_clause=where,
+        returning_column=returning,
+        entity_name="Exercise-Equipment association",
+    )
+
+
+@DATA_DELETE_ROUTER.delete("/workout/sheet/inactivate/{sheet_id}")
 async def inactivate_workout_sheet(
     sheet_id: int, user_id: int = Depends(TokenService.validate_token)
 ):
@@ -263,7 +347,7 @@ async def inactivate_workout_sheet(
     )
 
 
-@DATA_DELETE_API.delete("/workout/split/inactivate/{split}")
+@DATA_DELETE_ROUTER.delete("/workout/split/inactivate/{split}")
 async def inactivate_workout_split(
     split: str, user_id: int = Depends(TokenService.validate_token)
 ):
@@ -298,7 +382,7 @@ async def inactivate_workout_split(
     )
 
 
-@DATA_DELETE_API.delete("/workout/split/exercise/inactivate")
+@DATA_DELETE_ROUTER.delete("/workout/split/exercise/inactivate")
 async def inactivate_division_exercise(
     exercise: schemas.InactivateSplitExercise,
     user_id: int = Depends(TokenService.validate_token),
@@ -340,7 +424,7 @@ async def inactivate_division_exercise(
     )
 
 
-@DATA_DELETE_API.delete("/workout/split/exercise/inactivate")
+@DATA_DELETE_ROUTER.delete("/workout/split/exercise/inactivate")
 async def inactivate_split_exercise(
     exercise: schemas.InactivateSplitExercise,
     user_id: int = Depends(TokenService.validate_token),
@@ -383,7 +467,7 @@ async def inactivate_split_exercise(
     )
 
 
-@DATA_DELETE_API.delete("/workout/report/delete/{report_id}")
+@DATA_DELETE_ROUTER.delete("/workout/report/delete/{report_id}")
 async def delete_workout_report(
     report_id: int, user_id: int = Depends(TokenService.validate_token)
 ):
