@@ -57,6 +57,15 @@ class Exercise(BaseSchema):
     description: Optional[str]
 
 
+class BindMuscleExecise(BaseSchema):
+    exercise_id: int
+    muscle_id: int
+
+
+class BindEquipmentExecise(BaseSchema):
+    exercise_id: int
+    equipment_id: int
+
 class WorkoutPlan(BaseSchema):
     workout_plan_name: str
     workout_plan_goal: str
