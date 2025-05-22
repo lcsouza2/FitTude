@@ -18,6 +18,25 @@ async def _execute_inactivate_entity(
     returning_column: InstrumentedAttribute,
     entity_name: str,
 ):
+    """
+    Executes a soft delete operation by setting the 'active' field to False for a given entity.
+
+    This helper function handles the database transaction to inactivate (soft delete) an entity
+    while maintaining referential integrity.
+
+    Args:
+        table (MappedAsDataclass): The SQLAlchemy table/model class to update
+        where_clause (BinaryExpression): The SQLAlchemy where clause to filter records
+        returning_column (InstrumentedAttribute): The column to return after update for verification
+        entity_name (str): Display name of the entity for error/success messages
+
+    Returns:
+        str: Success message confirming entity inactivation
+
+    Raises:
+        EntityNotFound: If no matching record is found to inactivate
+    """
+
     async with await db_connection() as session:
         result = await session.execute(
             update(table)
@@ -42,6 +61,25 @@ async def _execute_delete(
     returning_column: InstrumentedAttribute,
     entity_name: str,
 ):
+    """
+    Executes a hard delete operation for a given entity in the database.
+
+    This helper function handles the database transaction to permanently delete records
+    while maintaining referential integrity. It performs a hard delete rather than a soft delete.
+
+    Args:
+        table (MappedAsDataclass): The SQLAlchemy table/model class to delete from
+        where_clause (BinaryExpression): The SQLAlchemy where clause to filter records for deletion
+        returning_column (InstrumentedAttribute): The column to return after deletion for verification
+        entity_name (str): Display name of the entity for error/success messages
+
+    Returns:
+        str: Success message confirming entity deletion
+
+    Raises:
+        EntityNotFound: If no matching record is found to delete
+    """
+
     async with await db_connection() as session:
         result = await session.execute(
             delete(table).where(where_clause).returning(returning_column)
@@ -60,7 +98,24 @@ async def _execute_delete(
 async def inactivate_group(
     group_name: str, user_id: int = Depends(TokenService.validate_token)
 ):
-    """Inactivate a muscle group"""
+    """
+    Inactivates (soft deletes) a muscle group for a specific user.
+
+    This endpoint performs a soft delete operation on a muscle group by setting its 'active' 
+    field to False. The operation is scoped to the authenticated user to ensure data isolation.
+
+    Args:
+        group_name (str): The name of the muscle group to inactivate
+        user_id (int): The ID of the authenticated user, obtained from the JWT token
+
+    Returns:
+        str: Success message confirming the muscle group was inactivated
+
+    Raises:
+        EntityNotFound: If no muscle group with the given name is found for the user
+        HTTPException: If authentication fails or user lacks permissions
+    """
+
     where = and_(
         db_mapping.MuscleGroup.group_name == group_name,
         db_mapping.MuscleGroup.user_id == user_id,
@@ -80,18 +135,32 @@ async def inactivate_group(
 async def inactivate_muscle(
     muscle_id: int, user_id: int = Depends(TokenService.validate_token)
 ):
+    """
+    Inactivates (soft deletes) a muscle for a specific user.
+
+    Args:
+        muscle_id (int): The ID of the muscle to inactivate
+        user_id (int): The ID of the authenticated user, obtained from the JWT token
+
+    Returns:
+        str: Success message confirming the muscle was inactivated
+
+    Raises:
+        EntityNotFound: If no muscle with the given ID is found for the user
+        HTTPException: If authentication fails or user lacks permissions
+    """
     where = and_(
-        db_mapping.Musculo.id_musculo == muscle_id,
-        db_mapping.Musculo.user_id == user_id,
+        db_mapping.Muscle.muscle_id == muscle_id,
+        db_mapping.Muscle.user_id == user_id,
     )
 
-    returning = db_mapping.Musculo.id_musculo
+    returning = db_mapping.Muscle.muscle_id
 
     await _execute_inactivate_entity(
-        table=db_mapping.Musculo,
+        table=db_mapping.Muscle,
         where_clause=where,
         returning_column=returning,
-        entity_name="Musculo",
+        entity_name="Muscle",
     )
 
 
@@ -99,18 +168,32 @@ async def inactivate_muscle(
 async def inactivate_equipment(
     equipment_id: int, user_id: int = Depends(TokenService.validate_token)
 ):
+    """
+    Inactivates (soft deletes) an equipment for a specific user.
+
+    Args:
+        equipment_id (int): The ID of the equipment to inactivate
+        user_id (int): The ID of the authenticated user, obtained from the JWT token
+
+    Returns:
+        str: Success message confirming the equipment was inactivated
+
+    Raises:
+        EntityNotFound: If no equipment with the given ID is found for the user
+        HTTPException: If authentication fails or user lacks permissions
+    """
     where = and_(
-        db_mapping.Aparelho.id_aparelho == equipment_id,
-        db_mapping.Aparelho.user_id == user_id,
+        db_mapping.Equipment.equipment_id == equipment_id,
+        db_mapping.Equipment.equipment_id == user_id,
     )
 
-    returning = db_mapping.Aparelho.id_aparelho
+    returning = db_mapping.Equipment.equipment_id
 
     await _execute_inactivate_entity(
-        table=db_mapping.Aparelho,
+        table=db_mapping.Equipment,
         where_clause=where,
         returning_column=returning,
-        entity_name="Aparelho",
+        entity_name="Equipment",
     )
 
 
@@ -118,6 +201,20 @@ async def inactivate_equipment(
 async def inactivate_exercise(
     exercise_id: int, user_id: int = Depends(TokenService.validate_token)
 ):
+    """
+    Inactivates (soft deletes) an exercise for a specific user.
+
+    Args:
+        exercise_id (int): The ID of the exercise to inactivate
+        user_id (int): The ID of the authenticated user, obtained from the JWT token
+
+    Returns:
+        str: Success message confirming the exercise was inactivated
+
+    Raises:
+        EntityNotFound: If no exercise with the given ID is found for the user
+        HTTPException: If authentication fails or user lacks permissions
+    """
     where = and_(
         db_mapping.Exercise.exercise_id == exercise_id,
         db_mapping.Exercise.user_id == user_id,
@@ -129,7 +226,7 @@ async def inactivate_exercise(
         table=db_mapping.Exercise,
         where_clause=where,
         returning_column=returning,
-        entity_name="Exercício",
+        entity_name="Exercise",
     )
 
 
@@ -137,6 +234,20 @@ async def inactivate_exercise(
 async def inactivate_workout_sheet(
     sheet_id: int, user_id: int = Depends(TokenService.validate_token)
 ):
+    """
+    Inactivates (soft deletes) a workout sheet for a specific user.
+
+    Args:
+        sheet_id (int): The ID of the workout sheet to inactivate
+        user_id (int): The ID of the authenticated user, obtained from the JWT token
+
+    Returns:
+        str: Success message confirming the workout sheet was inactivated
+
+    Raises:
+        EntityNotFound: If no workout sheet with the given ID is found for the user
+        HTTPException: If authentication fails or user lacks permissions
+    """
     where = and_(
         db_mapping.WorkoutPlan.workout_plan_id == sheet_id,
         db_mapping.WorkoutPlan.user_id == user_id,
@@ -148,7 +259,7 @@ async def inactivate_workout_sheet(
         table=db_mapping.WorkoutPlan,
         where_clause=where,
         returning_column=returning,
-        entity_name="Ficha de treino",
+        entity_name="Workout plan",
     )
 
 
@@ -156,6 +267,20 @@ async def inactivate_workout_sheet(
 async def inactivate_workout_split(
     split: str, user_id: int = Depends(TokenService.validate_token)
 ):
+    """
+    Inactivates (soft deletes) a workout split for a specific user.
+
+    Args:
+        split (str): The name of the split to inactivate
+        user_id (int): The ID of the authenticated user, obtained from the JWT token
+
+    Returns:
+        str: Success message confirming the workout split was inactivated
+
+    Raises:
+        EntityNotFound: If no workout split with the given name is found for the user
+        HTTPException: If authentication fails or user lacks permissions
+    """
     where = and_(
         db_mapping.WorkoutSplit.split == split,
         db_mapping.WorkoutSplit.workout_plan_id
@@ -169,7 +294,7 @@ async def inactivate_workout_split(
         table=db_mapping.WorkoutSplit,
         where_clause=where,
         returning_column=returning,
-        entity_name="Divisão de treino",
+        entity_name="Workout Split",
     )
 
 
@@ -178,6 +303,20 @@ async def inactivate_division_exercise(
     exercise: schemas.InactivateSplitExercise,
     user_id: int = Depends(TokenService.validate_token),
 ):
+    """
+    Inactivates (soft deletes) an exercise from a workout split.
+
+    Args:
+        exercise (InactivateSplitExercise): The exercise details to inactivate
+        user_id (int): The ID of the authenticated user, obtained from the JWT token
+
+    Returns:
+        str: Success message confirming the split exercise was inactivated
+
+    Raises:
+        EntityNotFound: If no matching exercise is found in the split
+        HTTPException: If authentication fails or user lacks permissions
+    """
     where = and_(
         db_mapping.SplitExercise.split == exercise.split,
         db_mapping.SplitExercise.exercise_id == exercise.exercise_id,
@@ -197,7 +336,7 @@ async def inactivate_division_exercise(
         table=db_mapping.SplitExercise,
         where_clause=where,
         returning_column=returning,
-        entity_name="Exercício na split de treino",
+        entity_name="Split Exercise",
     )
 
 
@@ -206,6 +345,21 @@ async def inactivate_split_exercise(
     exercise: schemas.InactivateSplitExercise,
     user_id: int = Depends(TokenService.validate_token),
 ):
+    """
+    Inactivates (soft deletes) an exercise from a workout split.
+
+    Args:
+        exercise (InactivateSplitExercise): Schema containing split, exercise_id, execution_order 
+            and workout_plan_id
+        user_id (int): The ID of the authenticated user, obtained from the JWT token
+
+    Returns:
+        str: Success message confirming the split exercise was inactivated
+
+    Raises:
+        EntityNotFound: If no matching exercise is found in the split
+        HTTPException: If authentication fails or user lacks permissions
+    """
     where = and_(
         db_mapping.SplitExercise.split == exercise.split,
         db_mapping.SplitExercise.exercise_id == exercise.exercise_id,
@@ -233,6 +387,21 @@ async def inactivate_split_exercise(
 async def delete_workout_report(
     report_id: int, user_id: int = Depends(TokenService.validate_token)
 ):
+    """
+    Permanently deletes a workout report and its associated set reports.
+    This operation cannot be undone.
+
+    Args:
+        report_id (int): The ID of the workout report to delete
+        user_id (int): The ID of the authenticated user, obtained from the JWT token
+
+    Returns:
+        str: Success message confirming the workout report and associated sets were deleted
+
+    Raises:
+        EntityNotFound: If no workout report with the given ID is found for the user
+        HTTPException: If authentication fails or user lacks permissions
+    """
     # First delete the set reports
     where_sets = and_(
         db_mapping.SetReport.workout_report_id == report_id,
