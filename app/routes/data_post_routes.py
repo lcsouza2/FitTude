@@ -242,8 +242,7 @@ async def create_new_exercise(
 
 @DATA_POST_API.post("/exercise/bind_muscle")
 async def bind_muscle_to_exercise(
-    exercise_id: int = Query(default=None),
-    muscle_id: int = Query(default=None),
+    bind_element: schemas.BindMuscleExercise,
     user_id: int = Depends(TokenService.validate_token),
 ):
     """
@@ -261,16 +260,13 @@ async def bind_muscle_to_exercise(
         str: success message
 
     Raises:
-        MissingParameters: When exercise_id or equipment_id is not provided
         PrimaryKeyViolation: When the equipment is already bound to the exercise
         ForeignKeyViolation: When referenced exercise or equipment doesn't exist
     """
-    if not exercise_id or not muscle_id:
-        raise MissingParameters()
 
     return await _execute_insert(
         table=db_mapping.ExerciseMuscle,
-        values={"exercise_id": exercise_id, "muscle_id": muscle_id},
+        values=bind_element.model_dump(),
         error_mapping=[
             {
                 "constraint": "pk_exercise_muscle",
@@ -294,10 +290,7 @@ async def bind_muscle_to_exercise(
 
 @DATA_POST_API.post("/exercise/bind_equipment")
 async def bind_equipment_to_exercise(
-    exercise_id: int = Query(
-        default=None, description="ID of the exercise to bind equipment to"
-    ),
-    equipment_id: int = Query(default=None, description="ID of the equipment to bind"),
+    bind_element: schemas.BindEquipmentExercise,
     user_id: int = Depends(TokenService.validate_token),
 ):
     """
@@ -313,16 +306,12 @@ async def bind_equipment_to_exercise(
     Returns:
         str: Success message
     Raises:
-        MissingParameters: When exercise_id or equipment_id is not provided
         PrimaryKeyViolation: When the equipment is already bound to the exercise
         ForeignKeyViolation: When referenced exercise or equipment doesn't exist
     """
-    if not exercise_id or not equipment_id:
-        raise MissingParameters("Both exercise_id and equipment_id are required")
-
     return await _execute_insert(
         table=db_mapping.ExerciseEquipment,
-        values={"exercise_id": exercise_id, "equipment_id": equipment_id},
+        values=bind_element.model_dump(),
         error_mapping=[
             {
                 "constraint": "pk_exercise_equipment",
