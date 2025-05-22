@@ -225,7 +225,7 @@ async def handle_register_confirm_req(
                 raise UniqueConstraintViolation("E-mail already in use")
 
         else:
-            session_token = refresh_token = _generate_auth_tokens(
+            session_token = refresh_token = await _generate_auth_tokens(
                 created_user, token_service, False
             )
 
@@ -236,12 +236,6 @@ async def handle_register_confirm_req(
             await session.commit()
 
             redis.delete(f"protocol:{protocol};type:register")
-
-            default_context = {
-                "request": token_service.request,
-                "token_type": "Bearer",
-                "expires_in": int(Config.JWT_ACCESS_TOKEN_EXPIRES.total_seconds()),
-            }
 
             return RedirectResponse("https://fittude-cs6s.onrender.com/dashboard", headers={"Authorization": f"Bearer {session_token}"}) 
 
