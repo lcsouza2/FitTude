@@ -243,12 +243,7 @@ async def handle_register_confirm_req(
                 "expires_in": int(Config.JWT_ACCESS_TOKEN_EXPIRES.total_seconds()),
             }
 
-            return RedirectResponse("https://fittude-api-wn11.onrender.com/dashboard") 
-            # Jinja2Templates("./templates").TemplateResponse(
-            #     name="confirm_register.html",
-            #     context=default_context,
-            #     headers={"Authorization": f"Bearer {session_token}"},
-            # )
+            return RedirectResponse("https://fittude-cs6s.onrender.com/dashboard", headers={"Authorization": f"Bearer {session_token}"}) 
 
 
 @USER_ROUTER.post("/login")
