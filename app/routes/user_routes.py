@@ -16,6 +16,7 @@ from fastapi.responses import JSONResponse, RedirectResponse
 from pydantic import EmailStr
 from sqlalchemy import exc, insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
+from datetime import timedelta
 
 from app.core import schemas
 from app.core.authentication import TokenService
@@ -103,7 +104,7 @@ async def _generate_auth_tokens(
         tuple[str, str]: Session token and refresh token
     """
     if not long_session:
-        token_service.refresh_expires = 86400  # 1 day in seconds
+        token_service.refresh_expires = timedelta(days=1)
 
     session_token = await token_service.generate_session_token(user_id)
     refresh_token = await token_service.generate_refresh_token(user_id)
