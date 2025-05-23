@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function realizarLogin(email, senha, lembrar) {
     const api = new ApiClient(BaseUrl)
-    api.post('/user/login', {
+    api.post('user/login', {
         email: email,
         password: senha,
         keep_login: lembrar

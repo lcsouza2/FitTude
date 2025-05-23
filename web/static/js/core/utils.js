@@ -12,4 +12,4 @@ export function exibirMensagem(mensagem, tipo) {
     console.log(mensagem)
 }
 
-export const BaseUrl = 'https://fittude-api-wn11.onrender.com/api';
+export const BaseUrl = 'https://fittude-api-wn11.onrender.com/api/S';

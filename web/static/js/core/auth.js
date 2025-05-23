@@ -9,7 +9,7 @@ export class ApiClient {
 
         if (!response.ok) {
             const errorText = await response.text(); // tenta pegar mensagem do servidor
-            throw new Error(`Erro ${response.status}: ${errorText}`);
+            //throw new Error(`Erro ${response.status}: ${errorText}`);
         }
         
         if (response.ok) {
@@ -19,8 +19,8 @@ export class ApiClient {
             exibirMensagem('Email já cadastrado.', 'danger');
             return;
         }
-        else if (response.status == 400) {
-            exibirMensagem('Erro ao cadastrar usuário. Tente novamente.', 'danger');
+        else if (response.status == 401) {
+            exibirMensagem('Email ou senha inválidos.', 'danger');
             return;
         }else if (response.status == 404) {
             exibirMensagem('Falha na comunição com o servido', 'danger');
