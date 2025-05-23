@@ -1,10 +1,10 @@
 import { ApiClient } from './core/auth.js';
 import { BaseUrl, exibirMensagem } from './core/utils.js';
 
-function realizarCadastro(username, nome, email, senha) {
+function realizarCadastro(nome, email, senha) {
     const api = new ApiClient(BaseUrl)
     api.post('user/register', {
-        username: username,
+        
             nome: nome,
             email: email,
             password: senha
@@ -23,7 +23,6 @@ document.addEventListener('DOMContentLoaded', function() {
     cadastroForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        const username = document.getElementById('username').value;
         const email = document.getElementById('email').value;
         const nome = document.getElementById('nome').value;
         const senha = document.getElementById('senha').value;
