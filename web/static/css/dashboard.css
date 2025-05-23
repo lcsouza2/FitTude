@@ -1,5 +1,5 @@
 body {
-    font-family: "Kanit", sans-serif;
+    font-family: "Kanit", sans-serif ;
     background-image: url('../assets/img/background_image.png');
     background-repeat: no-repeat;
     background-size: cover;
@@ -11,6 +11,7 @@ body {
     height: 100vh;
     overflow-x: hidden;
 }
+
 
 header {
     background-color: black;
