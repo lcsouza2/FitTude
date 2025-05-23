@@ -2,8 +2,7 @@ import {  } from './utils.js';
 export class ApiClient {
   constructor(baseURL = '') {
     this.baseURL = baseURL;
-  }
-
+    }
   async request(endpoint, options = {}) {
     try {
         const response = await fetch(this.baseURL + endpoint, options);
