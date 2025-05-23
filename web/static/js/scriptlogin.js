@@ -1,3 +1,6 @@
+import { ApiClient } from './core/auth.js';
+import { BaseUrl } from './core/utils.js';
+
 document.addEventListener('DOMContentLoaded', function() {
     const loginForm = document.getElementById('loginForm');
     
@@ -15,68 +18,24 @@ document.addEventListener('DOMContentLoaded', function() {
             if (email && senha) {
                 realizarLogin(email, senha, lembrar);
             }
+            else {
+                exibirMensagem('Preencha todos os campos.', 'error');
+            }
         }
     });
 });
 
 function realizarLogin(email, senha, lembrar) {
-    fetch("https://fittude-api.onrender.com/api/user/login", {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            "email": email,
-            "password": senha,
-            "keep_login": lembrar // Adiciona o campo "lembrar" no corpo da requisição
-
-        })
-    })
-    
-    .then(response => {
-        if (response.ok) {
-            console.log("200 OK:", response);
-        }
-       
-        else if (response.status == 400) {
-            exibirMensagem('Erro ao realizar login. Tente novamente.: 01', 'error');
-            return;
-        }
-        else if (response.status == 500) {
-            exibirMensagem('Erro interno do servidor. Tente novamente mais tarde.', 'error');
-            return;
-        }
-        return response.json();
-
-    })
-    .then(data => {
-        
-        if (data) {
-            if (data.detail) {
-                exibirMensagem(data.detail, 'error');
-                return;
-            }
-            else if (data.access_token) {
-                exibirMensagem('Login realizado com sucesso!', 'sucesso');  
-                sessionStorage.setItem("token", data.access_token);  //chegamos nos finalmentes
-
-                setTimeout(() => {
-                    window.location.href = "dashboard.html"; 
-                }, 2000); // Aguarda 2 segundos antes de redirecionar
-                
-            } else {
-                exibirMensagem('Erro ao realizar login. Tente novamente.', 'error');
-                return;
-            }; 
-            //eu odeio javascript
-            
-        } else {
-           console.log("Resposta vazia ou não JSON:", data);
-        }
-    })
-    .catch(error => {
-        exibirMensagem('Erro ao realizar login: 01', 'error');
-        console.error('Erro:', error);
-    });
+    const api = new ApiClient(BaseUrl)
+    api.post('user/login', {
+        email: email,
+        password: senha,
+        keep_login: lembrar
+    }).then(response => {
+        if (response.access_token) {
+            sessionStorage.setItem('token', response.access_token);
+            setTimeout(() => {
+                window.location.href = "dashboard.html";
+            }, 2000);
+    }});
 }
-

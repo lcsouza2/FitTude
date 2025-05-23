@@ -1,69 +1,20 @@
-function realizarCadastro(username, nome, email, senha) {
-    fetch("https://fittude-api.onrender.com/api/user/register", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            "username": username,
-            "nome": nome,
-            "email": email,
-            "password": senha
-        })
-    })
-    .then(response => {
-        console.log("Resposta do servidor");
-        if (response.ok) {
-            console.log("200 OK:", response);
-        }
-        else if(response.status == 409) {
-            exibirMensagem('Email já cadastrado.', 'danger');
-            return;
-        }
-        else if (response.status == 400) {
-            exibirMensagem('Erro ao cadastrar usuário. Tente novamente.', 'danger');
-            return;
-        }else if (response.status == 404) {
-            exibirMensagem('Falha na comunição com o servido', 'danger');
-            return;
-        }   
-        else if (response.status == 500) {
-            exibirMensagem('Erro interno do servidor. Tente novamente mais tarde.', 'danger');
-            return;
-        }
-        else {
-            return response.json();
-        }
+import { ApiClient } from './core/auth.js';
+import { BaseUrl, exibirMensagem } from './core/utils.js';
+
+function realizarCadastro(nome, email, senha) {
+    const api = new ApiClient(BaseUrl)
+    api.post('user/register', {
         
-    })
-    .then(data => {
-
-        if (data.sucesso) {
-            exibirMensagem('Cadastro realizado com sucesso!', 'success');
-            
-        } else {
-            exibirMensagem('Erro ao cadastrar usuário. Tente novamente.', 'danger');
-        }
-    })
-    .catch(error => {
-        console.error("Erro informado:",error);
-        exibirMensagem("Erro criando seu registro!", 'danger');
-
-    });
-}
-
-function exibirMensagem(mensagem, tipo) {
-    const mensagemElement = document.getElementById('mensagem');
-    mensagemElement.textContent = mensagem;
-    mensagemElement.style.transition = 'none'; // Remove transições anteriores
-    mensagemElement.style.opacity = '0'; // Reseta a opacidade
-    mensagemElement.style.transform = 'translateY(-100%)'; // Reseta a posição
-    void mensagemElement.offsetWidth; // Força o reflow para reiniciar a animação
-    mensagemElement.style.transition = 'transform 0.5s ease-in-out, opacity 0.5s ease-in-out';
-    mensagemElement.style.opacity = '1';
-    mensagemElement.style.transform = 'translateY(0)';
-    mensagemElement.className = `alert-${tipo}`; 
-    mensagemElement.style.display = 'block';
+            nome: nome,
+            email: email,
+            password: senha
+    }).then(response => {
+        if (response.success) {
+            exibirMensagem('Cadastro realizado com sucesso! Você será redirecionado para a página de login.', 'success');
+            setTimeout(() => {
+                window.location.href = "login.html";
+            }, 3000);
+    }});
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -72,7 +23,6 @@ document.addEventListener('DOMContentLoaded', function() {
     cadastroForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        const username = document.getElementById('username').value;
         const email = document.getElementById('email').value;
         const nome = document.getElementById('nome').value;
         const senha = document.getElementById('senha').value;
