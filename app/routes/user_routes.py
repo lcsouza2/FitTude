@@ -315,6 +315,12 @@ async def handle_pwd_change_req(
     """
     Handle password change request by sending verification email.
     """
+
+    try:
+        validate_email(user.email, check_deliverability=True)
+    except EmailNotValidError:
+        raise InvalidCredentials("Invalid E-mail!")
+
     background_tasks.add_task(save_pwd_change_protocol, user=user)
     return JSONResponse("Verification mail send successfully!")
 
