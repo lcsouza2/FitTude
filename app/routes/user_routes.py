@@ -228,13 +228,13 @@ async def handle_register_confirm_req(
                 created_user, token_service, False
             )
 
-            token_service.set_refresh_token_cookie(
+            await token_service.set_refresh_token_cookie(
                 token_service.response, refresh_token
             )
 
             await session.commit()
 
-            redis.delete(f"protocol:{protocol};type:register")
+            await redis.delete(f"protocol:{protocol};type:register")
 
             return RedirectResponse("https://fittude-cs6s.onrender.com/dashboard", headers={"Authorization": f"Bearer {session_token}"}) 
 
