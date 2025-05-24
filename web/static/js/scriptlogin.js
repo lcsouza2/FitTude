@@ -32,7 +32,7 @@ function realizarLogin(email, senha, lembrar) {
         password: senha,
         keep_login: lembrar
     }).then(response => {
-        if (response.access_token) {
+        if (data) {
             sessionStorage.setItem('token', response.access_token);
             setTimeout(() => {
                 window.location.href = "dashboard.html";

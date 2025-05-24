@@ -4,16 +4,15 @@ import { BaseUrl, exibirMensagem } from './core/utils.js';
 function realizarCadastro(nome, email, senha) {
     const api = new ApiClient(BaseUrl)
     api.post('user/register', {
-        
-            nome: nome,
-            email: email,
-            password: senha
+        email: email,
+        password: senha,
+        name: nome
     }).then(response => {
         if (response.success) {
             exibirMensagem('Cadastro realizado com sucesso! Você será redirecionado para a página de login.', 'success');
             setTimeout(() => {
                 window.location.href = "login.html";
-            }, 3000);
+            }, 7000);
     }});
 }
 
@@ -28,16 +27,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const senha = document.getElementById('senha').value;
         const confirmarSenha = document.getElementById('confirmarSenha').value;
 
-        
+    
         function validarSenha(senha) {
             const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
             return regex.test(senha);
         }
-        if (username.length < 3) {
-            exibirMensagem('O nome de usuário deve ter pelo menos 3 caracteres.', 'danger');
-            return;
-        }
-
         if (!validarSenha(senha)) {
             exibirMensagem('A senha deve ter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e símbolos.', 'danger');
             return;
@@ -47,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         else {
-            realizarCadastro(username, nome, email, senha);
+            realizarCadastro(nome, email, senha);
         }
         
     });
