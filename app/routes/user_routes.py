@@ -286,12 +286,8 @@ async def handle_user_login_req(
             token_service.response, refresh_token
         )
 
-        return JSONResponse(
-            content={
-                "message": "Login successful!",
-                "token_type": "Bearer",
-                "expires_in": int(token_service.session_expires.total_seconds()),
-            },
+        return RedirectResponse(
+            url="https://fittude-cs6s.onrender.com/dashboard",
             headers={"Authorization": f"Bearer {session_token}"},
         )
 
