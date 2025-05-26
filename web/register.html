@@ -29,7 +29,7 @@
 
     <!-- Container principal -->
     <!-- Se for modificar o formulario, nao mude os IDs do input, nao mude o ID de nada, a nao ser que queira um erro na tua cara, ai tu resolve.  -->
-    <div class="container-fluid mt-5 pt-5 d-flex justify-content-center align-items-start min-vh-100 ">
+    <div class="container-fluid mt-5 pt-5 d-flex justify-content-center align-items-start min-vh-100 align-self-center">
         <div class="col-11 col-sm-9 col-md-7 col-lg-5 col-xl-4 register-box">
             <form id="registerForm" class="register-form p-1">
                 <h2 class="text-center mb-4">Cadastre-se</h2>
@@ -45,27 +45,31 @@
                 <div>
                     <label for="senha" class="form-label">Senha</label>
                     <input type="password" id="senha" class="form-control" aria-describedby="passwordHelpBlock" required>
-                    <div id="passwordHelpBlock" class="form-text">
-                         A senha deve ter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e símbolos.
-                    </div>
                 </div>
-                <div class="mb-3">
+                <div class="mb-0">
                     <label for="confirmarSenha" class="form-label">Confirmar senha</label>
                     <input type="password" id="confirmarSenha" class="form-control" required>
                 </div>
+                <ul class="mb-0">
+                    <li class="form-text">A senha deve conter:</li>
+                    <li class="form-text">Pelo menos 8 caracteres</li>
+                    <li class="form-text">Pelo menos uma letra maiúscula</li>
+                    <li class="form-text">Pelo menos uma letra minúscula</li>
+                    <li class="form-text">Pelo menos um número</li>
+                    <li class="form-text">Pelo menos um caractere especial</li>
+                </ul>
 
                 <div id="mensagem" class="" role="alert">
                     <!-- Mensagem de erro será exibida aqui -->
                 </div>
 
-                <div class="mb-3 form-check">
+                <div class="mb-0 form-check">
                     <input type="checkbox" id="terms" class="form-check-input form-check-lg" required>
                     <label for="terms" class="form-check-label">Concordo com os termos de uso do FitTude</label>
                 </div>
-                <div class="d-grid gap-2">
+                <div class="d-grid gap-0">
                     <button type="submit" class="btn btn-custom w-100">Continuar</button>
                 </div>
-                
             </form>
         </div>
     </div>
