@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitTude - Minhas Fichas</title>
+    <link rel="shortcut icon" href="static/assets/img/favicon2.png" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Kanit:wght@400;600;700&family=Righteous&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.1/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Kanit", sans-serif ;
+            background-image: url('static/assets/img/background_image.png');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 0;
+            color: #ececec;
+            height: 100vh;
+            overflow-x: hidden;
+        }
+
+        h2, h3, h4, h5, h6 {
+            color: #ffffff;  /* Títulos em branco */
+        }
+
+        header {
+            background-color: black;
+            padding: 10px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        header h1 {
+            font-family: "Righteous", sans-serif;
+            margin: 0;
+            color: #ffffff;
+            font-size: 40px;
+        }
+
+        .h1-highlighted {
+            color: #510feb;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: rgba(20, 20, 20, 0.95);
+            position: fixed;
+            top: 70px;
+            left: 0;
+            height: calc(100vh - 70px);
+            overflow-y: auto;
+            z-index: 999;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-menu li:hover {
+            background-color: rgba(81, 15, 235, 0.7);
+        }
+
+        .sidebar-menu li.active {
+            background-color: #510feb;
+            border-left: 4px solid white;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            margin-top: 70px;
+            padding: 30px;
+            background-color: rgba(30, 30, 30, 0.85);
+            backdrop-filter: blur(10px);
+            min-height: calc(100vh - 70px);
+        }
+
+        .button-style {
+            background-color: #510feb;
+            border: none;
+            font-family: "Kanit", sans-serif;
+            font-weight: 450;
+            min-width: 150px;
+            color: #DEE2E6;
+            padding: 12px 24px;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .button-style:hover {
+            background-color: #3d0bc6;
+            transform: scale(1.05);
+        }
+
+        .card {
+            background-color: rgba(60, 60, 60, 0.9);
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            color: #ececec;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+        }
+
+
+
+        .modal-title {
+            color: #ffffff;
+        }
+
+        /* Textos secundários */
+        .text-muted, small, .card-subtitle {
+            color: #adb5bd !important;
+        }
+
+        .card-header {
+            background-color: rgba(81, 15, 235, 0.8);
+            border-bottom: none;
+            border-radius: 15px 15px 0 0 !important;
+            color: white;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background-color: #510feb;
+            border-color: #510feb;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #3d0bc6;
+            border-color: #3d0bc6;
+            transform: scale(1.05);
+        }
+
+        .btn-outline-primary {
+            color: #510feb;
+            border-color: #510feb;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #510feb;
+            border-color: #510feb;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
+            border-color: #ffc107;
+            color: #000;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .text-primary {
+            color: #510feb !important;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            padding: 0.5em 0.75em;
+        }
+
+        .badge-primary {
+            background-color: #510feb;
+        }
+
+        .modal-content {
+            background-color: rgba(40, 40, 40, 0.95);
+            color: #ececec;
+            border: none;
+            border-radius: 15px;
+        }
+
+        .modal-header {
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .modal-footer {
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .form-control, .form-select {
+            background-color: rgba(60, 60, 60, 0.8);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #ececec;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background-color: rgba(60, 60, 60, 0.9);
+            border-color: #510feb;
+            color: #ececec;
+            box-shadow: 0 0 0 0.2rem rgba(81, 15, 235, 0.25);
+        }
+
+        .table {
+            color: #ececec;
+        }
+
+        .table-dark {
+            --bs-table-bg: rgba(40, 40, 40, 0.8);
+        }
+
+        .progress {
+            background-color: rgba(40, 40, 40, 0.8);
+        }
+
+        .progress-bar {
+            background-color: #510feb;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                top: 0;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                margin-top: 0;
+            }
+            
+            .sidebar-menu {
+                display: flex;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            
+            .sidebar-menu li {
+                flex-shrink: 0;
+                min-width: 120px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="d-flex justify-content-between align-items-center px-4">
+        <h1><span class="h1-highlighted">Fit</span>Tude</h1>
+        <div class="d-flex align-items-center">
+            <div class="bg-primary rounded-circle d-flex justify-content-center align-items-center me-2" style="width: 35px; height: 35px;">
+                <strong>R</strong>
+            </div>
+            <span class="text-white me-3">RafaelSilva</span>
+            <button class="btn btn-outline-light btn-sm">Sair</button>
+        </div>
+    </header>
+    
+            <div class="sidebar">
+            <ul class="sidebar-menu">
+            <li  onclick="location.href='dashboard.html'">
+                <i class="bi bi-grid-fill me-2"></i>Dashboard
+            </li>
+            <li class="active"onclick="location.href='active.html'">
+                <i class="bi bi-journal-text me-2"></i>Minhas Fichas
+            </li>
+            <li onclick="location.href='exercicios.html'">
+                <i class="bi bi-lightning-fill me-2"></i>Exercícios
+            </li>
+            <li onclick="location.href='relatorios.html'">
+                <i class="bi bi-graph-up me-2"></i>Relatórios
+            </li>
+            <li onclick="location.href='grupamentos.html'">
+                <i class="bi bi-collection me-2"></i>Grupamentos
+            </li>
+            <li onclick="location.href='aparelhos.html'">
+                <i class="bi bi-tools me-2"></i>Aparelhos
+            </li>
+            <li onclick="location.href='configuracoes.html'">
+                <i class="bi bi-gear-fill me-2"></i>Configurações
+            </li>
+        </ul>
+    </div>
+    
+    <div class="main-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="bi bi-journal-text text-primary me-2"></i>Minhas Fichas de Treino</h2>
+            <button class="button-style" data-bs-toggle="modal" data-bs-target="#novaFichaModal">
+                <i class=" me-2"></i>+ Nova Ficha
+            </button>
+        </div>
+
+        <!-- Cards de Fichas -->
+        <div class="row g-4 mb-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Hipertrofia 2025</h5>
+                        <span class="badge bg-success">Ativa</span>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            <strong>Objetivo:</strong> Hipertrofia avançada<br>
+                            <strong>Divisões:</strong> ABC (3x por semana)<br>
+                            <strong>Criada em:</strong> 15/01/2025
+                        </p>
+                        <div class="mb-3">
+                            <div class="d-flex flex-wrap gap-1">
+                                <span class="badge badge-primary">A - Peito/Tríceps</span>
+                                <span class="badge badge-primary">B - Costas/Bíceps</span>
+                                <span class="badge badge-primary">C - Pernas/Ombros</span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted">Progresso Semanal</small>
+                            <div class="progress mt-1">
+                                <div class="progress-bar" style="width: 67%"></div>
+                            </div>
+                            <small class="text-muted">2/3 treinos completados</small>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <div class="btn-group w-100">
+                            <button class="btn btn-primary btn-sm" onclick="verDetalhes(1)">
+                                <i class="bi bi-eye me-1"></i>Ver
+                            </button>
+                            <button class="btn btn-warning btn-sm" onclick="editarFicha(1)">
+                                <i class="bi bi-pencil me-1"></i>Editar
+                            </button>
+                            <button class="btn btn-success btn-sm" onclick="iniciarTreino(1, 'B')">
+                                <i class="bi bi-play-fill me-1"></i>Treinar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Full Body 5x</h5>
+                        <span class="badge bg-secondary">Inativa</span>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            <strong>Objetivo:</strong> Condicionamento Geral<br>
+                            <strong>Divisões:</strong> 5x Full Body<br>
+                            <strong>Criada em:</strong> 10/12/2024
+                        </p>
+                        <div class="mb-3">
+                            <div class="d-flex flex-wrap gap-1">
+                                <span class="badge bg-secondary">A - Full Body</span>
+                                <span class="badge bg-secondary">B - Full Body</span>
+                                <span class="badge bg-secondary">C - Full Body</span>
+                                <span class="badge bg-secondary">D - Full Body</span>
+                                <span class="badge bg-secondary">E - Full Body</span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted">Última vez usada: 05/01/2025</small>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <div class="btn-group w-100">
+                            <button class="btn btn-primary btn-sm" onclick="verDetalhes(2)">
+                                <i class="bi bi-eye me-1"></i>Ver
+                            </button>
+                            <button class="btn btn-warning btn-sm" onclick="editarFicha(2)">
+                                <i class="bi bi-pencil me-1"></i>Editar
+                            </button>
+                            <button class="btn btn-outline-success btn-sm" onclick="ativarFicha(2)">
+                                <i class="bi bi-check-circle me-1"></i>Ativar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Força Base</h5>
+                        <span class="badge bg-secondary">Inativa</span>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            <strong>Objetivo:</strong> Ganho de Força<br>
+                            <strong>Divisões:</strong> AB (Push/Pull)<br>
+                            <strong>Criada em:</strong> 20/11/2024
+                        </p>
+                        <div class="mb-3">
+                            <div class="d-flex flex-wrap gap-1">
+                                <span class="badge bg-secondary">A - Superior</span>
+                                <span class="badge bg-secondary">B - Inferior</span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted">Última vez usada: 28/12/2024</small>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent">
+                        <div class="btn-group w-100">
+                            <button class="btn btn-primary btn-sm" onclick="verDetalhes(3)">
+                                <i class="bi bi-eye me-1"></i>Ver
+                            </button>
+                            <button class="btn btn-warning btn-sm" onclick="editarFicha(3)">
+                                <i class="bi bi-pencil me-1"></i>Editar
+                            </button>
+                            <button class="btn btn-outline-success btn-sm" onclick="ativarFicha(3)">
+                                <i class="bi bi-check-circle me-1"></i>Ativar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estatísticas -->
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-journal-text display-4 text-primary mb-2"></i>
+                        <h4 class="text-primary">3</h4>
+                        <p class="mb-0">Total de Fichas</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-check-circle display-4 text-success mb-2"></i>
+                        <h4 class="text-success">1</h4>
+                        <p class="mb-0">Ficha Ativa</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-calendar-week display-4 text-warning mb-2"></i>
+                        <h4 class="text-warning">27</h4>
+                        <p class="mb-0">Treinos Realizados</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-lightning display-4 text-info mb-2"></i>
+                        <h4 class="text-info">42</h4>
+                        <p class="mb-0">Exercícios Únicos</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Nova Ficha -->
+    <div class="modal fade" id="novaFichaModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-plus-circle me-2"></i>Nova Ficha de Treino
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="novaFichaForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Nome da Ficha</label>
+                                <input type="text" class="form-control" placeholder="Ex: Hipertrofia 2025" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Objetivo</label>
+                                <select class="form-select" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="hipertrofia">Hipertrofia</option>
+                                    <option value="forca">Ganho de Força</option>
+                                    <option value="resistencia">Resistência</option>
+                                    <option value="condicionamento">Condicionamento Geral</option>
+                                    <option value="definicao">Definição Muscular</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Divisões de Treino</label>
+                            <div id="divisoes">
+                                <div class="input-group mb-2">
+                                    <span class="input-group-text">A</span>
+                                    <input type="text" class="form-control" placeholder="Ex: Peito, Tríceps">
+                                    <button class="btn btn-outline-danger" type="button" onclick="removerDivisao(this)">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="adicionarDivisao()">
+                                <i class="bi bi-plus me-1"></i>Adicionar Divisão
+                            </button>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="ativarFicha" checked>
+                                <label class="form-check-label" for="ativarFicha">
+                                    Ativar esta ficha imediatamente
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="salvarNovaFicha()">
+                        <i class="bi bi-save me-2"></i>Salvar Ficha
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="detalhesModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-eye me-2"></i>Detalhes da Ficha - Hipertrofia 2025
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <div class="card-header">
+                                <h6 class="mb-0"><i class="bi bi-info-circle me-2"></i>Informações Gerais</h6>
+                            </div>
+                            <div class="card-body">
+                                <p><strong>Nome:</strong> Hipertrofia 2025</p>
+                                <p><strong>Objetivo:</strong> Hipertrofia avançada</p>
+                                <p><strong>Status:</strong> <span class="badge bg-success">Ativa</span></p>
+                                <p><strong>Criada em:</strong> 15/01/2025</p>
+                                <p><strong>Última modificação:</strong> 20/01/2025</p>
+                                <p><strong>Total de exercícios:</strong> 42</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="mb-0"><i class="bi bi-calendar-week me-2"></i>Divisões de Treino</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="accordion" id="divisoesAccordion">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseA">
+                                                <strong>Divisão A - Peito e Tríceps</strong>
+                                                <span class="badge bg-primary ms-2">12 exercícios</span>
+                                            </button>
+                                        </h2>
+                                        <div id="collapseA" class="accordion-collapse collapse show" data-bs-parent="#divisoesAccordion">
+                                            <div class="accordion-body">
+                                                <div class="table-responsive">
+                                                    <table class="table table-dark table-sm">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Exercício</th>
+                                                                <th>Séries</th>
+                                                                <th>Repetições</th>
+                                                                <th>Descanso</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>Supino Reto</td>
+                                                                <td>4</td>
+                                                                <td>8-10</td>
+                                                                <td>90s</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Supino Inclinado</td>
+                                                                <td>3</td>
+                                                                <td>10-12</td>
+                                                                <td>75s</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Crucifixo</td>
+                                                                <td>3</td>
+                                                                <td>12-15</td>
+                                                                <td>60s</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Tríceps Testa</td>
+                                                                <td>4</td>
+                                                                <td>10-12</td>
+                                                                <td>60s</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Tríceps Corda</td>
+                                                                <td>3</td>
+                                                                <td>12-15</td>
+                                                                <td>45s</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseB">
+                                                <strong>Divisão B - Costas e Bíceps</strong>
+                                                <span class="badge bg-primary ms-2">15 exercícios</span>
+                                            </button>
+                                        </h2>
+                                        <div id="collapseB" class="accordion-collapse collapse" data-bs-parent="#divisoesAccordion">
+                                            <div class="accordion-body">
+                                                <div class="table-responsive">
+                                                    <table class="table table-dark table-sm">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Exercício</th>
+                                                                <th>Séries</th>
+                                                                <th>Repetições</th>
+                                                                <th>Descanso</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>Puxada Alta</td>
+                                                                <td>4</td>
+                                                                <td>8-10</td>
+                                                                <td>90s</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Remada Baixa</td>
+                                                                <td>4</td>
+                                                                <td>10-12</td>
+                                                                <td>75s</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Rosca Direta</td>
+                                                                <td>3</td>
+                                                                <td>12-15</td>
+                                                                <td>60s</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseC">
+                                                <strong>Divisão C - Pernas e Ombros</strong>
+                                                <span class="badge bg-primary ms-2">15 exercícios</span>
+                                            </button>
+                                        </h2>
+                                        <div id="collapseC" class="accordion-collapse collapse" data-bs-parent="#divisoesAccordion">
+                                            <div class="accordion-body">
+                                                <div class="table-responsive">
+                                                    <table class="table table-dark table-sm">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Exercício</th>
+                                                                <th>Séries</th>
+                                                                <th>Repetições</th>
+                                                                <th>Descanso</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>Agachamento Livre</td>
+                                                                <td>4</td>
+                                                                <td>8-10</td>
+                                                                <td>120s</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Leg Press</td>
+                                                                <td>4</td>
+                                                                <td>12-15</td>
+                                                                <td>90s</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>Desenvolvimento</td>
+                                                                <td>4</td>
+                                                                <td>10-12</td>
+                                                                <td>75s</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" onclick="editarFicha(1)">
+                    <i class="bi bi-pencil me-2"></i>Editar Ficha
+                </button>
+                <button type="button" class="btn btn-success" onclick="iniciarTreino(1, 'B')">
+                    <i class="bi bi-play-fill me-2"></i>Iniciar Treino
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Editar Ficha -->
+<div class="modal fade" id="editarFichaModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-pencil me-2"></i>Editar Ficha - Hipertrofia 2025
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editarFichaForm">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">Nome da Ficha</label>
+                            <input type="text" class="form-control" value="Hipertrofia 2025" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Objetivo</label>
+                            <select class="form-select" required>
+                                <option value="hipertrofia" selected>Hipertrofia</option>
+                                <option value="forca">Ganho de Força</option>
+                                <option value="resistencia">Resistência</option>
+                                <option value="condicionamento">Condicionamento Geral</option>
+                                <option value="definicao">Definição Muscular</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h6 class="mb-0"><i class="bi bi-list-task me-2"></i>Divisões de Treino</h6>
+                            <button type="button" class="btn btn-primary btn-sm" onclick="adicionarDivisaoEdit()">
+                                <i class="bi bi-plus me-1"></i>Adicionar Divisão
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div id="divisoesEdit">
+                                <div class="card mb-3">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <div class="input-group" style="max-width: 300px;">
+                                            <span class="input-group-text">A</span>
+                                            <input type="text" class="form-control" value="Peito, Tríceps">
+                                        </div>
+                                        <button class="btn btn-outline-danger btn-sm" type="button">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-dark table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Exercício</th>
+                                                        <th>Séries</th>
+                                                        <th>Reps</th>
+                                                        <th>Descanso</th>
+                                                        <th>Ações</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <select class="form-select form-select-sm">
+                                                                <option selected>Supino Reto</option>
+                                                                <option>Supino Inclinado</option>
+                                                                <option>Crucifixo</option>
+                                                            </select>
+                                                        </td>
+                                                        <td><input type="number" class="form-control form-control-sm" value="4"></td>
+                                                        <td><input type="text" class="form-control form-control-sm" value="8-10"></td>
+                                                        <td><input type="number" class="form-control form-control-sm" value="90"></td>
+                                                        <td>
+                                                            <button class="btn btn-outline-danger btn-sm">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <select class="form-select form-select-sm">
+                                                                <option>Supino Reto</option>
+                                                                <option selected>Supino Inclinado</option>
+                                                                <option>Crucifixo</option>
+                                                            </select>
+                                                        </td>
+                                                        <td><input type="number" class="form-control form-control-sm" value="3"></td>
+                                                        <td><input type="text" class="form-control form-control-sm" value="10-12"></td>
+                                                        <td><input type="number" class="form-control form-control-sm" value="75"></td>
+                                                        <td>
+                                                            <button class="btn btn-outline-danger btn-sm">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <button type="button" class="btn btn-outline-primary btn-sm">
+                                            <i class="bi bi-plus me-1"></i>Adicionar Exercício
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="card mb-3">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <div class="input-group" style="max-width: 300px;">
+                                            <span class="input-group-text">B</span>
+                                            <input type="text" class="form-control" value="Costas, Bíceps">
+                                        </div>
+                                        <button class="btn btn-outline-danger btn-sm" type="button">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-dark table-sm">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Exercício</th>
+                                                        <th>Séries</th>
+                                                        <th>Reps</th>
+                                                        <th>Descanso</th>
+                                                        <th>Ações</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <select class="form-select form-select-sm">
+                                                                <option selected>Puxada Alta</option>
+                                                                <option>Remada Baixa</option>
+                                                                <option>Rosca Direta</option>
+                                                            </select>
+                                                        </td>
+                                                        <td><input type="number" class="form-control form-control-sm" value="4"></td>
+                                                        <td><input type="text" class="form-control form-control-sm" value="8-10"></td>
+                                                        <td><input type="number" class="form-control form-control-sm" value="90"></td>
+                                                        <td>
+                                                            <button class="btn btn-outline-danger btn-sm">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <button type="button" class="btn btn-outline-primary btn-sm">
+                                            <i class="bi bi-plus me-1"></i>Adicionar Exercício
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="manterAtiva" checked>
+                        <label class="form-check-label" for="manterAtiva">
+                            Manter esta ficha como ativa
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="salvarEdicaoFicha()">
+                    <i class="bi bi-save me-2"></i>Salvar Alterações
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Iniciar Treino -->
+<div class="modal fade" id="iniciarTreinoModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-play-fill me-2"></i>Iniciar Treino - Divisão B (Costas e Bíceps)
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <i class="bi bi-clock display-4 text-primary mb-2"></i>
+                                <h5>Tempo de Treino</h5>
+                                <h3 id="cronometro" class="text-primary">00:00:00</h3>
+                                <button class="btn btn-success btn-sm" id="btnIniciarPausar">
+                                    <i class="bi bi-play-fill me-1"></i>Iniciar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <i class="bi bi-list-check display-4 text-warning mb-2"></i>
+                                <h5>Progresso</h5>
+                                <div class="progress mb-2">
+                                    <div class="progress-bar bg-warning" style="width: 0%" id="progressoTreino"></div>
+                                </div>
+                                <p class="mb-0"><span id="exerciciosCompletados">0</span> de <span id="totalExercicios">4</span> exercícios</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="bi bi-lightning me-2"></i>Exercícios da Divisão B
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="accordion" id="exerciciosTreinoacordion">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#exercicio1">
+                                        <div class="d-flex align-items-center w-100">
+                                            <span class="badge bg-primary me-3">1</span>
+                                            <div class="flex-grow-1">
+                                                <strong>Puxada Alta</strong>
+                                                <small class="d-block text-muted">4 séries × 8-10 reps × 90s descanso</small>
+                                            </div>
+                                            <span class="badge bg-secondary ms-2">Pendente</span>
+                                        </div>
+                                    </button>
+                                </h2>
+                                <div id="exercicio1" class="accordion-collapse collapse show" data-bs-parent="#exerciciosTreinoacordion">
+                                    <div class="accordion-body">
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <div class="table-responsive">
+                                                    <table class="table table-dark table-sm">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Série</th>
+                                                                <th>Peso (kg)</th>
+                                                                <th>Repetições</th>
+                                                                <th>Status</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>1</td>
+                                                                <td><input type="number" class="form-control form-control-sm" placeholder="0"></td>
+                                                                <td><input type="number" class="form-control form-control-sm" placeholder="0"></td>
+                                                                <td>
+                                                                    <button class="btn btn-success btn-sm">
+                                                                        <i class="bi bi-check"></i>
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>2</td>
+                                                                <td><input type="number" class="form-control form-control-sm" placeholder="0"></td>
+                                                                <td><input type="number" class="form-control form-control-sm" placeholder="0"></td>
+                                                                <td>
+                                                                    <button class="btn btn-success btn-sm">
+                                                                        <i class="bi bi-check"></i>
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>3</td>
+                                                                <td><input type="number" class="form-control form-control-sm" placeholder="0"></td>
+                                                                <td><input type="number" class="form-control form-control-sm" placeholder="0"></td>
+                                                                <td>
+                                                                    <button class="btn btn-success btn-sm">
+                                                                        <i class="bi bi-check"></i>
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>4</td>
+                                                                <td><input type="number" class="form-control form-control-sm" placeholder="0"></td>
+                                                                <td><input type="number" class="form-control form-control-sm" placeholder="0"></td>
+                                                                <td>
+                                                                    <button class="btn btn-success btn-sm">
+                                                                        <i class="bi bi-check"></i>
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="card">
+                                                    <div class="card-body text-center">
+                                                        <h6>Timer de Descanso</h6>
+                                                        <h4 class="text-warning" id="timerDescanso">01:30</h4>
+                                                        <button class="btn btn-warning btn-sm">
+                                                            <i class="bi bi-play-fill"></i> Iniciar
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div class="mt-3">
+                                                    <label class="form-label">Observações</label>
+                                                    <textarea class="form-control" rows="3" placeholder="Notas sobre o exercício..."></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#exercicio2">
+                                        <div class="d-flex align-items-center w-100">
+                                            <span class="badge bg-primary me-3">2</span>
+                                            <div class="flex-grow-1">
+                                                <strong>Remada Baixa</strong>
+                                                <small class="d-block text-muted">4 séries × 10-12 reps × 75s descanso</small>
+                                            </div>
+                                            <span class="badge bg-secondary ms-2">Pendente</span>
+                                        </div>
+                                    </button>
+                                </h2>
+                                <div id="exercicio2" class="accordion-collapse collapse" data-bs-parent="#exerciciosTreinoacordion">
+                                    <div class="accordion-body">
+                                        <p class="text-muted">Complete o exercício anterior para liberar este.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#exercicio3">
+                                        <div class="d-flex align-items-center w-100">
+                                            <span class="badge bg-primary me-3">3</span>
+                                            <div class="flex-grow-1">
+                                                <strong>Rosca Direta</strong>
+                                                <small class="d-block text-muted">3 séries × 12-15 reps × 60s descanso</small>
+                                            </div>
+                                            <span class="badge bg-secondary ms-2">Pendente</span>
+                                        </div>
+                                    </button>
+                                </h2>
+                                <div id="exercicio3" class="accordion-collapse collapse" data-bs-parent="#exerciciosTreinoacordion">
+                                    <div class="accordion-body">
+                                        <p class="text-muted">Complete os exercícios anteriores para liberar este.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#exercicio4">
+                                        <div class="d-flex align-items-center w-100">
+                                            <span class="badge bg-primary me-3">4</span>
+                                            <div class="flex-grow-1">
+                                                <strong>Rosca Martelo</strong>
+                                                <small class="d-block text-muted">3 séries × 10-12 reps × 45s descanso</small>
+                                            </div>
+                                            <span class="badge bg-secondary ms-2">Pendente</span>
+                                        </div>
+                                    </button>
+                                </h2>
+                                <div id="exercicio4" class="accordion-collapse collapse" data-bs-parent="#exerciciosTreinoacordion">
+                                    <div class="accordion-body">
+                                        <p class="text-muted">Complete os exercícios anteriores para liberar este.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" onclick="cancelarTreino()">
+                    <i class="bi bi-x-circle me-2"></i>Cancelar Treino
+                </button>
+                <button type="button" class="btn btn-success" onclick="finalizarTreino()">
+                    <i class="bi bi-check-circle me-2"></i>Finalizar Treino
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let divisaoAtual = 'B';
+        
+        function adicionarDivisao() {
+            const container = document.getElementById('divisoes');
+            const letra = String.fromCharCode(65 + container.children.length);
+            
+            if (container.children.length >= 7) {
+                alert('Máximo de 7 divisões permitidas');
+                return;
+            }
+            
+            const div = document.createElement('div');
+            div.className = 'input-group mb-2';
+            div.innerHTML = `
+                <span class="input-group-text">${letra}</span>
+                <input type="text" class="form-control" placeholder="Ex: Costas, Bíceps">
+                <button class="btn btn-outline-danger" type="button" onclick="removerDivisao(this)">
+                    <i class="bi bi-trash"></i>
+                </button>
+            `;
+            container.appendChild(div);
+        }
+        
+        function removerDivisao(btn) {
+            const container = document.getElementById('divisoes');
+            if (container.children.length > 1) {
+                btn.parentElement.remove();
+                reorganizarDivisoes();
+            } else {
+                alert('Pelo menos uma divisão é necessária');
+            }
+        }
+        
+        function reorganizarDivisoes() {
+            const container = document.getElementById('divisoes');
+            Array.from(container.children).forEach((div, index) => {
+                const letra = String.fromCharCode(65 + index);
+                div.querySelector('.input-group-text').textContent = letra;
+            });
+        }
+        
+        function salvarNovaFicha() {
+            // Aqui seria a integração com a API
+            alert('Ficha salva com sucesso!');
+            bootstrap.Modal.getInstance(document.getElementById('novaFichaModal')).hide();
+            // Recarregar a página ou atualizar a lista
+        }
+        
+        function verDetalhes(fichaId) {
+            // Redirecionar para página de detalhes da ficha
+            alert(`Ver detalhes da ficha ${fichaId}`);
+        }
+        
+        function editarFicha(fichaId) {
+            // Abrir modal de edição
+            alert(`Editar ficha ${fichaId}`);
+        }
+        
+        function iniciarTreino(fichaId, divisao) {
+            // Redirecionar para página de treino
+            alert(`Iniciar treino da ficha ${fichaId}, divisão ${divisao}`);
+        }
+        
+        function ativarFicha(fichaId) {
+            if (confirm('Deseja ativar esta ficha? A ficha atual será desativada.')) {
+                // Integração com API
+                alert(`Ficha ${fichaId} ativada!`);
+                location.reload();
+            }
+        }
+    </script>
+</body>
+</html>

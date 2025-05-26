@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitTude - Aparelhos</title>
+    <link rel="shortcut icon" href="static/assets/img/favicon2.png" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Kanit:wght@400;600;700&family=Righteous&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.1/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: "Kanit", sans-serif;
+            background-image: url('/web/static/assets/img/background_image.png');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 0;
+            color: #ececec;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        header {
+            background-color: black;
+            padding: 10px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        header h1 {
+            font-family: "Righteous", sans-serif;
+            margin: 0;
+            color: #ffffff;
+            font-size: 40px;
+        }
+
+        .h1-highlighted {
+            color: #510feb;
+        }
+
+        .content-container {
+            display: flex;
+            margin-top: 70px;
+            min-height: calc(100vh - 70px);
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: rgba(20, 20, 20, 0.95);
+            position: fixed;
+            top: 70px;
+            left: 0;
+            height: calc(100vh - 70px);
+            overflow-y: auto;
+            z-index: 999;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: #ececec;
+        }
+
+        .sidebar-menu li:hover {
+            background-color: rgba(81, 15, 235, 0.7);
+        }
+
+        .sidebar-menu li.active {
+            background-color: #510feb;
+            border-left: 4px solid white;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+            background-color: rgba(30, 30, 30, 0.85);
+            backdrop-filter: blur(10px);
+            min-height: calc(100vh - 70px);
+            width: 100%;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .button-style {
+            background-color: #510feb;
+            border: none;
+            font-family: "Kanit", sans-serif;
+            font-weight: 450;
+            min-width: 150px;
+            color: #DEE2E6;
+            padding: 12px 24px;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .button-style:hover {
+            background-color: #3d0bc6;
+            transform: scale(1.05);
+        }
+
+        .equipment-card {
+            background-color: rgba(60, 60, 60, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .equipment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .equipment-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .equipment-item {
+            background-color: rgba(81, 15, 235, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .equipment-item:hover {
+            background-color: rgba(81, 15, 235, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .equipment-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .equipment-group {
+            background-color: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .sidebar-menu {
+                display: flex;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            
+            .equipment-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="d-flex justify-content-between align-items-center px-4">
+        <h1><span class="h1-highlighted">Fit</span>Tude</h1>
+        <div class="d-flex align-items-center">
+            <div class="bg-primary rounded-circle d-flex justify-content-center align-items-center me-2" style="width: 35px; height: 35px;">
+                <strong>R</strong>
+            </div>
+            <span class="text-white me-3">RafaelSilva</span>
+            <button class="btn btn-outline-light btn-sm">Sair</button>
+        </div>
+    </header>
+
+    <div class="content-container">
+        <div class="sidebar">
+            <ul class="sidebar-menu">
+                <li onclick="location.href='dashboard.html'">
+                    <i class="bi bi-grid-fill me-2"></i>Dashboard
+                </li>
+                <li onclick="location.href='active.html'">
+                    <i class="bi bi-journal-text me-2"></i>Minhas Fichas
+                </li>
+                <li onclick="location.href='exercicios.html'">
+                    <i class="bi bi-lightning-fill me-2"></i>Exercícios
+                </li>
+                <li onclick="location.href='relatorios.html'">
+                    <i class="bi bi-graph-up me-2"></i>Relatórios
+                </li>
+                <li onclick="location.href='grupamentos.html'">
+                    <i class="bi bi-collection me-2"></i>Grupamentos
+                </li>
+                <li class="active" onclick="location.href='aparelhos.html'">
+                    <i class="bi bi-tools me-2"></i>Aparelhos
+                </li>
+                <li onclick="location.href='configuracoes.html'">
+                    <i class="bi bi-gear-fill me-2"></i>Configurações
+                </li>
+            </ul>
+        </div>
+
+        <div class="main-content">
+            <div class="dashboard-header">
+                <h2><i class="bi bi-tools text-primary me-2"></i>Aparelhos</h2>
+                <button class="button-style">
+                    <i class="bi bi-plus-circle me-2"></i>Novo Aparelho
+                </button>
+            </div>
+
+            <div class="equipment-card">
+                <div class="equipment-header">
+                    <h3>Peitoral</h3>
+                </div>
+                <div class="equipment-list">
+                    <div class="equipment-item">
+                        <span>Supino Reto Smith</span>
+                        <div class="equipment-actions">
+                            <button class="btn btn-outline-light btn-sm">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="equipment-item">
+                        <span>Máquina Peck Deck</span>
+                        <div class="equipment-actions">
+                            <button class="btn btn-outline-light btn-sm">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="equipment-item">
+                        <span>Cross Over</span>
+                        <div class="equipment-actions">
+                            <button class="btn btn-outline-light btn-sm">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="equipment-card">
+                <div class="equipment-header">
+                    <h3>Costas</h3>
+                </div>
+                <div class="equipment-list">
+                    <div class="equipment-item">
+                        <span>Puxador Frontal</span>
+                        <div class="equipment-actions">
+                            <button class="btn btn-outline-light btn-sm">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="equipment-item">
+                        <span>Máquina Remada</span>
+                        <div class="equipment-actions">
+                            <button class="btn btn-outline-light btn-sm">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="equipment-card">
+                <div class="equipment-header">
+                    <h3>Pernas</h3>
+                </div>
+                <div class="equipment-list">
+                    <div class="equipment-item">
+                        <span>Leg Press 45°</span>
+                        <div class="equipment-actions">
+                            <button class="btn btn-outline-light btn-sm">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="equipment-item">
+                        <span>Cadeira Extensora</span>
+                        <div class="equipment-actions">
+                            <button class="btn btn-outline-light btn-sm">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="equipment-item">
+                        <span>Mesa Flexora</span>
+                        <div class="equipment-actions">
+                            <button class="btn btn-outline-light btn-sm">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitTude - Exercícios</title>
+    <link rel="shortcut icon" href="static/assets/img/favicon2.png" type="image/x-icon">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Kanit:wght@400;600;700&family=Righteous&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Kanit:wght@400;600;700&family=Righteous&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.1/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    
+    <style>
+        body {
+            font-family: "Kanit", sans-serif;
+            background-image: url('/web/static/assets/img/background_image.png');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 0;
+            color: #ececec;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        header {
+            background-color: black;
+            padding: 10px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        header h1 {
+            font-family: "Righteous", sans-serif;
+            margin: 0;
+            color: #ffffff;
+            font-size: 40px;
+        }
+
+        .h1-highlighted {
+            color: #510feb;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+
+        .profile-pic {
+            background-color: #510feb;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .username {
+            color: white;
+            margin-right: 15px;
+        }
+
+        .content-container {
+            display: flex;
+            margin-top: 70px; /* Alterado de 60px para 70px para alinhar com o header */
+            min-height: calc(100vh - 70px);
+        }
+
+
+        .sidebar {
+            width: 250px;
+            background-color: rgba(20, 20, 20, 0.95);
+            position: fixed;
+            top: 70px;
+            left: 0;
+            height: calc(100vh - 70px);
+            overflow-y: auto;
+            z-index: 999;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar-menu li {
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar-menu li:hover {
+            background-color: rgba(81, 15, 235, 0.7);
+        }
+
+        .sidebar-menu li.active {
+            background-color: #510feb;
+            border-left: 4px solid white;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            margin-top: 0; /* Removido margin-top pois já temos no content-container */
+            padding: 30px;
+            background-color: rgba(30, 30, 30, 0.85);
+            backdrop-filter: blur(10px);
+            min-height: calc(100vh - 70px);
+        }
+
+        .button-style {
+            background-color: #510feb;
+            border: none;
+            font-family: "Kanit", sans-serif;
+            font-weight: 450;
+            min-width: 150px;
+            color: #DEE2E6;
+            padding: 12px 24px;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .button-style:hover {
+            background-color: #3d0bc6;
+            transform: scale(1.05);
+            color: #DEE2E6;
+        }
+
+        .button-style:focus {
+            color: #DEE2E6;
+        }
+
+        .logout-button {
+            background-color: transparent;
+            border: 1px solid #DEE2E6;
+            color: #DEE2E6;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .logout-button:hover {
+            background-color: #DEE2E6;
+            color: black;
+        }
+
+        .card-custom {
+            background-color: rgba(60, 60, 60, 0.7);
+            border: none;
+            color: #ececec;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .card-custom:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header-custom {
+            background-color: rgba(80, 80, 80, 0.7);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            font-weight: 600;
+        }
+
+        .exercise-card {
+            background-color: rgba(80, 80, 80, 0.7);
+            border: none;
+            color: #ececec;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .exercise-card:hover {
+            background-color: rgba(81, 15, 235, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .badge-custom {
+            background-color: rgba(81, 15, 235, 0.7);
+            color: white;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        .form-control-custom {
+            background-color: rgba(60, 60, 60, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ececec;
+        }
+
+        .form-control-custom:focus {
+            background-color: rgba(60, 60, 60, 0.9);
+            border-color: #510feb;
+            color: #ececec;
+            box-shadow: 0 0 0 0.2rem rgba(81, 15, 235, 0.25);
+        }
+
+        .form-control-custom::placeholder {
+            color: #adb5bd;
+        }
+
+        .form-select-custom {
+            background-color: rgba(60, 60, 60, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #ececec;
+        }
+
+        .form-select-custom:focus {
+            background-color: rgba(60, 60, 60, 0.9);
+            border-color: #510feb;
+            color: #ececec;
+            box-shadow: 0 0 0 0.2rem rgba(81, 15, 235, 0.25);
+        }
+
+        .btn-outline-custom {
+            border-color: #adb5bd;
+            color: #adb5bd;
+            background: none;
+        }
+
+        .btn-outline-custom:hover {
+            background-color: #adb5bd;
+            color: #000;
+        }
+
+        .text-muted-custom {
+            color: #adb5bd !important;
+        }
+
+        .modal-custom .modal-content {
+            background-color: rgba(40, 40, 40, 0.95);
+            color: #ececec;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-custom .modal-header {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-custom .modal-footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-close-white {
+            filter: invert(1);
+        }
+
+        @media screen and (max-width: 768px) {
+            .content-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                padding: 10px 0;
+            }
+            
+            .sidebar-menu {
+                display: flex;
+                justify-content: space-around;
+                flex-wrap: wrap;
+            }
+            
+            .sidebar-menu li {
+                padding: 10px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="d-flex justify-content-between align-items-center px-4">
+        <h1><span class="h1-highlighted">Fit</span>Tude</h1>
+        <div class="d-flex align-items-center">
+            <div class="bg-primary rounded-circle d-flex justify-content-center align-items-center me-2" style="width: 35px; height: 35px;">
+                <strong>R</strong>
+            </div>
+            <span class="text-white me-3">RafaelSilva</span>
+            <button class="btn btn-outline-light btn-sm">Sair</button>
+        </div>
+    </header>
+    <div class="content-container">
+    <div class="sidebar">
+        <ul class="sidebar-menu">
+            <li onclick="location.href='dashboard.html'">
+                <i class="bi bi-grid-fill me-2"></i>Dashboard
+            </li>
+            <li onclick="location.href='active.html'">
+                <i class="bi bi-journal-text me-2"></i>Minhas Fichas
+            </li>
+            <li class="active" onclick="location.href='exercicios.html'">
+                <i class="bi bi-lightning-fill me-2"></i>Exercícios
+            </li>
+            <li onclick="location.href='relatorios.html'">
+                <i class="bi bi-graph-up me-2"></i>Relatórios
+            </li>
+            <li onclick="location.href='grupamentos.html'">
+                <i class="bi bi-collection me-2"></i>Grupamentos
+            </li>
+            <li onclick="location.href='aparelhos.html'">
+                <i class="bi bi-tools me-2"></i>Aparelhos
+            </li>
+            <li onclick="location.href='configuracoes.html'">
+                <i class="bi bi-gear-fill me-2"></i>Configurações
+            </li>
+        </ul>
+    </div>
+        
+        <div class="main-content">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="bi bi-lightning-fill text-primary me-2"></i>Gerenciar Exercícios</h2>
+                <button class="button-style" data-bs-toggle="modal" data-bs-target="#addExerciseModal">
+                    + Novo Exercício
+                </button>
+            </div>
+
+            <!-- Filtros -->
+            <div class="card card-custom mb-4">
+                <div class="card-header card-header-custom">
+                    <h5 class="mb-0">Filtros</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <input type="text" class="form-control form-control-custom" placeholder="Buscar exercício...">
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select form-select-custom">
+                                <option selected>Todos os Grupamentos</option>
+                                <option value="peito">Peitoral</option>
+                                <option value="costas">Costas</option>
+                                <option value="pernas">Pernas</option>
+                                <option value="ombros">Ombros</option>
+                                <option value="biceps">Bíceps</option>
+                                <option value="triceps">Tríceps</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select form-select-custom">
+                                <option selected>Todos os Equipamentos</option>
+                                <option value="barra">Barra</option>
+                                <option value="halter">Halter</option>
+                                <option value="maquina">Máquina</option>
+                                <option value="cabo">Cabo</option>
+                                <option value="peso-corpo">Peso Corporal</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-outline-custom w-100">Limpar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lista de Exercícios -->
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="card exercise-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title mb-0">Supino Reto</h5>
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-custom btn-sm" type="button" data-bs-toggle="dropdown">
+                                        ⋯
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#">Editar</a></li>
+                                        <li><a class="dropdown-item" href="#">Excluir</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <p class="text-muted-custom mb-2">Exercício composto para desenvolvimento do peitoral</p>
+                            <div class="mb-2">
+                                <span class="badge badge-custom">Peitoral</span>
+                                <span class="badge badge-custom">Tríceps</span>
+                                <span class="badge badge-custom">Ombros</span>
+                            </div>
+                            <div class="mb-2">
+                                <small class="text-muted-custom">Equipamentos: Barra, Banco</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="card exercise-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title mb-0">Remada Curvada</h5>
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-custom btn-sm" type="button" data-bs-toggle="dropdown">
+                                        ⋯
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#">Editar</a></li>
+                                        <li><a class="dropdown-item" href="#">Excluir</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <p class="text-muted-custom mb-2">Exercício composto para desenvolvimento das costas</p>
+                            <div class="mb-2">
+                                <span class="badge badge-custom">Costas</span>
+                                <span class="badge badge-custom">Bíceps</span>
+                                <span class="badge badge-custom">Ombros</span>
+                            </div>
+                            <div class="mb-2">
+                                <small class="text-muted-custom">Equipamentos: Barra</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="card exercise-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title mb-0">Agachamento Livre</h5>
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-custom btn-sm" type="button" data-bs-toggle="dropdown">
+                                        ⋯
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#">Editar</a></li>
+                                        <li><a class="dropdown-item" href="#">Excluir</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <p class="text-muted-custom mb-2">Exercício fundamental para desenvolvimento das pernas</p>
+                            <div class="mb-2">
+                                <span class="badge badge-custom">Quadríceps</span>
+                                <span class="badge badge-custom">Glúteos</span>
+                                <span class="badge badge-custom">Panturrilha</span>
+                            </div>
+                            <div class="mb-2">
+                                <small class="text-muted-custom">Equipamentos: Barra, Rack</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="card exercise-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title mb-0">Desenvolvimento com Halteres</h5>
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-custom btn-sm" type="button" data-bs-toggle="dropdown">
+                                        ⋯
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#">Editar</a></li>
+                                        <li><a class="dropdown-item" href="#">Excluir</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <p class="text-muted-custom mb-2">Exercício para desenvolvimento dos ombros</p>
+                            <div class="mb-2">
+                                <span class="badge badge-custom">Ombros</span>
+                                <span class="badge badge-custom">Tríceps</span>
+                            </div>
+                            <div class="mb-2">
+                                <small class="text-muted-custom">Equipamentos: Halteres, Banco</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="card exercise-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title mb-0">Rosca Direta</h5>
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-custom btn-sm" type="button" data-bs-toggle="dropdown">
+                                        ⋯
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#">Editar</a></li>
+                                        <li><a class="dropdown-item" href="#">Excluir</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <p class="text-muted-custom mb-2">Exercício isolado para bíceps</p>
+                            <div class="mb-2">
+                                <span class="badge badge-custom">Bíceps</span>
+                                <span class="badge badge-custom">Antebraço</span>
+                            </div>
+                            <div class="mb-2">
+                                <small class="text-muted-custom">Equipamentos: Barra, Halteres</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="card exercise-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title mb-0">Tríceps Testa</h5>
+                                <div class="dropdown">
+                                    <button class="btn btn-outline-custom btn-sm" type="button" data-bs-toggle="dropdown">
+                                        ⋯
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#">Editar</a></li>
+                                        <li><a class="dropdown-item" href="#">Excluir</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <p class="text-muted-custom mb-2">Exercício isolado para tríceps</p>
+                            <div class="mb-2">
+                                <span class="badge badge-custom">Tríceps</span>
+                            </div>
+                            <div class="mb-2">
+                                <small class="text-muted-custom">Equipamentos: Barra, Banco</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Paginação -->
+            <nav class="mt-4" aria-label="Navegação dos exercícios">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Anterior</a>
+                    </li>
+                    <li class="page-item active" aria-current="page">
+                        <a class="page-link" href="#">1</a>
+                    </li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Próximo</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Modal para Adicionar Exercício -->
+    <div class="modal fade modal-custom" id="addExerciseModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Novo Exercício</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="mb-3">
+                            <label for="exerciseName" class="form-label">Nome do Exercício</label>
+                            <input type="text" class="form-control form-control-custom" id="exerciseName" placeholder="Ex: Supino Inclinado">
+                        </div>
+                        <div class="mb-3">
+                            <label for="exerciseDescription" class="form-label">Descrição</label>
+                            <textarea class="form-control form-control-custom" id="exerciseDescription" rows="3" placeholder="Descrição detalhada do exercício..."></textarea>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="form-label">Músculos Trabalhados</label>
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="peitoral">
+                                        <label class="form-check-label" for="peitoral">Peitoral</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="triceps">
+                                        <label class="form-check-label" for="triceps">Tríceps</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="ombros">
+                                        <label class="form-check-label" for="ombros">Ombros</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="costas">
+                                        <label class="form-check-label" for="costas">Costas</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="biceps">
+                                        <label class="form-check-label" for="biceps">Bíceps</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Equipamentos</label>
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="barra">
+                                        <label class="form-check-label" for="barra">Barra</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="halter">
+                                        <label class="form-check-label" for="halter">Halter</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="maquina">
+                                        <label class="form-check-label" for="maquina">Máquina</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="cabo">
+                                        <label class="form-check-label" for="cabo">Cabo</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="peso-corpo">
+                                        <label class="form-check-label" for="peso-corpo">Peso Corporal</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="button-style">Salvar Exercício</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
