@@ -6,7 +6,7 @@ authors = ["Luiz Carlos Souza Garcia <lcsouzagarcia@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"ghj
+python = "^3.12"
 fastapi = {extras = ["standard"], version = "^0.115.12"}
 taskipy = "^1.14.1"
 
@@ -19,4 +19,5 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.taskipy.tasks]
-run_test = "fastapi dev api/main.py"
+run_test = "fastapi dev ./api/main.py"
+run_prod = "fastapi dev ./api/main.py"
