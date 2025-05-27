@@ -1,5 +1,6 @@
 export function exibirMensagem(mensagem, tipo) {
     const mensagemElement = document.getElementById('mensagem');
+    mensagemElement.style.visibility = 'visible';
     mensagemElement.textContent = mensagem;
     mensagemElement.style.display = 'block';
     // Reset animation
