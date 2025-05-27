@@ -58,15 +58,15 @@
                     </div>
 
                     <!-- Requisitos de Senha - Largura Total -->
-                    <div class="form-group full-width">
+                    <div class="password-requirements-container">
                         <div class="password-requirements">
                             <h6>A senha deve conter:</h6>
                             <ul>
-                                <li>Pelo menos 8 caracteres</li>
-                                <li>Pelo menos uma letra maiúscula</li>
-                                <li>Pelo menos uma letra minúscula</li>
-                                <li>Pelo menos um número</li>
-                                <li>Pelo menos um caractere especial</li>
+                                <li id="length-check">Pelo menos 8 caracteres</li>
+                                <li id="uppercase-check">Pelo menos uma letra maiúscula</li>
+                                <li id="lowercase-check">Pelo menos uma letra minúscula</li>
+                                <li id="number-check">Pelo menos um número</li>
+                                <li id="special-check">Pelo menos um caractere especial</li>
                             </ul>
                         </div>
                     </div>
@@ -74,13 +74,13 @@
                     <!-- Mensagem de Erro -->
                     <div class="form-group full-width">
                         <div id="mensagem" class="error-message" role="alert">
-                            <!-- Mensagem de erro será exibida aqui -->
+                                <!-- Mensagem de erro será exibida aqui -->
                         </div>
                     </div>
 
                     <!-- Termos e Botão -->
                     <div class="form-group full-width">
-                        <div class="terms-section d-flex flex-column align-items-center">
+                        <div class="terms-section d-flex flex-column">
                             <div class="form-check mb-3">
                                 <input type="checkbox" id="terms" class="form-check-input" required>
                                 <label for="terms" class="form-check-label">
