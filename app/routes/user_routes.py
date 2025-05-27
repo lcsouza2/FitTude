@@ -398,3 +398,24 @@ async def handle_refresh_token_req(
         },
         headers={"Authorization": f"Bearer {new_token}"},
     )
+
+@USER_ROUTER.get("/validate_token")
+async def handle_validate_token_req(
+    token_service: TokenService = Depends(TokenService),
+) -> dict[str, str]:
+    """
+    Validate the current session token.
+
+    This function checks if the session token is valid and returns its metadata.
+    Args:
+        token_service (TokenService): Token service instance (injected by FastAPI)
+    Returns:
+        dict[str, str]: Metadata about the session token
+    """
+    return Response(
+        content={
+            "message": "Token is valid",
+            "token_type": "Bearer",
+            "expires_in": int(token_service.session_expires.total_seconds()),
+        }
+    ) 
