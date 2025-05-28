@@ -40,6 +40,18 @@ async def return_landing_page(request: Request):
 async def return_relatorios_page(request: Request):
     return templates.TemplateResponse("relatorios.html", {"request": request})
 
+@MAIN_APP.get("/exercicios")
+async def return_exercicios_page(request: Request):
+    return templates.TemplateResponse("exercicios.html", {"request": request})
+
+@MAIN_APP.get("/relatorios")
+async def return_relatorios_page(request: Request):
+    return templates.TemplateResponse("relatorios.html", {"request": request})
+
+@MAIN_APP.get("/grupamentos")
+async def return_grupamentos_page(request: Request):
+    return templates.TemplateResponse("grupamentos.html", {"request": request})
+
 @MAIN_APP.get("/configuracoes")
 async def return_configuracoes_page(request: Request):
     return templates.TemplateResponse("configuracoes.html", {"request": request})
