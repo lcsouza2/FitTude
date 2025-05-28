@@ -120,7 +120,6 @@ nav h1 {
     z-index: 1000;
     transform: translateY(10px);
     opacity: 0;
-    visibility: hidden;
     transition: all 0.3s ease;
 }
 
@@ -158,6 +157,7 @@ nav h1 {
     opacity: 0;
     transition: opacity 0.3s ease-in-out;
 }
+
 .password-requirements.visible {
     transform: translateY(0);
     opacity: 1;

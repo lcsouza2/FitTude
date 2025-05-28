@@ -1,6 +1,28 @@
 import { ApiClient } from './core/auth.js';
 import { BaseUrl, exibirMensagem } from './core/utils.js';
 
+const senhaInput = document.getElementById('senha');
+const passwordRequirements = document.querySelector('.password-requirements');
+const requirements = {
+    length: document.getElementById('length-check'),
+    uppercase: document.getElementById('uppercase-check'),
+    lowercase: document.getElementById('lowercase-check'),
+    number: document.getElementById('number-check'),
+    special: document.getElementById('special-check')
+};
+
+function getRegisterFormData() {
+    document.getElementById('confirmarSenha').value;
+
+    return {
+        email: document.getElementById('email').value,
+        nome: document.getElementById('nome').value,
+        senha: document.getElementById('senha').value,
+        confirmarSenha: document.getElementById('confirmarSenha').value
+    };
+}
+
+
 function realizarCadastro(nome, email, senha) {
     const api = new ApiClient(BaseUrl)
     api.post('user/register', {
@@ -16,47 +38,30 @@ function realizarCadastro(nome, email, senha) {
     }});
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    const cadastroForm = document.getElementById('registerForm');
-    
-    cadastroForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const email = document.getElementById('email').value;
-        const nome = document.getElementById('nome').value;
-        const senha = document.getElementById('senha').value;
-        const confirmarSenha = document.getElementById('confirmarSenha').value;
 
-    
-        function validarSenha(senha) {
-            const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
-            return regex.test(senha);
-        }
-        if (!validarSenha(senha)) {
-            exibirMensagem('A senha deve ter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e símbolos.', 'danger');
-            return;
-        }
-        if (senha !== confirmarSenha) {
-            exibirMensagem('As senhas não coincidem.', 'danger');
-            return;
-        }
-        else {
-            realizarCadastro(nome, email, senha);
-        }
-        
+
+{
+}
+if (!validarSenha(senha)) {
+    exibirMensagem('A senha deve ter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e símbolos.', 'danger');
+    return;
+}
+if (senha !== confirmarSenha) {
+    exibirMensagem('As senhas não coincidem.', 'danger');
+    return;
+}
+else {
+    realizarCadastro(nome, email, senha);
+}
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const cadastroForm = document.getElementById('registerForm');
+    cadastroForm.addEventListener('submit', event => {
+        event.preventDefault();
+
     });
 });
-
-//Script para validar senha (ana)
-const senhaInput = document.getElementById('senha');
-const passwordRequirements = document.querySelector('.password-requirements');
-const requirements = {
-    length: document.getElementById('length-check'),
-    uppercase: document.getElementById('uppercase-check'),
-    lowercase: document.getElementById('lowercase-check'),
-    number: document.getElementById('number-check'),
-    special: document.getElementById('special-check')
-};
 
 senhaInput.addEventListener('focus', function() {
     const container = document.querySelector('.password-requirements-container');
