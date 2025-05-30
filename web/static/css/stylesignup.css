@@ -108,9 +108,19 @@ nav h1 {
     background-color: rgba(255, 255, 255, 1);
 }
 
+.password-requirements-container {
+    position: relative;
+    width: 100%;
+    height: auto; /* Alterado de 0 para auto */
+    margin: 0;
+    padding: 0;
+    display: none;
+    margin-bottom: 150px; /* Adiciona espaço abaixo do container */
+}
+
 .password-requirements {
     position: absolute;
-    top: 100%; /* Posiciona abaixo do campo de senha */
+    top: 0; /* Alterado de 100% para 0 */
     left: 0;
     background-color: rgba(255, 255, 255, 0.95);
     border-radius: 8px;
@@ -118,7 +128,7 @@ nav h1 {
     width: 100%;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     z-index: 1000;
-    transform: translateY(10px);
+    transform: translateY(0);
     opacity: 0;
     transition: all 0.3s ease;
 }
@@ -180,8 +190,8 @@ nav h1 {
     display: none;
 }
 .password-requirements-container.active {
-    display: block; /* Mostra o container quando ativo */
-    height: 0;
+    display: block;
+    height: auto; /* Alterado de 0 para auto */
 }
 
 .password-requirements li:nth-child(1) { transition-delay: 0.1s; }

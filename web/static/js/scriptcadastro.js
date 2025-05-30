@@ -11,17 +11,6 @@ const requirements = {
     special: document.getElementById('special-check')
 };
 
-function getRegisterFormData() {
-    document.getElementById('confirmarSenha').value;
-
-    return {
-        email: document.getElementById('email').value,
-        nome: document.getElementById('nome').value,
-        senha: document.getElementById('senha').value,
-        confirmarSenha: document.getElementById('confirmarSenha').value
-    };
-}
-
 
 function realizarCadastro(nome, email, senha) {
     const api = new ApiClient(BaseUrl)
@@ -39,27 +28,27 @@ function realizarCadastro(nome, email, senha) {
 }
 
 
-
-{
-}
-if (!validarSenha(senha)) {
-    exibirMensagem('A senha deve ter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e símbolos.', 'danger');
-    return;
-}
-if (senha !== confirmarSenha) {
-    exibirMensagem('As senhas não coincidem.', 'danger');
-    return;
-}
-else {
-    realizarCadastro(nome, email, senha);
-}
-
-
 document.addEventListener('DOMContentLoaded', () => {
     const cadastroForm = document.getElementById('registerForm');
-    cadastroForm.addEventListener('submit', event => {
+    cadastroForm.addEventListener('submit', event => { 
         event.preventDefault();
 
+        const email = document.getElementById('email').value;
+        const nome = document.getElementById('nome').value;
+        const senha = document.getElementById('senha').value;
+        const confirmarSenha = document.getElementById('confirmarSenha').value;
+
+        if (!validarSenha(senha)) {
+            exibirMensagem('A senha deve ter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e símbolos.', 'danger');
+            return;
+        }
+        if (senha !== confirmarSenha) {
+            exibirMensagem('As senhas não coincidem.', 'danger');
+            return;
+        }
+        else {
+            realizarCadastro(nome, email, senha);
+        }
     });
 });
 
@@ -72,13 +61,13 @@ senhaInput.addEventListener('focus', function() {
 });
 
 senhaInput.addEventListener('blur', function() {
-    if (this.value === '') {
+   
         const container = document.querySelector('.password-requirements-container');
         document.querySelector('.password-requirements').classList.remove('visible');
         setTimeout(() => {
             container.classList.remove('active');
         }, 300); // Espera a transição terminar
-    }
+    
 });
 
 senhaInput.addEventListener('input', function() {
