@@ -40,7 +40,7 @@ class Config:
     JWT_HEADER_NAME: str = "Authorization"
 
     # Security Settings
-    CORS_ORIGINS: list[str] = ["http://localhost:8000", "https://fittude.onrender.com"]
+    CORS_ORIGINS: list[str] = ["*"] #"https://fittude.onrender.com"
     ALLOWED_HOSTS: list[str] = ["localhost", "fittude.com"]
     MAX_REQUESTS: int = 100
     REQUEST_TIME_WINDOW: timedelta = timedelta(minutes=1)
