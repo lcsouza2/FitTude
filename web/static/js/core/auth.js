@@ -4,43 +4,36 @@ export class ApiClient {
     this.baseURL = baseURL;
     }
   async request(endpoint, options = {}) {
-    try {
-        const response = await fetch(this.baseURL + endpoint, options);
-        const errorText = await response.text(); // tenta pegar mensagem do servidor 
+      const response = await fetch(this.baseURL + endpoint, options).then
 
-        if (response.ok) {
-            console.log("200 OK:", response);
-        }
-        else if(response.status == 409) {
-            exibirMensagem('Email já cadastrado.', 'danger');
-            throw new Error(`Erro ${response.status}: ${errorText}`);
-        }
-        else if (response.status == 401) {
-            exibirMensagem('Email ou senha inválidos.', 'danger');
-            throw new Error(`Erro ${response.status}: ${errorText}`);
+      if (response.ok) {
+          console.log("200 OK:", response);
+      }
+      else if(response.status == 409) {
+          exibirMensagem('Email já cadastrado.', 'danger');
+          throw new Error(`Erro ${response.status}: ${errorText}`);
+      }
+      else if (response.status == 401) {
+          exibirMensagem('Email ou senha inválidos.', 'danger');
+          throw new Error(`Erro ${response.status}: ${errorText}`);
 
-        }else if (response.status == 404) {
-            exibirMensagem('Falha na comunição com o servido', 'danger');
-            throw new Error(`Erro ${response.status}: ${errorText}`);
-        }   
-        else if (response.status == 500) {
-            exibirMensagem('Erro interno do servidor. Tente novamente mais tarde.', 'danger');
-            throw new Error(`Erro ${response.status}: ${errorText}`);
-        }
-        else {
-            return response.json();
-        }
-        const contentType = response.headers.get("content-type");
-        if (contentType && contentType.includes("application/json")) {
-            return await response.json();
-        } else {
-            return await response.text(); // caso não seja JSON
-        }
-
-    } catch (error) {
-        console.error("Erro na requisição:", error.message);
-        throw error; // repropaga para quem chamou
-    }
+      }else if (response.status == 404) {
+          exibirMensagem('Falha na comunição com o servido', 'danger');
+          throw new Error(`Erro ${response.status}: ${errorText}`);
+      }   
+      else if (response.status == 500) {
+          exibirMensagem('Erro interno do servidor. Tente novamente mais tarde.', 'danger');
+          throw new Error(`Erro ${response.status}: ${errorText}`);
+      }
+      else {
+          return response.json();
+      }
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+          return await response.json();
+      } else {
+          return await response.text(); // caso não seja JSON
+      }
   }
 
   get(endpoint) {

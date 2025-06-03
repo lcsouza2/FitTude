@@ -1,5 +1,5 @@
 import { ApiClient } from './core/auth.js';
-import { BaseUrl } from './core/utils.js';
+import { BaseUrl , exibirMensagem } from './core/utils.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     const loginForm = document.getElementById('loginForm');
@@ -32,8 +32,11 @@ function realizarLogin(email, senha, lembrar) {
         password: senha,
         keep_login: lembrar
     }).then(response => {
+        console.log("Esse é",response)
         if (data) {
-            sessionStorage.setItem('token', response.access_token);
+            token = response.access_token
+            sessionStorage.setItem(token);
+
             setTimeout(() => {
                 window.location.href = "dashboard.html";
             }, 2000);
