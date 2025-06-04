@@ -20,7 +20,7 @@ MAIN_APP.include_router(DATA_POST_API, dependencies=[Depends(verify_request_limi
 
 MAIN_APP.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://127.0.0.1:8000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
