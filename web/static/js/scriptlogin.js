@@ -33,7 +33,7 @@ async function realizarLogin(email, senha, lembrar) {
             password: senha,
             keep_login: lembrar
         });
-        const tokenHeader = response.headers.get("Authorization");
+        const tokenHeader = resultado.header.get("Authorization");
         if (tokenHeader && tokenHeader.startsWith("Bearer ")) {
             const token = tokenHeader.replace("Bearer ", "").trim();
             localStorage.setItem("token", token);
