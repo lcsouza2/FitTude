@@ -33,7 +33,20 @@ async function realizarLogin(email, senha, lembrar) {
       password: senha,
       keep_login: lembrar
     });
-    console.log("Resultado do request: ", resultado );
+    if (resultado.token){
+        exibirMensagem('Login realizado com sucesso!', 'sucesso'); // Exibe mensagem de sucesso
+        sessionStorage.setItem('token', resultado.token);
+        sessionStorage.setItem('user', JSON.stringify(resultado.user));
+
+        setTimeout(() => {
+            window.location.href = "dashboard.html"; // Redireciona para a página de dashboard após 3 segundo
+        }, 3000);
+    }
+    else {
+        exibirMensagem('Login falhou. Verifique suas credenciais.', 'danger'); // Exibe mensagem de erro
+        console.error("Erro no login: ", resultado);
+        return;
+    }
   } catch (error) {
     console.error("[Login] Erro ao realizar login:", error);
     exibirMensagem('Erro ao realizar login. Verifique suas credenciais.', 'danger'); 
