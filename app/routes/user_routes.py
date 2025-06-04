@@ -11,7 +11,8 @@ from uuid import UUID, uuid4
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 from email_validator import EmailNotValidError, validate_email
-from fastapi import APIRouter, BackgroundTasks, Depends, Response
+from fastapi import APIRouter, BackgroundTasks, Depends
+from fastapi.responses import JSONResponse, Response, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import EmailStr
 from sqlalchemy import exc, insert, select, update
@@ -297,7 +298,7 @@ async def handle_user_login_req(
             token_service.response, refresh_token
         )
 
-        return Response(
+        return JSONResponse(
             content={
                 "message": "Login successful!",
                 "token_type": "Bearer",
@@ -391,7 +392,7 @@ async def handle_refresh_token_req(
 
     new_token = await token_service.renew_token(token_service.request)
 
-    return Response(
+    return JSONResponse(
         content={
             "message": "Token refreshed successfully!",
             "token_type": "Bearer",
@@ -413,7 +414,7 @@ async def handle_validate_token_req(
     Returns:
         dict[str, str]: Metadata about the session token
     """
-    return Response(
+    return JSONResponse(
         content={
             "message": "Token is valid",
             "token_type": "Bearer",
