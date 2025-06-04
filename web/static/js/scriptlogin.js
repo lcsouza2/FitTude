@@ -26,32 +26,29 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 async function realizarLogin(email, senha, lembrar) {
-  const api = new ApiClient(BaseUrl);
-  try {
-    const resultado = await api.post('user/login', {
-      email: email,
-      password: senha,
-      keep_login: lembrar
-    });
-    if (resultado.token){
-        exibirMensagem('Login realizado com sucesso!', 'sucesso'); // Exibe mensagem de sucesso
-        sessionStorage.setItem('token', resultado.token);
-        sessionStorage.setItem('user', JSON.stringify(resultado.user));
-
-        setTimeout(() => {
-            window.location.href = "dashboard.html"; // Redireciona para a página de dashboard após 3 segundo
-        }, 3000);
-    }
-    else {
-        exibirMensagem('Login falhou. Verifique suas credenciais.', 'danger'); // Exibe mensagem de erro
-        console.error("Erro no login: ", resultado);
+    const api = new ApiClient(BaseUrl);
+    try {
+        const resultado = await api.post('user/login', {
+            email: email,
+            password: senha,
+            keep_login: lembrar
+        });
+        const tokenHeader = response.headers.get("Authorization");
+        if (tokenHeader && tokenHeader.startsWith("Bearer ")) {
+            const token = tokenHeader.replace("Bearer ", "").trim();
+            localStorage.setItem("token", token);
+            console.log("Token armazenado.")
+        }
+        else {
+            exibirMensagem('Login falhou. Verifique suas credenciais.', 'danger'); // Exibe mensagem de erro
+            console.error("Erro no login: ", resultado);
+            return;
+        }
+    } catch (error) {
+        console.error("[Login] Erro ao realizar login:", error);
+        exibirMensagem('Erro ao realizar login. Verifique suas credenciais.', 'danger'); 
         return;
     }
-  } catch (error) {
-    console.error("[Login] Erro ao realizar login:", error);
-    exibirMensagem('Erro ao realizar login. Verifique suas credenciais.', 'danger'); 
-    return;
-  }
 }
 
 

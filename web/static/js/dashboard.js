@@ -14,6 +14,7 @@ async function validateToken() {
                 'Authorization': `Bearer ${token}`
             }
         })
+        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAA: ",response)
         if (response.valid) {
             console.log("Token válido, carregando dashboard...");
             return; // 
