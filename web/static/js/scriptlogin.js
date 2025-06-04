@@ -27,18 +27,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function realizarLogin(email, senha, lembrar) {
     const api = new ApiClient(BaseUrl)
-    api.post('user/login', {
-        email: email,
-        password: senha,
-        keep_login: lembrar
-    }).then(response => {
-        console.log("Esse é",response)
-        if (data) {
-            token = response.access_token
-            sessionStorage.setItem(token);
+    try {
+        const resultado = api.post('user/login', {
+            email: email,
+            password: senha,
+            keep_login: lembrar
+        });
+        console.log("Resultado do request: ", resultado );
+        // se o erro propagar aqui o catch pega. 
+    } catch (error) {
+        console.error("[Login] Erro ao realizar login:", error);
+        exibirMensagem('Erro ao realizar login. Verifique suas credenciais.', 'error'); 
+        return;
+    }  
+};
 
-            setTimeout(() => {
-                window.location.href = "dashboard.html";
-            }, 2000);
-    }});
-}
+
+

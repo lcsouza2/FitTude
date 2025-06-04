@@ -1,15 +1,20 @@
-import { exibirMensagem } from './utils.js';
+import { exibirMensagem } from './utils.js'; //vou usar ainda
 export class ApiClient {
   constructor(baseURL = '') {
     this.baseURL = baseURL;
-    }
+  }
   async request(endpoint, options = {}) {
     try {
-      const response = await fetch(this.baseURL + endpoint, options);
-      
+      const finalOptions = {
+        credentials: 'include', // essa peça que vc queria?
+        ...options
+      };
+
+      const response = await fetch(this.baseURL + endpoint, finalOptions);
+
       if (!response.ok) {
-        const errorText = await response.text(); // lê a resposta mesmo em erro
-        throw new Error(`Erro ${response.status}: ${errorText}`);
+        const msg = await response.text();
+        throw new Error(`Erro que deu ${response.status}: ${msg}`);
       }
 
       const contentType = response.headers.get("content-type");
@@ -18,12 +23,13 @@ export class ApiClient {
       } else {
         return await response.text();
       }
+
     } catch (error) {
       console.error("[ApiClient] Erro:", error.message);
-      throw error;
+      throw error; // isso aqui é pra propagar o erro, se não, não consigo tratar no scriptlogin.js ou em lugar nenhum  
     }
   }
-  
+
   get(endpoint) {
     return this.request(endpoint, { method: 'GET' });
   }
