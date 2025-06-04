@@ -5,6 +5,7 @@ This module handles all user-related operations including:
 - User login and session management
 """
 
+from datetime import timedelta
 from typing import Any
 from uuid import UUID, uuid4
 
@@ -12,12 +13,11 @@ from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 from email_validator import EmailNotValidError, validate_email
 from fastapi import APIRouter, BackgroundTasks, Depends
-from fastapi.responses import JSONResponse, Response, RedirectResponse
+from fastapi.responses import JSONResponse, Response
 from fastapi.templating import Jinja2Templates
 from pydantic import EmailStr
 from sqlalchemy import exc, insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
-from datetime import timedelta
 
 from app.core import schemas
 from app.core.authentication import TokenService
@@ -401,6 +401,7 @@ async def handle_refresh_token_req(
         headers={"Authorization": f"Bearer {new_token}"},
     )
 
+
 @USER_ROUTER.get("/validate_token")
 async def handle_validate_token_req(
     token_service: TokenService = Depends(TokenService),
@@ -420,4 +421,4 @@ async def handle_validate_token_req(
             "token_type": "Bearer",
             "expires_in": int(token_service.session_expires.total_seconds()),
         }
-    ) 
+    )
