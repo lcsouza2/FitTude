@@ -28,25 +28,28 @@ document.addEventListener('DOMContentLoaded', function() {
 async function realizarLogin(email, senha, lembrar) {
     const api = new ApiClient(BaseUrl);
     try {
-        const resultado = await api.post('user/login', {
+        const { headers, body } = await api.post('user/login', {
             email: email,
             password: senha,
             keep_login: lembrar
         });
-        const tokenHeader = resultado.header.get("Authorization");
-        if (tokenHeader && tokenHeader.startsWith("Bearer ")) {
+        console.log("Respostaaaaaaaaaaa: ", headers, body)
+        if (!headers.has('Authorization')) {
+            throw new Error('Header de autorização não encontrado');
+        }
+
+        const tokenHeader = headers.get("Authorization");
+        if (tokenHeader?.startsWith("Bearer ")) {
             const token = tokenHeader.replace("Bearer ", "").trim();
             localStorage.setItem("token", token);
-            console.log("Token armazenado.")
+            console.log("Token armazenado.");
+        } else {
+            throw new Error('Token inválido ou mal formatado');
         }
-        else {
-            exibirMensagem('Login falhou. Verifique suas credenciais.', 'danger'); // Exibe mensagem de erro
-            console.error("Erro no login: ", resultado);
-            return;
-        }
+        
     } catch (error) {
-        console.error("[Login] Erro ao realizar login:", error);
-        exibirMensagem('Erro ao realizar login. Verifique suas credenciais.', 'danger'); 
+        console.error("[Login] Erro ao realizar login:", error.message);
+        exibirMensagem('Erro ao realizar login. Verifique suas credenciais.', 'danger');
         return;
     }
 }

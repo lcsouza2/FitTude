@@ -6,7 +6,7 @@ export class ApiClient {
   async request(endpoint, options = {}) {
     try {
       const finalOptions = {
-        credentials: 'include', // essa peça que vc queria?
+        credentials: 'include',
         ...options
       };
 
@@ -16,17 +16,27 @@ export class ApiClient {
         const msg = await response.text();
         throw new Error(`Erro que deu ${response.status}: ${msg}`);
       }
+      console.log("Resposta da requisição:", response.headers);
+      const token = response.headers.get('Authorization');
+      console.log(token);
 
       const contentType = response.headers.get("content-type");
+      let data;
       if (contentType && contentType.includes("application/json")) {
-        return await response.json();
+        data = await response.json();
       } else {
-        return await response.text();
+        data = await response.text();
       }
+
+      // Retornando um objeto com body e headers
+      return {
+        body: data,
+        headers: finalOptions.headers
+      };
 
     } catch (error) {
       console.error("[ApiClient] Erro:", error.message);
-      throw error; // isso aqui é pra propagar o erro, se não, não consigo tratar no scriptlogin.js ou em lugar nenhum  
+      throw error;
     }
   }
 
