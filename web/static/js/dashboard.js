@@ -3,33 +3,33 @@ import { ApiClient } from './core/auth.js';
 import { BaseUrl } from './core/utils.js';
 
 validateToken()
-console.log("socorro")
 
 async function validateToken() {
     const api = new ApiClient(BaseUrl)
     try {
         const token = sessionStorage.getItem('token'); // Obtém o token do sessionStorage
-        const response = await api.get('user/validate_token',{
+        const {headers , body} = await api.get('user/validate_token',{
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         })
-        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAA: ",response)
-        if (response.valid) {
-            console.log("Token válido, carregando dashboard...");
-            return; // 
+    
+        if (body.message === 'Token is valid') {
+            return;
         } else {
             console.error("Token inválido, redirecionando para login...");
-            // Redireciona para a página de login se o token não for válido
-            
+            setTimeout(() => {
+                window.localation.href = "login"; 
+            }, 3000);
+
         }
     } catch (error) {
         console.error("[Dashboard] Erro ao validar token:", error);
-        // Redireciona para a página de login se o token não for válido
-        
+        setTimeout(() => {
+             window.localation.href = "login"; 
+        }, 3000);
     }
 }
-
 
 document.addEventListener('DOMContentLoaded', function() {
     const ctx = document.getElementById('progressChart').getContext('2d');
