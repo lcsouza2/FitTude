@@ -15,8 +15,7 @@ export function exibirMensagem(mensagem, tipo) {
     } else {
         
     }
-     
-    console.log("Mensagem de erro : ", div, " tipo: ", tipo); // debug line 
+
 }
 
 
