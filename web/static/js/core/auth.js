@@ -14,25 +14,25 @@ export class ApiClient {
 
       if (!response.ok) {
         const msg = await response.text();
-        throw new Error(`${response.status}(${msg})`);
+        throw new Error(`code ${response.status} :${msg}`);
       }
       let data;
       const bodyType = response.headers.get('Content-Type');
       if (bodyType && bodyType.includes('application/json')) {
-        data = await response.json();
+        data = await response.json() 
       }
       else {
-        data = await response.text();
+        data = await response.text() 
       }
-     
+      
       return {
         headers: response.headers,
         body: data
       };
 
     } catch (error) {
-      console.error("[ApiClient] Erro:", error.message);
-      throw error;
+      console.error("[ApiClient] :", error.message);
+      throw new Error (error);
     }
   }
 
@@ -59,4 +59,5 @@ export class ApiClient {
   delete(endpoint) {
     return this.request(endpoint, { method: 'DELETE' });
   }
+
 }
