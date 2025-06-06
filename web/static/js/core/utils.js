@@ -21,4 +21,4 @@ export function exibirMensagem(mensagem, tipo) {
 
 
 
-export const BaseUrl = 'https://fittude-api-wn11.onrender.com/api/';
+export const BaseUrl = 'https://6c4e-168-228-112-234.ngrok-free.app/api/';
