@@ -42,7 +42,11 @@ async function realizarLogin(email, senha, lembrar) {
         if (tokenHeader?.startsWith("Bearer ")) {
             const token = tokenHeader.replace("Bearer ", "").trim();
             localStorage.setItem("token", token);
-            console.log("Token armazenado.");
+            exibirMensagem("login realizado com sucesso!", "success");
+
+            setTimeout(() => {
+                window.location.href = "dashboard"; // Redireciona para a página de dashboard após 5 segundos
+            }, 5000);
         } else {
             throw new Error('Token inválido ou mal formatado');
         }
