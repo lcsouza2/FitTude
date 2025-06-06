@@ -16,22 +16,10 @@ export class ApiClient {
         const msg = await response.text();
         throw new Error(`Erro que deu ${response.status}: ${msg}`);
       }
-      console.log("Resposta da requisição:", response.headers);
-      const token = response.headers.get('Authorization');
-      console.log(token);
-
-      const contentType = response.headers.get("content-type");
-      let data;
-      if (contentType && contentType.includes("application/json")) {
-        data = await response.json();
-      } else {
-        data = await response.text();
-      }
-
-      // Retornando um objeto com body e headers
+     
       return {
-        body: data,
-        headers: finalOptions.headers
+        headers: response.headers,
+        body: response.json()
       };
 
     } catch (error) {
