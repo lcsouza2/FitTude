@@ -14,12 +14,20 @@ export class ApiClient {
 
       if (!response.ok) {
         const msg = await response.text();
-        throw new Error(`Erro que deu ${response.status}: ${msg}`);
+        throw new Error(`${response.status}(${msg})`);
+      }
+      let data;
+      const bodyType = response.headers.get('Content-Type');
+      if (bodyType && bodyType.includes('application/json')) {
+        data = await response.json();
+      }
+      else {
+        data = await response.text();
       }
      
       return {
         headers: response.headers,
-        body: response.json()
+        body: data
       };
 
     } catch (error) {
