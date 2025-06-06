@@ -28,17 +28,17 @@ document.addEventListener('DOMContentLoaded', function() {
 async function realizarLogin(email, senha, lembrar) {
     const api = new ApiClient(BaseUrl);
     try {
-        const { headers, body } = await api.post('user/login', {
+        const {headers, body} = await api.post('user/login', {
             email: email,
             password: senha,
             keep_login: lembrar
         });
-        console.log("Respostaaaaaaaaaaa: ", headers, body)
-        if (!headers.has('Authorization')) {
+        
+        if (!headers.get('Authorization')) {
             throw new Error('Header de autorização não encontrado');
         }
 
-        const tokenHeader = headers.get("Authorization");
+        const tokenHeader = headers.get('Authorization');
         if (tokenHeader?.startsWith("Bearer ")) {
             const token = tokenHeader.replace("Bearer ", "").trim();
             localStorage.setItem("token", token);
