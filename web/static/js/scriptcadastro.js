@@ -14,17 +14,22 @@ const requirements = {
 
 function realizarCadastro(nome, email, senha) {
     const api = new ApiClient(BaseUrl)
-    api.post('user/register', {
-        email: email,
-        password: senha,
-        name: nome
-    }).then(response => {
-        if (response.success) {
-            exibirMensagem('Cadastro realizado com sucesso! Você será redirecionado para a página de login.', 'success');
-            setTimeout(() => {
-                window.location.href = "login.html";
-            }, 7000);
-    }});
+
+    try {
+        const {headers, body} = api.post('user/register', {
+            email: email,
+            password: senha,
+            name: nome
+        })
+        
+        alert("verifique seu email, e o console")
+    }
+
+    catch(error){
+        console.error("[Cadastro] Erro ao realizar cadastro:", error.message);
+    }
+    
+    
 }
 
 
@@ -38,10 +43,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const senha = document.getElementById('senha').value;
         const confirmarSenha = document.getElementById('confirmarSenha').value;
 
-        if (!validarSenha(senha)) {
-            exibirMensagem('A senha deve ter pelo menos 8 caracteres, incluindo letras maiúsculas, minúsculas, números e símbolos.', 'danger');
-            return;
-        }
         if (senha !== confirmarSenha) {
             exibirMensagem('As senhas não coincidem.', 'danger');
             return;
