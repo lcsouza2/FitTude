@@ -42,7 +42,8 @@ build-backend = "poetry.core.masonry.api"
 [tool.taskipy.tasks]
 format = "ruff format"
 lint = "ruff check"
-run_test = "fastapi dev app/main.py --app MAIN_APP --port 8001"
+run_test = "fastapi dev app/main.py --app MAIN_APP"
+run_prod = "fastapi run app/main.py --app MAIN_APP"
 
 
 [tool.ruff.lint]
