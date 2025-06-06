@@ -32,6 +32,14 @@ async function validateToken() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    const logoffButton = document.getElementById('logoff');
+    logoffButton.addEventListener('click', function() {
+        sessionStorage.removeItem('token'); // Remove o token do sessionStorage
+        localStorage.removeItem('token'); // Remove o token do localStorage
+        window.location.href = "login";
+})});
+
+document.addEventListener('DOMContentLoaded', function() {
     const ctx = document.getElementById('progressChart').getContext('2d');
     
     const chartData = {
