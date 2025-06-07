@@ -11,13 +11,12 @@ export function exibirMensagem(mensagem, tipo) {
     }
     else if (tipo == 'success') {
         div.style.color = 'blue'
-        
     } else {
-        
+
     }
 
 }
 
 
 
-export const BaseUrl = 'https://6c4e-168-228-112-234.ngrok-free.app/api/';
+export const BASE_URL = 'http://localhost:8000/';

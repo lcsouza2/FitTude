@@ -3,10 +3,10 @@ import { BaseUrl , exibirMensagem } from './core/utils.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     const loginForm = document.getElementById('loginForm');
-    
+
     loginForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        
+
         const email = document.getElementById('email').value;
         const senha = document.getElementById('senha').value;
         const lembrar = document.getElementById('remember').checked;
@@ -33,7 +33,7 @@ async function realizarLogin(email, senha, lembrar) {
             password: senha,
             keep_login: lembrar
         });
-        
+
         if (!headers.get('Authorization')) {
             throw new Error('Header de autorização não encontrado');
         }
@@ -50,7 +50,7 @@ async function realizarLogin(email, senha, lembrar) {
         } else {
             throw new Error('Token inválido ou mal formatado');
         }
-        
+
     } catch (error) {
         console.error("[Login] Erro ao realizar login:", error.message);
         exibirMensagem('Erro ao realizar login. Verifique suas credenciais.', 'danger');
