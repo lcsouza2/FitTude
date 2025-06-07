@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Cadastro</title>
-    <link rel="stylesheet" href="static/css/stylesignup.css">
+    <link rel="stylesheet" href="static/css/style_signup.css">
     <link rel="shortcut icon" href="static/assets/img/favicon2.png" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,7 +15,6 @@
 </head>
 <body>
 
-     <!-- NavBar -->
      <nav data-bs-theme="dark" class="navbar navbar-expand-lg fixed-top py-1 px-1">
         <div class="container-fluid d-flex justify-content-between">
             <a href="/" class="navbar-brand">
@@ -27,15 +26,13 @@
         </div>
      </nav>
 
-    <!-- Container principal -->
-    <!-- Se for modificar o formulario, nao mude os IDs do input, nao mude o ID de nada, a nao ser que queira um erro na tua cara, ai tu resolve.  -->
     <div class="main-container">
         <div class="register-container">
             <form id="registerForm">
                 <h2 class="form-title">Cadastre-se</h2>
 
                 <div class="form-grid">
-                    <!-- Coluna 1 - Dados Pessoais -->
+
                     <div class="form-group">
                         <label for="nome" class="form-label">Nome Completo</label>
                         <input type="text" id="nome" class="form-control" placeholder="Digite seu nome completo" required>
@@ -46,7 +43,7 @@
                         <input type="email" id="email" class="form-control" placeholder="Digite seu e-mail" required>
                     </div>
 
-                    <!-- Coluna 2 - Senhas -->
+
                     <div class="form-group">
                         <label for="senha" class="form-label">Senha</label>
                         <input type="password" id="senha" class="form-control" placeholder="Digite sua senha" aria-describedby="passwordHelpBlock" required>
@@ -57,7 +54,7 @@
                         <input type="password" id="confirmarSenha" class="form-control" placeholder="Confirme sua senha" required>
                     </div>
 
-                    <!-- Requisitos de Senha - Largura Total -->
+
                     <div id="password-requirements" class="container-fluid password-requirements-container">
                         <div class="container-fluid password-requirements mb-0" >
                             <h6>A senha deve conter:</h6>
@@ -71,14 +68,6 @@
                         </div>
                     </div>
 
-                    <!-- Mensagem de Erro -->
-                    <div class="form-group full-width">
-                        <div id="mensagem" class="error-message" role="alert">
-                                <!-- Mensagem de erro será exibida aqui -->
-                        </div>
-                    </div>
-
-                    <!-- Termos e Botão -->
                     <div class="form-group full-width">
                         <div class="terms-section d-flex flex-column">
                             <div class="form-check mb-3">
@@ -99,6 +88,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
-    <script type="module" src="./static/js/scriptcadastro.js"></script>
+    <script type="module" src="./static/js/functional/handleRegister.js"></script>
 </body>
 </html>
