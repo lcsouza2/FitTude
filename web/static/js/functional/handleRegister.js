@@ -1,7 +1,12 @@
-import { publicApiClient, tokenManager } from '../core/auth.js';
+import { publicApiClient } from '../core/auth.js';
+import { setPasswordRequirementsVisible, setPasswordRequirementsHidden } from '../visual/registerAssets.js';
+
+
+const passwordContainer = document.querySelector('.password-requirements-container');
+const passwordRequirements = document.querySelector('.password-requirements');
+const cadastroForm = document.getElementById('registerForm');
 
 const senhaInput = document.getElementById('senha');
-const passwordRequirements = document.querySelector('.password-requirements');
 const requirements = {
     length: document.getElementById('length-check'),
     uppercase: document.getElementById('uppercase-check'),
@@ -11,10 +16,9 @@ const requirements = {
 };
 
 
-function realizarCadastro(nome, email, senha) {
-
+async function realizarCadastro(nome, email, senha) {
     try {
-        const {headers, body} = publicApiClient.post('/api/user/register', {
+        const {headers, body} = await publicApiClient.post('/api/user/register', {
             email: email,
             password: senha,
             name: nome
@@ -23,53 +27,48 @@ function realizarCadastro(nome, email, senha) {
         if (!headers.ok) {
             throw new Error('Erro ao realizar cadastro: ' + headers.statusText);
         } else {
-            
+            window.location.href = '/check_mail';
         }
     }
 
     catch(error){
         console.error("[Cadastro] Erro ao realizar cadastro:", error.message);
     }
-    
-    
 }
 
 
-document.addEventListener('DOMContentLoaded', () => {
-    const cadastroForm = document.getElementById('registerForm');
-    cadastroForm.addEventListener('submit', event => { 
-        event.preventDefault();
+cadastroForm.addEventListener('submit', async(event) => { 
+    event.preventDefault();
 
-        const email = document.getElementById('email').value;
-        const nome = document.getElementById('nome').value;
-        const senha = document.getElementById('senha').value;
-        const confirmarSenha = document.getElementById('confirmarSenha').value;
+    const email = document.getElementById('email').value;
+    const nome = document.getElementById('nome').value;
+    const senha = document.getElementById('senha').value;
+    const confirmarSenha = document.getElementById('confirmarSenha').value;
 
-        if (senha !== confirmarSenha) {
-            exibirMensagem('As senhas não coincidem.', 'danger');
-            return;
-        }
-        else {
-            realizarCadastro(nome, email, senha);
-        }
-    });
+    if (senha !== confirmarSenha) {
+        document.getElementById('password-mismatch-error').style.display = 'block';
+        return;
+    }
+    else {
+        await realizarCadastro(nome, email, senha);
+    }
 });
 
 senhaInput.addEventListener('focus', function() {
-    const container = document.querySelector('.password-requirements-container');
-    container.classList.add('active');
-    requestAnimationFrame(() => {
-        document.querySelector('.password-requirements').classList.add('visible');
+        setPasswordRequirementsVisible(passwordContainer);
+
+        requestAnimationFrame(() => {
+        passwordRequirements.classList.add('visible');
     });
 });
 
 senhaInput.addEventListener('blur', function() {
-   
-        const container = document.querySelector('.password-requirements-container');
-        document.querySelector('.password-requirements').classList.remove('visible');
-        setTimeout(() => {
-            container.classList.remove('active');
-        }, 300); // Espera a transição terminar
+    setPasswordRequirementsHidden( passwordContainer);
+
+    
+    setTimeout(() => {
+        passwordContainer.classList.remove('active');
+    }, 300); 
     
 });
 
