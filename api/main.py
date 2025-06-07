@@ -10,48 +10,40 @@ templates = Jinja2Templates(directory="./web/")
 
 @MAIN_APP.get("/")
 async def return_root_page(request: Request):
-    return templates.TemplateResponse("landingpage.html", {"request": request})
+    return templates.TemplateResponse("main/index.html", {"request": request})
 
 @MAIN_APP.get("/login")
 async def return_login_page(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request})
+    return templates.TemplateResponse("main/login.html", {"request": request})
 
 @MAIN_APP.get("/register")
 async def return_register_page(request: Request):
-    return templates.TemplateResponse("register.html", {"request": request})
+    return templates.TemplateResponse("main/register.html", {"request": request})
 
 @MAIN_APP.get("/dashboard")
 async def return_dashboard_page(request: Request):
-    return templates.TemplateResponse("dashboard.html", {"request": request})
+    return templates.TemplateResponse("main/dashboard.html", {"request": request})
 
 @MAIN_APP.get("/active")
 async def return_active_page(request: Request):
-    return templates.TemplateResponse("active.html", {"request": request})
+    return templates.TemplateResponse("secondary/active.html", {"request": request})
 
 @MAIN_APP.get("/aparelhos")
 async def return_aparelhos_page(request: Request):
-    return templates.TemplateResponse("aparelhos.html", {"request": request})
-
-@MAIN_APP.get("/landingpage")
-async def return_landing_page(request: Request):
-    return templates.TemplateResponse("landingpage.html", {"request": request})
+    return templates.TemplateResponse("secondary/aparelhos.html", {"request": request})
 
 @MAIN_APP.get("/relatorios")
 async def return_relatorios_page(request: Request):
-    return templates.TemplateResponse("relatorios.html", {"request": request})
+    return templates.TemplateResponse("secondary/relatorios.html", {"request": request})
 
 @MAIN_APP.get("/exercicios")
 async def return_exercicios_page(request: Request):
-    return templates.TemplateResponse("exercicios.html", {"request": request})
-
-@MAIN_APP.get("/relatorios")
-async def return_relatorios_page(request: Request):
-    return templates.TemplateResponse("relatorios.html", {"request": request})
+    return templates.TemplateResponse("secondary/exercicios.html", {"request": request})
 
 @MAIN_APP.get("/grupamentos")
 async def return_grupamentos_page(request: Request):
-    return templates.TemplateResponse("grupamentos.html", {"request": request})
+    return templates.TemplateResponse("secondary/grupamentos.html", {"request": request})
 
 @MAIN_APP.get("/configuracoes")
 async def return_configuracoes_page(request: Request):
-    return templates.TemplateResponse("configuracoes.html", {"request": request})
+    return templates.TemplateResponse("secondary/configuracoes.html", {"request": request})
