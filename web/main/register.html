@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Cadastro</title>
-    <link rel="stylesheet" href="static/css/style_signup.css">
+    <link rel="stylesheet" href="../static/css/style_signup.css">
     <link rel="shortcut icon" href="static/assets/img/favicon2.png" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,12 +26,12 @@
         </div>
      </nav>
 
-    <div class="main-container">
-        <div class="register-container">
+    <div class="main-container" >
+        <div class="register-container container-fluid"  >
             <form id="registerForm">
                 <h2 class="form-title">Cadastre-se</h2>
 
-                <div class="form-grid">
+                <div class="form-grid" >
 
                     <div class="form-group">
                         <label for="nome" class="form-label">Nome Completo</label>
@@ -54,8 +54,11 @@
                         <input type="password" id="confirmarSenha" class="form-control" placeholder="Confirme sua senha" required>
                     </div>
 
+                    <div id="password-mismatch-error" style="display: none;" class="alert alert-danger full-width form-group text-center" role="alert">
+                        As senhas não coincidem
+                    </div>
 
-                    <div id="password-requirements" class="container-fluid password-requirements-container">
+                    <div id="password-requirements" class="container-fluid password-requirements-container full-width form-group">
                         <div class="container-fluid password-requirements mb-0" >
                             <h6>A senha deve conter:</h6>
                             <ul>
@@ -88,6 +91,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
-    <script type="module" src="./static/js/functional/handleRegister.js"></script>
+    <script type="module" src="../static/js/functional/handleRegister.js"></script>
 </body>
 </html>
