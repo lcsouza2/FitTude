@@ -110,6 +110,8 @@ nav h1 {
 
 .password-requirements-container {
     position: relative;
+    overflow: hidden;
+    text-wrap: nowrap;
     width: 100%;
     height: auto; /* Alterado de 0 para auto */
     margin: 0;
@@ -191,7 +193,6 @@ nav h1 {
 }
 .password-requirements-container.active {
     display: block;
-    height: auto; /* Alterado de 0 para auto */
 }
 
 .password-requirements li:nth-child(1) { transition-delay: 0.1s; }
