@@ -1,5 +1,4 @@
-import { ApiClient } from './core/auth.js';
-import { BaseUrl, exibirMensagem } from './core/utils.js';
+import { publicApiClient, tokenManager } from '../core/auth.js';
 
 const senhaInput = document.getElementById('senha');
 const passwordRequirements = document.querySelector('.password-requirements');
@@ -13,16 +12,19 @@ const requirements = {
 
 
 function realizarCadastro(nome, email, senha) {
-    const api = new ApiClient(BaseUrl)
 
     try {
-        const {headers, body} = api.post('user/register', {
+        const {headers, body} = publicApiClient.post('/api/user/register', {
             email: email,
             password: senha,
             name: nome
         })
-        
-        alert("verifique seu email, e o console")
+
+        if (!headers.ok) {
+            throw new Error('Erro ao realizar cadastro: ' + headers.statusText);
+        } else {
+            
+        }
     }
 
     catch(error){
