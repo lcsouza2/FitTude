@@ -4,10 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email Enviado!</title>
+    <title>Email Enviado! - FitTude</title>
+    <link rel="shortcut icon" href="static/assets/img/favicon2.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700&family=Righteous&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.1/font/bootstrap-icons.min.css"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
 </head>
-
-
 
 <body>
     <nav data-bs-theme="dark" class="navbar navbar-expand-lg fixed-top py-1 px-1">
@@ -15,25 +19,131 @@
             <a href="/" class="navbar-brand">
                 <h1 class="mb-0"><span class="h1-highlighted">Fit</span>Tude</h1>
             </a>
-            <a href="login">
-                <button class="btn btn-custom px-4" type="button">Login</button>
-            </a>
         </div>
     </nav>
 
+    <div class="content-container">
+        <div class="message-box">
+            <h2><i class="bi bi-envelope-check text-primary me-2"></i>Email Enviado!</h2>
+            <p>Verifique sua caixa de entrada para confirmar seu cadastro.</p>
+            <div class="button-group">
+                <button onclick="window.location.href='https:\/\/mail.google.com'" class="button-style">
+                    <i class="bi bi-envelope me-2"></i>Ir para o Email
+                </button>
+                <button onclick="window.location.href='/'" class="button-style secondary">
+                    <i class="bi bi-house me-2"></i>Voltar para Home
+                </button>
+            </div>
+        </div>
+    </div>
 
+    <style>
+        body {
+            font-family: "Kanit", sans-serif;
+            background-image: url('/web/static/assets/img/background_image.png');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 0;
+            color: #ececec;
+            min-height: 100vh;
+            overflow: hidden;
+        }
 
+        .navbar {
+            background-color: black;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .h1-highlighted {
+            color: #510feb;
+        }
+
+        .navbar-brand h1 {
+            font-family: "Righteous", sans-serif;
+            font-size: 40px;
+        }
+
+        .content-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background-color: rgba(30, 30, 30, 0.85);
+            backdrop-filter: blur(10px);
+        }
+
+        .message-box {
+            background-color: rgba(60, 60, 60, 0.7);
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .message-box h2 {
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        .message-box p {
+            margin-bottom: 30px;
+            color: #adb5bd;
+            font-size: 18px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .button-style {
+            background-color: #510feb;
+            border: none;
+            font-family: "Kanit", sans-serif;
+            font-weight: 450;
+            min-width: 200px;
+            color: #DEE2E6;
+            padding: 12px 24px;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .button-style:hover {
+            background-color: #3d0bc6;
+            transform: scale(1.05);
+        }
+
+        .button-style.secondary {
+            background-color: rgba(222, 226, 230, 0.1);
+            border: 1px solid #DEE2E6;
+        }
+
+        .button-style.secondary:hover {
+            background-color: rgba(222, 226, 230, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .button-group {
+                flex-direction: column;
+            }
+
+            .button-style {
+                width: 100%;
+            }
+        }
+    </style>
 </body>
-
-<style>
-    body {
-        background-color: #000000;
-        color: #ffffff;
-        font-family: 'Kanit', sans-serif;
-    }
-    .navbar {
-        background-color: #000000;
-    }
-</style>
 
 </html>
