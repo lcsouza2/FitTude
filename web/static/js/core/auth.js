@@ -87,8 +87,8 @@ class TokenManager {
 
 
 export class ApiClient {
-    constructor(protected) {
-        this.protected = protected
+    constructor(needsAuth) {
+        this.needsAuth = needsAuth
         this.baseURL = BASE_URL;
     }
 
@@ -97,7 +97,7 @@ export class ApiClient {
 
             const finalOptions = {
                 credentials: 'include',
-                Authorization: this.protected ? `Bearer ${localStorage.getItem('token')}` : undefined,
+                Authorization: this.needsAuth ? `Bearer ${localStorage.getItem('token')}` : undefined,
                 ...options,
             };
 
