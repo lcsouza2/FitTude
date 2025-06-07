@@ -1,4 +1,4 @@
-import { BASE_URL } from 'utils.js';
+import { BASE_URL } from '../../core/utils.js';
 
 export async function getAllMuscleGroups() {
     try {
