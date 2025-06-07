@@ -1,14 +1,16 @@
-import { exibirMensagem, BASE_URL } from "./utils.js"; //vou usar ainda
+import { BASE_URL } from './utils.js'; //vou usar ainda
 
 class TokenManager {
     constructor() {
         this.sessionToken = null;
+        this.tokenExpiresAt = null;
         this.refreshPromise = null;
         this.isRefreshing = false;
     }
 
-    setSessionToken(token) {
+    setSessionToken(token, expiresInSeconds) {
         this.sessionToken = token;
+        this.tokenExpiresAt = Date().now() + (expiresInSeconds * 1000);
     }
 
     getSessionToken() {
@@ -17,6 +19,7 @@ class TokenManager {
 
     clearTokens() {
         this.sessionToken = null;
+        this.tokenExpiresAt = null;
         this.refreshPromise = null;
         this.isRefreshing = false
     }
@@ -27,69 +30,123 @@ class TokenManager {
         }
 
         this.isRefreshing = true;
-        
-        this.refreshPromise = fetch(BASE_URL + "/api/")
+
+        this.refreshPromise = fetch(BASE_URL + '/api/user/renew_token', {
+            credentials: 'include',
+        })
+            .then(async response => {
+                if (!response.ok) {
+                    throw new Error('Falha ao renovar token');
+                }
+
+                this.setAccessToken(response.headers.get('Authorization'));
+                return this.refreshPromise;
+            })
+            .catch(error => {
+                this.clearTokens();
+                this.redirectToLogin();
+                throw error;
+            })
+            .finally(() => {
+                this.isRefreshing = false;
+                this.refreshPromise = null;
+            });
+        return this.refreshPromise;
     }
-}
 
-export class ApiClient {
-constructor(protected ) {
-    this.protected = protected
-    this.baseURL = BASE_URL;
-}
+    async logout() {
+        try {
+            await fetch('/api/user/logout', {
+                credentials: 'include'
+            });
+        } catch (error) {
+            console.error('Erro no logout:', error);
+        } finally {
+            this.clearTokens();
+            this.redirectToLogin();
+        }
+    }
 
-async request(endpoint, options = {}) {
-    try {
+    redirectToLogin() {
+        if (typeof window !== 'undefined') {
+            window.location.href = '/login';
+        }
+    }
 
-
-        const finalOptions = {
-            credentials: "include",
-            Authorization: this.protected ? `Bearer ${localStorage.getItem("token")}` : undefined,
-            ...options,
-        };
-
-        const response = await fetch(this.baseURL + endpoint, finalOptions);
-
-            let data;
-        const bodyType = response.headers.get("Content-Type");
-
-        if (bodyType && bodyType.includes("application/json")) {
-            data = await response.json();
-        } else {
-            data = await response.text();
+    isTokenExpiringSoon(thresholdMinutes = 5) {
+        if (!this.accessToken || !this.tokenExpiresAt) {
+            return true;
         }
 
-        return {
-            headers: response.headers,
-            body: data,
-        };
-    } catch (error) {
-        console.error("[ApiClient] :", error.message);
-        throw new Error(error);
+        const now = Date.now();
+        const threshold = thresholdMinutes * 60 * 1000;
+
+            return (this.tokenExpiresAt - now) < threshold;
     }
 }
 
+
+export class ApiClient {
+    constructor(protected) {
+        this.protected = protected
+        this.baseURL = BASE_URL;
+    }
+
+    async request(endpoint, options = {}) {
+        try {
+
+            const finalOptions = {
+                credentials: 'include',
+                Authorization: this.protected ? `Bearer ${localStorage.getItem('token')}` : undefined,
+                ...options,
+            };
+
+            const response = await fetch(this.baseURL + endpoint, finalOptions);
+
+            let data;
+            const bodyType = response.headers.get('Content-Type');
+
+            if (bodyType && bodyType.includes('application/json')) {
+                data = await response.json();
+            } else {
+                data = await response.text();
+            }
+
+            return {
+                headers: response.headers,
+                body: data,
+            };
+        } catch (error) {
+            console.error('[ApiClient] :', error.message);
+            throw new Error(error);
+        }
+    }
+
     get(endpoint) {
-        return this.request(endpoint, { method: "GET"});
+        return this.request(endpoint, { method: 'GET' });
     }
 
     post(endpoint, body) {
         return this.request(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body),
         });
     }
 
     put(endpoint, body) {
         return this.request(endpoint, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body),
         });
     }
 
     delete(endpoint) {
-        return this.request(endpoint, { method: "DELETE" });
+        return this.request(endpoint, { method: 'DELETE' });
     }
 }
+
+export const tokenManager = new TokenManager();
+export const authApiClient = new ApiClient(true);
+export const publicApiClient = new ApiClient(false);
