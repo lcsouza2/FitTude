@@ -376,8 +376,8 @@ async def handle_pwd_change_confirm_req(protocol: UUID):
         return Response("Password changed successfully!")
 
 
-@USER_ROUTER.post("/refresh_token")
-async def handle_refresh_token_req(
+@USER_ROUTER.get("/renew_token")
+async def handle_renew_token_req(
     token_service: TokenService = Depends(TokenService),
 ) -> dict[str, str]:
     """
