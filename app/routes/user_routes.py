@@ -287,11 +287,8 @@ async def handle_user_login_req(
             long_session=user.keep_login,
         )
 
-        await token_service.set_refresh_token_cookie(
-            token_service.response, refresh_token
-        )
 
-        return JSONResponse(
+        response = JSONResponse(
             content={
                 "message": "Login successful!",
                 "token_type": "Bearer",
@@ -299,6 +296,12 @@ async def handle_user_login_req(
             },
             headers={"Authorization": f"Bearer {session_token}"},
         )
+
+        await token_service.set_refresh_token_cookie(
+            response, refresh_token
+        )
+
+        return response
 
 
 @USER_ROUTER.post("/logout")
