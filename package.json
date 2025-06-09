@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/lcsouza2/fittude#readme",
   "dependencies": {
+    "chart.js": "^4.4.9",
     "jwt-decode": "^4.0.0"
   }
 }
