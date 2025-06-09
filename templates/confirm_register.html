@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro Confirmado</title>
-    
+    <title>Verificação de Email</title>
 </head>
+
 <body>
     <div class="email-container">
         <div class="header">
@@ -14,13 +14,15 @@
             </div>
         </div>
         <div class="content">
-            <h1>Registro Confirmado!</h1>
-            <p>Seu registro no FitTude foi efetuado com sucesso.</p>
-            <a href="http://fittude.com/login" class="button">Acessar minha conta</a>
-            <p>Comece já a acompanhar seus treinos e evoluir sua forma física!</p>
+            <h1>Olá, {{nome}}!</h1>
+            <p>Estamos quase lá! Precisamos apenas confirmar seu endereço de email.</p>
+            <p>Clique no botão abaixo para ativar sua conta:</p>
+            <a href="https://fittude.onrender.com/api/user/register/confirm/{{prot | safe}}" class="button">Confirmar registro</a>
+            <p>Se você não se cadastrou no FitTude, por favor ignore este email.</p>
         </div>
         <div class="footer">
             <p>© 2025 FitTude - Todos os direitos reservados</p>
+            <p>Se você tiver dúvidas, entre em contato com nossa equipe de suporte.</p>
         </div>
     </div>
 
