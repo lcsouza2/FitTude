@@ -1,5 +1,4 @@
-import { ApiClient } from '../core/auth.js';
-import { BaseUrl , exibirMensagem } from './core/utils.js';
+import { publicApiClient } from '../core/auth.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     const loginForm = document.getElementById('loginForm');
@@ -26,7 +25,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 async function realizarLogin(email, senha, lembrar) {
-    const api = new ApiClient(BaseUrl);
     try {
         const {headers, body} = await api.post('user/login', {
             email: email,
