@@ -1,4 +1,4 @@
-import {MuscleGroup, MuscleGroupWidget, getAllMuscleGroups} from '../core/mapping/muscleGroupMapping.js';
+import {MuscleGroup, MuscleGroupWidget, getAllMuscleGroups} from '../mapping/muscleGroupMapping.js';
 
 let currentMuscleGroups = await getAllMuscleGroups()
 
