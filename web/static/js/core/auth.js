@@ -9,7 +9,7 @@ class TokenManager {
 
     setSessionToken(token, expiresInSeconds) {
         this.sessionToken = token;
-        this.tokenExpiresAt = Date().now() + (expiresInSeconds * 1000);
+        this.tokenExpiresAt = Date.now() + (expiresInSeconds * 1000);
     }
 
     getSessionToken() {
