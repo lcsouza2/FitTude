@@ -13,8 +13,7 @@ from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 from email_validator import EmailNotValidError, validate_email
 from fastapi import APIRouter, BackgroundTasks, Depends
-from fastapi.responses import JSONResponse, Response
-from fastapi.templating import Jinja2Templates
+from fastapi.responses import JSONResponse, Response, RedirectResponse
 from pydantic import EmailStr
 from sqlalchemy import exc, insert, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -226,27 +225,20 @@ async def handle_register_confirm_req(
                 raise UniqueConstraintViolation("E-mail already in use")
 
         else:
-            session_token = refresh_token = _generate_auth_tokens(
+            session_token = refresh_token = await _generate_auth_tokens(
                 created_user, token_service, False
             )
 
-            token_service.set_refresh_token_cookie(
+            await token_service.set_refresh_token_cookie(
                 token_service.response, refresh_token
             )
 
             await session.commit()
 
-            redis.delete(f"protocol:{protocol};type:register")
+            await redis.delete(f"protocol:{protocol};type:register")
 
-            default_context = {
-                "request": token_service.request,
-                "token_type": "Bearer",
-                "expires_in": int(Config.JWT_ACCESS_TOKEN_EXPIRES.total_seconds()),
-            }
-
-            return Jinja2Templates("./templates").TemplateResponse(
-                name="confirm_register.html",
-                context=default_context,
+            return RedirectResponse(
+                url="https://fittude-cs6s.onrender.com/dashboard",
                 headers={"Authorization": f"Bearer {session_token}"},
             )
 
