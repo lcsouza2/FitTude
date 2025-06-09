@@ -47,3 +47,7 @@ async def return_grupamentos_page(request: Request):
 @MAIN_APP.get("/configuracoes")
 async def return_configuracoes_page(request: Request):
     return templates.TemplateResponse("secondary/configuracoes.html", {"request": request})
+
+@MAIN_APP.get("/check_mail")
+async def return_configuracoes_page(request: Request):
+    return templates.TemplateResponse("secondary/go_to_mail.html", {"request": request})
