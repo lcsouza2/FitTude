@@ -102,7 +102,7 @@ async def _generate_auth_tokens(
         long_session (bool): If False, sets refresh token to 1 day
 
     Returns:
-        tuple[str, str]: Session token and refresh token
+        str, str: Session token and refresh token
     """
     if not long_session:
         token_service.refresh_expires = timedelta(days=1)  # 1 day in seconds
@@ -225,7 +225,8 @@ async def handle_register_confirm_req(
                 raise UniqueConstraintViolation("E-mail already in use")
 
         else:
-            session_token = refresh_token = await _generate_auth_tokens(
+
+            session_token, refresh_token = await _generate_auth_tokens(
                 created_user, token_service, False
             )
 
@@ -238,7 +239,7 @@ async def handle_register_confirm_req(
             await redis.delete(f"protocol:{protocol};type:register")
 
             return RedirectResponse(
-                url="https://fittude-cs6s.onrender.com/dashboard",
+                url = "http://localhost:8001/dashboard",
                 headers={"Authorization": f"Bearer {session_token}"},
             )
 
