@@ -1,4 +1,4 @@
-import { ApiClient } from './core/auth.js';
+import { ApiClient } from '../core/auth.js';
 import { BaseUrl , exibirMensagem } from './core/utils.js';
 
 document.addEventListener('DOMContentLoaded', function() {
