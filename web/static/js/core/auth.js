@@ -1,5 +1,4 @@
-import { BASE_URL } from './utils.js'; //vou usar ainda
-
+const BASE_URL = 'http://localhost:8000';
 class TokenManager {
     constructor() {
         this.sessionToken = null;
@@ -89,7 +88,7 @@ class TokenManager {
 export class ApiClient {
     constructor(needsAuth) {
         this.needsAuth = needsAuth
-        this.baseURL = BASE_URL;
+        BASE_URL;
     }
 
     async request(endpoint, options = {}) {
@@ -101,7 +100,7 @@ export class ApiClient {
                 ...options,
             };
 
-            const response = await fetch(this.baseURL + endpoint, finalOptions);
+            const response = await fetch(BASE_URL + endpoint, finalOptions);
 
             let data;
             const bodyType = response.headers.get('Content-Type');
@@ -113,6 +112,9 @@ export class ApiClient {
             }
 
             return {
+                ok: response.ok,
+                status: response.status,
+                statusText: response.statusText,
                 headers: response.headers,
                 body: data,
             };
