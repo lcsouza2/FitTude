@@ -30,16 +30,19 @@ class TokenManager {
 
         this.isRefreshing = true;
 
-        this.refreshPromise = fetch(BASE_URL + '/api/user/renew_token', {
+        this.refreshPromise = await fetch(BASE_URL + '/api/user/renew_token', {
             credentials: 'include',
         })
             .then(async response => {
-                if (!response.ok) {
-                    throw new Error('Falha ao renovar token');
+                const data = await response.json();
+                if (response.status == 401 && data.detail.includes('expired')) {
+                    this.redirectToLogin();
+                } else if (response.status == 400 && data.detail.includes('não encontrado')) {
+                    this.redirectToLogin();
+                } else{
+                    this.setSessionToken(response.headers.get('Authorization'));
+                    return this.refreshPromise;
                 }
-
-                this.setAccessToken(response.headers.get('Authorization'));
-                return this.refreshPromise;
             })
             .catch(error => {
                 this.clearTokens();
@@ -53,9 +56,9 @@ class TokenManager {
         return this.refreshPromise;
     }
 
-    async logout() {
+    logout() {
         try {
-            await fetch('/api/user/logout', {
+            fetch('/api/user/logout', {
                 credentials: 'include'
             });
         } catch (error) {
