@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,511 +8,86 @@
     <link rel="shortcut icon" href="../static/assets/img/favicon2.png" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Kanit:wght@400;600;700&family=Righteous&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Kanit:wght@400;600;700&family=Righteous&display=swap"
+        rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.1/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.1/font/bootstrap-icons.min.css"
+        rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
 
-    <style>
-        body {
-            font-family: "Kanit", sans-serif;
-            background-image: url('/web/static/assets/img/background_image.png');
-            background-repeat: no-repeat;
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            margin: 0;
-            padding: 0;
-            color: #ececec;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
+    <link rel="stylesheet" href="../static/css/main/dashboard.css">
 
-        header {
-            background-color: black;
-            padding: 10px 0;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 70px;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-
-        header h1 {
-            font-family: "Righteous", sans-serif;
-            margin: 0;
-            color: #ffffff;
-            font-size: 40px;
-        }
-
-        .h1-highlighted {
-            color: #510feb;
-        }
-
-        .user-menu {
-            display: flex;
-            align-items: center;
-            margin-right: 20px;
-        }
-
-        .profile-pic {
-            background-color: #510feb;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-right: 10px;
-            font-weight: bold;
-        }
-
-        .username {
-            color: white;
-            margin-right: 15px;
-        }
-        .content-container {
-            display: flex;
-            margin-top: 70px; /* Alterado de 60px para 70px para alinhar com o header */
-            min-height: calc(100vh - 70px);
-        }
-
-        .sidebar {
-            width: 250px;
-            background-color: rgba(20, 20, 20, 0.95);
-            position: fixed;
-            top: 70px;
-            left: 0;
-            height: calc(100vh - 70px);
-            overflow-y: auto;
-            z-index: 999;
-            transition: all 0.3s ease;
-        }
-        .sidebar-menu {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .sidebar-menu li {
-            padding: 15px 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .sidebar-menu li:hover {
-            background-color: rgba(81, 15, 235, 0.7);
-        }
-
-        .sidebar-menu li.active {
-            background-color: #510feb;
-            border-left: 4px solid white;
-        }
-
-
-        .main-content {
-            margin-left: 250px;
-            margin-top: 0px; /* Alterado de 70px para 0px pois já temos o margin-top no content-container */
-            padding: 30px;
-            background-color: rgba(30, 30, 30, 0.85);
-            backdrop-filter: blur(10px);
-            min-height: calc(100vh - 70px);
-            width: 100%; /* Adicionado para garantir que o conteúdo ocupe todo o espaço */
-        }
-
-        .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background-color: rgba(60, 60, 60, 0.7);
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .stat-title {
-            font-size: 16px;
-            color: #adb5bd;
-            margin-bottom: 10px;
-        }
-
-        .stat-value {
-            font-size: 28px;
-            font-weight: 600;
-            color: white;
-        }
-
-        .button-style {
-            background-color: #510feb;
-            border: none;
-            font-family: "Kanit", sans-serif;
-            font-weight: 450;
-            min-width: 150px;
-            color: #DEE2E6;
-            padding: 12px 24px;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .button-style:hover {
-            background-color: #3d0bc6;
-            transform: scale(1.05);
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .workouts-container {
-            background-color: rgba(60, 60, 60, 0.7);
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            margin-bottom: 30px;
-        }
-
-        .workout-card {
-            background-color: rgba(80, 80, 80, 0.7);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.3s ease;
-        }
-
-        .workout-card:hover {
-            background-color: rgba(81, 15, 235, 0.3);
-        }
-
-        .workout-info h4 {
-            margin: 0;
-            font-size: 18px;
-        }
-
-        .workout-date {
-            color: #adb5bd;
-            font-size: 14px;
-            margin-top: 5px;
-        }
-
-        .workout-actions button {
-            background: none;
-            border: none;
-            color: #adb5bd;
-            cursor: pointer;
-            font-size: 16px;
-            margin-left: 10px;
-            transition: color 0.3s ease;
-        }
-
-        .workout-actions button:hover {
-            color: white;
-        }
-        .progress-section {
-            background-color: rgba(60, 60, 60, 0.7);
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            margin-bottom: 30px;
-        }
-        .progress-bar-container {
-            height: 20px;
-            background-color: rgba(40, 40, 40, 0.7);
-            border-radius: 10px;
-            margin-bottom: 15px;
-            overflow: hidden;
-        }
-                
-        .progress-card {
-            background-color: rgba(80, 80, 80, 0.7);
-            border-radius: 8px;
-            padding: 20px;
-            margin-top: 15px;
-        }
-
-        .progress-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 10px 0;
-            color: #adb5bd;
-            font-size: 14px;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background-color: #510feb;
-            border-radius: 10px;
-            width: 75%;
-        }
-
-        .logout-button {
-            background-color: transparent;
-            border: 1px solid #DEE2E6;
-            color: #DEE2E6;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .logout-button:hover {
-            background-color: #DEE2E6;
-            color: black;
-        }
-
-        .chart-container {
-            background-color: rgba(60, 60, 60, 0.7);
-            border-radius: 10px;
-            padding: 30px; /* Aumentado para dar mais espaço */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            margin-bottom: 30px;
-            height: 500px; /* Aumentado para acomodar melhor o gráfico */
-            width: 100%;
-            position: relative;
-        }
-
-        #progressChart {
-            width: 100% !important;
-            height: 420px !important; /* Altura fixa ajustada */
-            margin-top: 20px; /* Espaço após o título */
-        }
-
-        .training-plans {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .plan-card {
-            background-color: rgba(60, 60, 60, 0.7);
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease;
-        }
-
-        .plan-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .plan-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: white;
-            margin-bottom: 10px;
-        }
-
-        .plan-details {
-            color: #adb5bd;
-            font-size: 14px;
-            margin-bottom: 15px;
-        }
-
-        .plan-divisions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-            margin-top: 10px;
-        }
-
-        .plan-division {
-            background-color: rgba(81, 15, 235, 0.3);
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 12px;
-        }
-
-        .muscle-distribution {
-            background-color: rgba(60, 60, 60, 0.7);
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            margin-bottom: 30px;
-        }
-
-        .muscle-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .muscle-item {
-            background-color: rgba(80, 80, 80, 0.7);
-            border-radius: 8px;
-            padding: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .muscle-name {
-            font-size: 14px;
-        }
-
-        .muscle-count {
-            background-color: #510feb;
-            border-radius: 50%;
-            width: 25px;
-            height: 25px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 12px;
-        }
-
-        .two-columns {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        @media screen and (max-width: 1200px) {
-            .two-columns {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media screen and (max-width: 768px) {
-            .content-container {
-                flex-direction: column;
-            }
-            
-            .sidebar {
-                width: 100%;
-                padding: 10px 0;
-            }
-            
-            .sidebar-menu {
-                display: flex;
-                justify-content: space-around;
-                flex-wrap: wrap;
-            }
-            
-            .sidebar-menu li {
-                padding: 10px 15px;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .training-plans {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
 </head>
+
 <body>
     <header class="d-flex justify-content-between align-items-center px-4">
         <h1><span class="h1-highlighted">Fit</span>Tude</h1>
         <div class="d-flex align-items-center">
-            <div class="bg-primary rounded-circle d-flex justify-content-center align-items-center me-2" style="width: 35px; height: 35px;">
+            <div class="bg-primary rounded-circle d-flex justify-content-center align-items-center me-2"
+                style="width: 35px; height: 35px;">
                 <strong>R</strong>
             </div>
-            <span id="nameuser" class="text-white me-3">Carregando...</span>
+            <span class="text-white me-3 has-username">Oi, @username!</span>
             <button id="logoff" class="btn btn-outline-light btn-sm">Sair</button>
         </div>
     </header>
-        
+
     <div class="content-container">
-            <div class="sidebar">
+        <div class="sidebar">
             <ul class="sidebar-menu">
-            <li class="active" onclick="location.href='/dashboard'">
-                <i class="bi bi-grid-fill me-2"></i>Dashboard
-            </li>
-            <li onclick="location.href='active'">
-                <i class="bi bi-journal-text me-2"></i>Minhas Fichas
-            </li>
-            <li onclick="location.href='exercicios'">
-                <i class="bi bi-lightning-fill me-2"></i>Exercícios
-            </li>
-            <li onclick="location.href='relatorios'">
-                <i class="bi bi-graph-up me-2"></i>Relatórios
-            </li>
-            <li onclick="location.href='grupamentos'">
-                <i class="bi bi-collection me-2"></i>Grupamentos
-            </li>
-            <li onclick="location.href='aparelhos'">
-                <i class="bi bi-tools me-2"></i>Aparelhos
-            </li>
-            <li onclick="location.href='configuracoes'">
-                <i class="bi bi-gear-fill me-2"></i>Configurações
-            </li>
-        </ul>
-    </div>
-        
+                <li class="active" onclick="location.href='/dashboard'">
+                    <i class="bi bi-grid-fill me-2"></i>Dashboard
+                </li>
+                <li onclick="location.href='active'">
+                    <i class="bi bi-journal-text me-2"></i>Minhas Fichas
+                </li>
+                <li onclick="location.href='exercicios'">
+                    <i class="bi bi-lightning-fill me-2"></i>Exercícios
+                </li>
+                <li onclick="location.href='relatorios'">
+                    <i class="bi bi-graph-up me-2"></i>Relatórios
+                </li>
+                <li onclick="location.href='grupamentos'">
+                    <i class="bi bi-collection me-2"></i>Grupamentos
+                </li>
+                <li onclick="location.href='aparelhos'">
+                    <i class="bi bi-tools me-2"></i>Aparelhos
+                </li>
+                <li onclick="location.href='configuracoes'">
+                    <i class="bi bi-gear-fill me-2"></i>Configurações
+                </li>
+            </ul>
+        </div>
+
         <div class="main-content">
             <div class="dashboard-header">
-                <h2><i class="bi bi-grid-fill text-primary me-2"></i>Bem-vindo ao seu Dashboard, Rafael!</h2>
+                <h2 class="has-username"><i class="bi bi-grid-fill text-primary me-2"></i>Bem-vindo ao seu Dashboard, @username!</h2>
                 <button class="button-style">+ Nova Ficha de Treino</button>
             </div>
-            
+
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-title">Treinos Registrados</div>
-                    <div class="stat-value">27</div>
+                    <div class="stat-value" id="registeredWorkouts"></div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-title">Fichas de Treino</div>
-                    <div class="stat-value">3</div>
+                    <div class="stat-value" id="RegisteredPlans"></div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-title">Exercícios Cadastrados</div>
-                    <div class="stat-value">42</div>
+                    <div class="stat-value" id="RegisteredExercises"></div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-title">Total de Séries</div>
-                    <div class="stat-value">857</div>
+                    <div class="stat-value" id="TotalSets"></div>
                 </div>
             </div>
-            
+
             <div class="training-plans">
-                <div class="plan-card">
-                    <div class="plan-title">Hipertrofia 2025</div>
-                    <div class="plan-details">
-                        <div><strong>Objetivo:</strong> Hipertrofia avançada</div>
-                        <div><strong>Divisões:</strong></div>
-                        <div class="plan-divisions">
-                            <span class="plan-division">A - Peito/Tríceps</span>
-                            <span class="plan-division">B - Costas/Bíceps</span>
-                            <span class="plan-division">C - Pernas/Ombros</span>
-                        </div>
-                    </div>
-                    <button class="button-style" style="width: 100%">Ver Ficha</button>
-                </div>
                 
+
                 <div class="plan-card">
                     <div class="plan-title">Full Body 5x</div>
                     <div class="plan-details">
@@ -527,7 +103,7 @@
                     </div>
                     <button class="button-style" style="width: 100%">Ver Ficha</button>
                 </div>
-                
+
                 <div class="plan-card">
                     <div class="plan-title">Força Base</div>
                     <div class="plan-details">
@@ -541,14 +117,14 @@
                     <button class="button-style" style="width: 100%">Ver Ficha</button>
                 </div>
             </div>
-            
+
             <div class="two-columns">
                 <div class="workouts-container">
                     <div class="card-header">
                         <h3>Últimos Treinos</h3>
                         <button class="button-style">Ver Todos</button>
                     </div>
-                    
+
                     <div class="workout-card">
                         <div class="workout-info">
                             <h4>Hipertrofia 2025 - A (Peito/Tríceps)</h4>
@@ -558,7 +134,7 @@
                             <button>Detalhes</button>
                         </div>
                     </div>
-                    
+
                     <div class="workout-card">
                         <div class="workout-info">
                             <h4>Hipertrofia 2025 - C (Pernas/Ombros)</h4>
@@ -568,7 +144,7 @@
                             <button>Detalhes</button>
                         </div>
                     </div>
-                    
+
                     <div class="workout-card">
                         <div class="workout-info">
                             <h4>Hipertrofia 2025 - B (Costas/Bíceps)</h4>
@@ -579,7 +155,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="muscle-distribution">
                     <div class="card-header">
                         <h3>Músculos por Grupamento</h3>
@@ -620,19 +196,19 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="chart-container">
                 <div class="card-header">
                     <h3>Evolução - Supino Reto (Carga Máxima)</h3>
                 </div>
                 <canvas id="progressChart"></canvas>
             </div>
-            
+
             <div class="progress-section">
                 <div class="card-header">
                     <h3>Próximos Treinos</h3>
                 </div>
-                
+
                 <div class="progress-card">
                     <div class="stat-title">Semana Atual - Hipertrofia 2025</div>
                     <div class="progress-bar-container">
@@ -649,7 +225,9 @@
             </div>
         </div>
     </div>
-    
-<script type="module" src="./static/js/dashboard.js" ></script>
+
+    <script type="module" src="../static/js/functional/dashboardFunctions.js"></script>
+    <script src="../static/js/visual/dashboardVisuals.js"></script>
 </body>
+
 </html>
