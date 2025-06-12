@@ -71,6 +71,8 @@ class TokenService:
             max_age=Config.JWT_REFRESH_COOKIE_MAX_AGE,  # 7 dias em segundos
             expires=actual_datetime() + self.refresh_expires,
             httponly=True,
+            samesite="none",
+            secure=True,
         )
 
     def get_refresh_token(self, request: Request) -> str:
@@ -97,7 +99,12 @@ class TokenService:
         Args:
             response (Response): The response object to delete the cookie from.
         """
-        response.delete_cookie("refresh_token")
+        response.delete_cookie(
+            key="refresh_token",
+            httponly=True,
+            samesite="none",
+            secure=True,
+        )
 
     async def renew_token(self, request: Request) -> str:
         """
