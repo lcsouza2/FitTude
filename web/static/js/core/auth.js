@@ -83,7 +83,7 @@ export class ApiClient {
             const finalOptions = {
                 credentials: 'include',
                 headers: {
-                    Authorization: this.needsAuth ? `${sessionStorage.getItem('session_token')}` : null,
+                    Authorization: this.needsAuth ? `Bearer ${sessionStorage.getItem('session_token')}` : null,
                 },
                 ...options,
             };
@@ -120,7 +120,6 @@ export class ApiClient {
             throw new Error(error);
         }
     }
-    
 
     async get(endpoint) {
         try {
