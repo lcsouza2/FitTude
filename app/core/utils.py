@@ -37,7 +37,7 @@ def cached_operation(timeout: int = Config.CACHE_DEFAULT_TIMEOUT):
                     return result
 
                 result = await func(*args, **kwargs)
-                await redis.setex(key, timeout, str(result))
+                await redis.setex(key, timeout, dumps(result))
                 return result
 
         return wrapper
