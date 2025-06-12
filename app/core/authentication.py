@@ -152,7 +152,7 @@ class TokenService:
         token = token.credentials
 
         if not token:
-            raise MissingToken("Refresh token não encontrado")
+            raise MissingToken("Session token não encontrado")
 
         try:
             decoded = jwt.decode(
