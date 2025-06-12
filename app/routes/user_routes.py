@@ -297,6 +297,8 @@ async def handle_user_login_req(
             headers={"Authorization": f"Bearer {session_token}"},
         )
 
+        token_service.response = response
+
         await token_service.set_refresh_token_cookie(
             response, refresh_token
         )
@@ -315,9 +317,14 @@ async def handle_user_logout_req(
     Returns:
         dict[str, str]: Success message indicating logout completion
     """
+
+    response = Response("Logout completed successfully!")
+
+    token_service.response = response
+
     token_service.delete_refresh_token_cookie(token_service.response)
 
-    return Response("Logout completed successfully!")
+    return response
 
 
 @USER_ROUTER.post("/password_change")
