@@ -1,13 +1,9 @@
-import { BASE_URL } from '../../core/utils.js';
+import { authApiClient } from '../auth.js';
 
 export async function getAllMuscleGroups() {
     try {
-        const response = await fetch(BASE_URL + '/api/data/groups');
-        if (response.status === 401) {
-            throw new Error('Unauthorized access. Please log in.');
-        }
-        const data = await response.json();
-        return data;
+        const response = authApiClient.get("/api/data/groups")
+        return response.body
     } catch (error) {
         console.error('Error fetching muscle groups:', error);
     }
@@ -19,40 +15,17 @@ export class MuscleGroup {
     }
 
     create(groupName) {
-        fetch(BASE_URL + '/api/data/groups/new', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                Credentials: 'include',
-            },
-            body: JSON.stringify({
-                group_name: groupName,
-            }),
-        });
+        response = authApiClient.post("/api/data/groups", {"group_name":groupName})
+        return response.body
     }
 
     delete(groupName) {
-        fetch(BASE_URL + '/api/data/groups/inactivate/' + groupName, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                Credentials: 'include',
-            },
-        });
+        authApiClient.delete(BASE_URL + '/api/data/groups/inactivate/' + groupName);
     }
 
     update(groupName, newGroupName) {
-        fetch(BASE_URL + '/api/data/groups/update/' + groupName, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                Credentials: 'include',
-            },
-            body: JSON.stringify({
-                group_name: newGroupName,
-            }),
-        });
-    }
+        authApiClient.put(BASE_URL + '/api/data/groups/update/' + groupName, {"group_name": newGroupName})
+    };
 }
 
 
