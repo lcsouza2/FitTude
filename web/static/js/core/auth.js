@@ -1,23 +1,21 @@
 const BASE_URL = 'http://localhost:8000';
 class TokenManager {
     constructor() {
-        this.sessionToken = null;
         this.tokenExpiresAt = null;
         this.refreshPromise = null;
         this.isRefreshing = false;
     }
 
     setSessionToken(token, expiresInSeconds) {
-        this.sessionToken = token;
+        sessionStorage.setItem("session_token", token)
         this.tokenExpiresAt = Date.now() + (expiresInSeconds * 1000);
     }
 
     getSessionToken() {
-        return this.sessionToken;
+        return sessionStorage.getItem("session_token")
     }
 
     clearTokens() {
-        this.sessionToken = null;
         this.tokenExpiresAt = null;
         this.refreshPromise = null;
         this.isRefreshing = false
@@ -30,54 +28,36 @@ class TokenManager {
 
         this.isRefreshing = true;
 
-        this.refreshPromise = await fetch(BASE_URL + '/api/user/renew_token', {
-            credentials: 'include',
-        })
-            .then(async response => {
-                const data = await response.json();
-                if (response.status == 401 && data.detail.includes('expired')) {
-                    this.redirectToLogin();
-                } else if (response.status == 400 && data.detail.includes('não encontrado')) {
-                    this.redirectToLogin();
-                } else{
-                    this.setSessionToken(response.headers.get('Authorization'));
-                    return this.refreshPromise;
-                }
-            })
-            .catch(error => {
-                this.clearTokens();
-                this.redirectToLogin();
-                throw error;
-            })
-            .finally(() => {
-                this.isRefreshing = false;
-                this.refreshPromise = null;
-            });
+        try {
+            response = this.refreshPromise = authApiClient.get(BASE_URL + '/api/user/renew_token')
+            response.status in [401, 402, 403] ? this.redirectToLogin() : this.setSessionToken(response.headers.Authorization) 
+        } 
+        catch (error) {
+            this.clearTokens();
+            this.redirectToLogin();
+            throw error;
+        }   
+        finally {
+            this.isRefreshing = false;
+            this.refreshPromise = null;
+        };
         return this.refreshPromise;
     }
 
     validateSessionToken() {
-        if (!this.sessionToken || !this.tokenExpiresAt) {
+        if (!this.tokenExpiresAt) {
             return false;
         }
 
-        fetch(BASE_URL + '/api/user/validate_token', {
-            method: 'GET'
-        }
-        )
-
+        authApiClient.get(BASE_URL + '/api/user/validate_token')
         return true;
     }
 
     logout() {
         try {
-            fetch(BASE_URL + '/api/user/logout', {
-                credentials: 'include',
-                method: 'POST'
-            }).then(() => {
-                this.clearTokens();
-                this.redirectToLogin();
-            });
+            authApiClient.post(BASE_URL + '/api/user/logout')
+            this.clearTokens();
+            this.redirectToLogin();
         } catch (error) {
             console.error('Erro no logout:', error);
         }
@@ -100,17 +80,26 @@ export class ApiClient {
 
     async request(endpoint, options = {}) {
         try {
-
             const finalOptions = {
                 credentials: 'include',
-                Authorization: this.needsAuth ? `Bearer ${localStorage.getItem('token')}` : undefined,
+                headers: {
+                    Authorization: this.needsAuth ? `${sessionStorage.getItem('session_token')}` : null,
+                },
                 ...options,
             };
 
             const response = await fetch(BASE_URL + endpoint, finalOptions);
 
-            let data;
+            if (response.status === 401) {
+                await tokenManager.refreshSessionToken();
+            }
+
+            if (response.status === 403) {
+                tokenManager.redirectToLogin();
+            }
+
             const bodyType = response.headers.get('Content-Type');
+            let data;
 
             if (bodyType && bodyType.includes('application/json')) {
                 data = await response.json();
@@ -125,34 +114,42 @@ export class ApiClient {
                 headers: response.headers,
                 body: data,
             };
+
         } catch (error) {
             console.error('[ApiClient] :', error.message);
             throw new Error(error);
         }
     }
+    
 
-    get(endpoint) {
-        return this.request(endpoint, { method: 'GET' });
+    async get(endpoint) {
+        try {
+            let response = await this.request(endpoint, { method: 'GET' });
+            return response
+        } catch (error) {
+            console.error("Erro: " + error)
+        }
+
     }
 
-    post(endpoint, body) {
-        return this.request(endpoint, {
+    async post(endpoint, body) {
+        return await this.request(endpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body),
         });
     }
 
-    put(endpoint, body) {
-        return this.request(endpoint, {
+    async put(endpoint, body) {
+        return await this.request(endpoint, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body),
         });
     }
 
-    delete(endpoint) {
-        return this.request(endpoint, { method: 'DELETE' });
+    async delete(endpoint) {
+        return await this.request(endpoint, { method: 'DELETE' });
     }
 }
 
