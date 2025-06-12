@@ -1,5 +1,5 @@
 body {
-    background-image: url('../assets/img/background_image.png'); 
+    background-image: url('../../assets/img/background_image.png'); 
     background-size: cover; 
     background-position: center;
     padding-top: 76px; /* Altura da navbar + padding */
