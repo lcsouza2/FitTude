@@ -56,16 +56,30 @@ class TokenManager {
         return this.refreshPromise;
     }
 
+    validateSessionToken() {
+        if (!this.sessionToken || !this.tokenExpiresAt) {
+            return false;
+        }
+
+        fetch(BASE_URL + '/api/user/validate_token', {
+            method: 'GET'
+        }
+        )
+
+        return true;
+    }
+
     logout() {
         try {
-            fetch('/api/user/logout', {
-                credentials: 'include'
+            fetch(BASE_URL + '/api/user/logout', {
+                credentials: 'include',
+                method: 'POST'
+            }).then(() => {
+                this.clearTokens();
+                this.redirectToLogin();
             });
         } catch (error) {
             console.error('Erro no logout:', error);
-        } finally {
-            this.clearTokens();
-            this.redirectToLogin();
         }
     }
 
@@ -75,16 +89,6 @@ class TokenManager {
         }
     }
 
-    isTokenExpiringSoon(thresholdMinutes = 5) {
-        if (!this.accessToken || !this.tokenExpiresAt) {
-            return true;
-        }
-
-        const now = Date.now();
-        const threshold = thresholdMinutes * 60 * 1000;
-
-            return (this.tokenExpiresAt - now) < threshold;
-    }
 }
 
 

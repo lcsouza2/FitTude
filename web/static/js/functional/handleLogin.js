@@ -19,7 +19,7 @@ async function realizarLogin(email, senha, lembrar) {
     try {
         const response = await publicApiClient.post('/api/user/login', {
             email: email,
-            password: senha,
+            password: senha,    
             keep_login: lembrar
         });
 
@@ -29,7 +29,7 @@ async function realizarLogin(email, senha, lembrar) {
         }
 
         const cleanToken = bruteToken.split(' ')[1];
-        tokenManager.setSessionToken(cleanToken);
+        tokenManager.setSessionToken(cleanToken, response.body.expires_in);
         window.location.href = "/dashboard";
 
     } catch (error) {
