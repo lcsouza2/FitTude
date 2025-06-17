@@ -1,7 +1,10 @@
 export function populateUsername(username) {
-    document.querySelectorAll('.has-username').forEach(element => {
+    const elements = document.querySelectorAll('#username');
+    elements.forEach(element => {
         element.textContent = element.textContent.replace("@username", username);
+        element.textContent = element.textContent.replace("@U", username[0]);
     });
+    
 }
 
 export function populateFirstStats(visuals) {
