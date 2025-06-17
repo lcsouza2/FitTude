@@ -16,6 +16,7 @@ class TokenManager {
     }
 
     clearTokens() {
+        sessionStorage.removeItem("session_token")
         this.tokenExpiresAt = null;
         this.refreshPromise = null;
         this.isRefreshing = false
@@ -55,13 +56,13 @@ class TokenManager {
             return false;
         }
 
-        authApiClient.get(BASE_URL + '/api/user/validate_token')
+        authApiClient.get('/api/user/validate_token')
         return true;
     }
 
     logout() {
         try {
-            authApiClient.post(BASE_URL + '/api/user/logout')
+            authApiClient.post('/api/user/logout')
             this.clearTokens();
             this.redirectToLogin();
         } catch (error) {
@@ -76,8 +77,6 @@ class TokenManager {
     }
 
 }
-
-
 export class ApiClient {
     constructor(needsAuth) {
         this.needsAuth = needsAuth
@@ -97,9 +96,11 @@ export class ApiClient {
             const response = await fetch(BASE_URL + endpoint, finalOptions);
 
             //Reveja essa logica ai amigão o problema de reload na pagina ta aqui
-            // if (response.status === 401) {
-            //     await tokenManager.refreshSessionToken();
-            // }
+            if (response.status === 401) {
+                if (sessionStorage.getItem('session_token')) {
+                    await tokenManager.refreshSessionToken();
+                }                
+            }
 
             if (response.status === 403) {
                 tokenManager.redirectToLogin();
@@ -128,7 +129,7 @@ export class ApiClient {
         }
     }
 
-    async sget(endpoint) {
+    async get(endpoint) {
         try {
             let response = await this.request(endpoint, { method: 'GET' });
             return response
