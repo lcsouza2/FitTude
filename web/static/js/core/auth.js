@@ -19,9 +19,7 @@ class TokenManager {
         this.tokenExpiresAt = null;
         this.refreshPromise = null;
         this.isRefreshing = false
-    }
-
-    async refreshSessionToken() {
+    }    async refreshSessionToken() {
         if (this.isRefreshing) {
             return this.refreshPromise;
         }
@@ -29,8 +27,17 @@ class TokenManager {
         this.isRefreshing = true;
 
         try {
-            response = this.refreshPromise = authApiClient.get(BASE_URL + '/api/user/renew_token')
-            response.status in [401, 402, 403] ? this.redirectToLogin() : this.setSessionToken(response.headers.Authorization) 
+            const response = await authApiClient.get('/api/user/renew_token');
+            
+            if (response.status === 401 || response.status === 402 || response.status === 403) {
+                this.redirectToLogin();
+            } else {
+                const token = response.headers.get('Authorization');
+                if (token) {
+                    this.setSessionToken(token.split(' ')[1], response.body.expires_in);
+                }
+            }
+            return response;
         } 
         catch (error) {
             this.clearTokens();
@@ -40,8 +47,7 @@ class TokenManager {
         finally {
             this.isRefreshing = false;
             this.refreshPromise = null;
-        };
-        return this.refreshPromise;
+        }
     }
 
     validateSessionToken() {
@@ -90,9 +96,10 @@ export class ApiClient {
 
             const response = await fetch(BASE_URL + endpoint, finalOptions);
 
-            if (response.status === 401) {
-                await tokenManager.refreshSessionToken();
-            }
+            //Reveja essa logica ai amigão o problema de reload na pagina ta aqui
+            // if (response.status === 401) {
+            //     await tokenManager.refreshSessionToken();
+            // }
 
             if (response.status === 403) {
                 tokenManager.redirectToLogin();
@@ -121,7 +128,7 @@ export class ApiClient {
         }
     }
 
-    async get(endpoint) {
+    async sget(endpoint) {
         try {
             let response = await this.request(endpoint, { method: 'GET' });
             return response
