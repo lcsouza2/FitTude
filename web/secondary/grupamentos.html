@@ -234,30 +234,32 @@
 
 
     <div class="modal fade" id="novoGrupamentoModal" tabindex="-1" aria-labelledby="novoGrupamentoModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content bg-dark">
-            <div class="modal-header border-secondary">
-                <h5 class="modal-title" id="novoGrupamentoModalLabel">Novo Grupamento Muscular</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form id="formNovoGrupamento">
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="group_name" class="form-label">Nome do Grupamento</label>
-                        <input type="text" class="form-control bg-dark text-white" id="group_name" name="group_name" required>
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title" id="novoGrupamentoModalLabel">Novo Grupamento Muscular</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="formNovoGrupamento">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="group_name" class="form-label">Nome do Grupamento</label>
+                            <input type="text" class="form-control bg-dark text-white" id="group_name" name="group_name" required>
+                        </div>
                     </div>
-                </div>
-                <div class="modal-footer border-secondary">
-                    <button type="button" class="button btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="button-style ">Salvar</button>
-                </div>
-            </form>
+                    <div class="modal-footer border-secondary">
+                        <button type="button" class="button btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="button-style ">Salvar</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 
-<script type="module" src="../static/js/visual/muscleGroupVisuals.js"></script>
-<script type="module" src="../static/js/functional/widgets/muscleGroup.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="../static/js/core/auth.js"></script>
+    <script type="module" src="../static/js/core/mapping/muscleGroupMapping.js"></script>
+    <script type="module" src="../static/js/visual/muscleGroupVisuals.js"></script>
+    <script type="module" src="../static/js/functional/widgets/muscleGroup.js"></script>
 </body>
 </html>
