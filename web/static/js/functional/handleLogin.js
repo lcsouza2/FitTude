@@ -7,17 +7,12 @@ const formLembrar = document.getElementById('remember');
 const mensagemElement = document.getElementById('mensagem');
 
 loginForm.addEventListener('submit', async function(event) {
-    event.preventDefault(); // Isso impede o recarregamento da página
-
+    event.preventDefault();
     try {
         if (formEmail.value && formSenha.value) {
             await realizarLogin(formEmail.value, formSenha.value, formLembrar.checked);
         } else {
-            mensagemElement.innerHTML = `
-                <div class="alert alert-danger mt-3" role="alert">
-                    Por favor, preencha todos os campos.
-                </div>
-            `;
+            mensagem_de_erro("Por favor, preencha todos os campos.")
         }
     } catch (error) {
         console.error("Erro no submit:", error);
@@ -37,11 +32,7 @@ async function realizarLogin(email, senha, lembrar) {
 
         // Se a resposta não for bem-sucedida, mostra mensagem de erro
         if (!response.ok) {
-            mensagemElement.innerHTML = `
-                <div class="alert alert-danger mt-3" role="alert">
-                    Email ou senha incorretos. Por favor, tente novamente.
-                </div>
-            `;
+            mensagem_de_erro(response.body.detail)
             formSenha.value = '';
             return;
         }
@@ -57,18 +48,23 @@ async function realizarLogin(email, senha, lembrar) {
 
     } catch (error) {
         console.error("[Login] Erro ao realizar login:", error.message);
-        
         // Mostrar mensagem de erro para o usuário
-        mensagemElement.innerHTML = `
-            <div class="alert alert-danger mt-3" role="alert">
-                Email ou senha incorretos. Por favor, tente novamente.
-            </div>
-        `;
-        
-        // Limpar o campo de senha
-        formSenha.value = '';
+        mensagem_de_erro("Erro interno ")
     }
 }
-
-
-
+function mensagem_de_erro(mensagem){
+    if (mensagem) {
+        mensagemElement.innerHTML = `
+        <div class="alert alert-danger mt-3" role="alert">
+            ${mensagem}
+        </div> 
+        `;
+    }
+    else {
+        mensagemElement.innerHTML = `
+        <div class="alert alert-danger mt-3" role="alert">
+            Erro não reconhecido..
+        </div> 
+        `;
+    }
+}
