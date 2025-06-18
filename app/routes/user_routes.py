@@ -240,7 +240,7 @@ async def handle_register_confirm_req(
 
             return RedirectResponse(
                 url = "http://localhost:8001/dashboard",
-                headers={"Authorization": f"Bearer {session_token}"},
+                headers={"Authorization": f"Bearer {session_token}", "user_fullname": user_data.get("name")},
             )
 
 
@@ -269,7 +269,7 @@ async def handle_user_login_req(
 
     async with session:
         result = await session.execute(
-            select(db_mapping.User.user_id, db_mapping.User.password).where(
+            select(db_mapping.User.user_id, db_mapping.User.password, db_mapping.User.name).where(
                 db_mapping.User.email == user.email,
             )
         )
@@ -293,6 +293,7 @@ async def handle_user_login_req(
                 "message": "Login successful!",
                 "token_type": "Bearer",
                 "expires_in": int(token_service.session_expires.total_seconds()),
+                "user_fullname": found.name
             },
             headers={"Authorization": f"Bearer {session_token}"},
         )
