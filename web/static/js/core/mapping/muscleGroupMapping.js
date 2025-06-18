@@ -3,6 +3,7 @@ import { authApiClient } from '../auth.js';
 export async function getAllMuscleGroups() {
     try {
         const response = authApiClient.get("/api/data/groups")
+        console.log(response)
         return response.body
     } catch (error) {
         console.error('Error fetching muscle groups:', error);
@@ -12,20 +13,68 @@ export async function getAllMuscleGroups() {
 export class MuscleGroup {
     constructor(groupName) {
         this.groupName = groupName;
+        
     }
 
-    create(groupName) {
-        response = authApiClient.post("/api/data/groups", {"group_name":groupName})
-        return response.body
+    // Criar novo grupamento muscular
+    static async create(groupName) {
+        try {
+            const response = await authApiClient.post("/api/data/groups/new", {
+                "group_name": groupName,
+                "user_id": 0
+            });
+            return response.body;
+        } catch (error) {
+            console.error("Erro ao criar grupamento:", error);
+            throw error;
+        }
     }
 
-    delete(groupName) {
-        authApiClient.delete(BASE_URL + '/api/data/groups/inactivate/' + groupName);
+    // Deletar um grupamento muscular
+    static async delete(groupId) {
+        try {
+            const response = await authApiClient.delete(`/api/data/groups/inactivate/${groupId}`);
+            return response.body;
+        } catch (error) {
+            console.error("Erro ao deletar grupamento:", error);
+            throw error;
+        }
     }
 
-    update(groupName, newGroupName) {
-        authApiClient.put(BASE_URL + '/api/data/groups/update/' + groupName, {"group_name": newGroupName})
-    };
+    // Atualizar nome do grupamento muscular
+    static async update(groupId, newGroupName) {
+        try {
+            const response = await authApiClient.put(`/api/data/groups/update/${groupId}`, {
+                "group_name": newGroupName
+            });
+            return response.body;
+        } catch (error) {
+            console.error("Erro ao atualizar grupamento:", error);
+            throw error;
+        }
+    }
+
+    // Buscar todos os grupamentos
+    static async getAll() {
+        try {
+            const response = await authApiClient.get("/api/data/groups");
+            return response.body;
+        } catch (error) {
+            console.error("Erro ao buscar grupamentos:", error);
+            throw error;
+        }
+    }
+
+    // Buscar um grupamento específico
+    static async getById(groupId) {
+        try {
+            const response = await authApiClient.get(`/api/data/groups/${groupId}`);
+            return response.body;
+        } catch (error) {
+            console.error("Erro ao buscar grupamento:", error);
+            throw error;
+        }
+    }
 }
 
 
