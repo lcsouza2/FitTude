@@ -7,6 +7,10 @@ body {
     overflow: hidden;
 }
 
+.form-control {
+    font-family: "Kanit", sans-serif;
+}
+
 .login-box {
     background-color: rgba(160, 160, 160, 0.7);
     backdrop-filter: blur(8px);
@@ -23,7 +27,6 @@ body {
 }
 .form-container {
     width: 80%;
-    font-family: "Kanit", sans-serif;
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -31,6 +34,10 @@ body {
 
 .navbar {
     background-color: #000000;
+}
+
+.form-label {
+    font-family: "Kanit", sans-serif !important;
 }
 
 nav h1 {
@@ -76,6 +83,7 @@ form h2 {
 }
 
 .forgot-password {
+    font-family: "Kanit", sans-serif;
     color: #380e9b !important; 
     text-decoration: none;
     position: relative;

@@ -243,6 +243,9 @@ nav h1 {
     color: #000000 !important;
 }
   
+.linkterms {
+    color: #510feb;
+}
 
 .error-message {
     display: none;

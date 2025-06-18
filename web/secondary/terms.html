@@ -25,14 +25,13 @@
         .navbar {
             background-color: #000000;
             height: 60px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         nav h1 {
             font-family: "Righteous", sans-serif;
             font-weight: 400;
             font-style: normal;
-            margin: 0;
+            margin: 0;     
             color: #ffffff;
             font-size: 40px;
             text-decoration: none;
@@ -46,22 +45,15 @@
         }
 
         .btn-custom {
-            background-color: #510feb;
-            color: white;
-            border: 2px solid #510feb; 
-            font-family: "Kanit", sans-serif;
-            font-weight: 500;
-            padding: 8px 20px;
+            background-color: #510feb !important; 
+            font-family: "Kanit", sans-serif !important;
+            color: white !important;
             transition: all 0.3s ease;
-            box-shadow: 0 2px 4px rgba(81, 15, 235, 0.2);
         }
 
         .btn-custom:hover {
-            background-color: #ffffff;
-            color: #000000;
-            border-color: #ffffff;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(81, 15, 235, 0.3);
+            background-color: #ffffff !important; 
+            color: #000000 !important;
         }
 
         .card {
@@ -103,54 +95,22 @@
         .terms-section li {
             margin-bottom: 0.5rem;
         }
-
-        @keyframes slideIn {
-            from {
-                transform: translateY(-30px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .card-body {
-                padding: 1.5rem !important;
-            }
-            
-            body {
-                padding-top: 70px;
-            }
-
-            .terms-section {
-                padding: 1rem;
-            }
-
-            .terms-text {
-                padding: 1rem;
-            }
-        }
     </style>
 </head>
 <body>
-<nav data-bs-theme="dark" class="navbar navbar-expand-lg fixed-top py-1 px-1">
-    <div class="container-fluid d-flex justify-content-between">
-        <a href="/" class="navbar-brand">
-            <h1 class="mb-0"><span class="h1-highlighted">Fit</span>Tude</h1>
-        </a>
-        <div>
-            <a href="../main/login.html" class="me-2">
-                <button class="btn btn-custom px-4" type="button">Login</button>
+     <nav data-bs-theme="dark" class="navbar navbar-expand-lg fixed-top py-1 px-1">
+        <div class="container-fluid d-flex justify-content-between">
+            <a href="/" class="navbar-brand">
+                <h1 class="mb-0"><span class="h1-highlighted">Fit</span>Tude</h1>
             </a>
-            <a href="../main/register.html">
-                <button class="btn btn-custom px-4" type="button">Cadastre-se</button>
-            </a>
+            <div>
+                <form class="container-fluid justify-content-start">
+                    <a href="/web/main/register.html"><button class="btn btn-custom px-4 me-2" type="button">Cadastro</button></a>
+                    <a href="/web/main/login.html"><button class="btn btn-custom px-4" type="button">Login</button></a>
+                </form>
+            </div>
         </div>
-    </div>
-</nav>
-
+     </nav>
     <div class="container-fluid pt-5">
         <div class="row justify-content-center align-items-start min-vh-100 py-4">
             <div class="col-11 col-md-10 col-lg-8">
