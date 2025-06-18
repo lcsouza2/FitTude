@@ -13,7 +13,7 @@
     <style>
         body {
             font-family: "Kanit", sans-serif;
-            background-image: url('../../assets/img/background_image.png');
+            background-image: url('/web/static/assets/img/background_image.png');
             background-size: cover;
             background-position: center;
             margin: 0;
@@ -25,6 +25,7 @@
         .navbar {
             background-color: #000000;
             height: 60px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         nav h1 {
@@ -34,6 +35,10 @@
             margin: 0;
             color: #ffffff;
             font-size: 40px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            height: 100%;
         }
 
         .h1-highlighted {
@@ -41,15 +46,22 @@
         }
 
         .btn-custom {
-            background-color: #510feb !important;
-            font-family: "Kanit", sans-serif !important;
-            color: white !important;
+            background-color: #510feb;
+            color: white;
+            border: 2px solid #510feb; 
+            font-family: "Kanit", sans-serif;
+            font-weight: 500;
+            padding: 8px 20px;
             transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(81, 15, 235, 0.2);
         }
 
         .btn-custom:hover {
-            background-color: #ffffff !important;
-            color: #000000 !important;
+            background-color: #ffffff;
+            color: #000000;
+            border-color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(81, 15, 235, 0.3);
         }
 
         .card {
@@ -64,10 +76,11 @@
         }
 
         .terms-section {
-            padding: 1.5rem;
+            padding: 1rem;
             background-color: rgba(255, 255, 255, 0.5);
             border-radius: 0.5rem;
         }
+
 
         .terms-section h3 {
             color: #510feb;
@@ -122,52 +135,52 @@
     </style>
 </head>
 <body>
-    <nav data-bs-theme="dark" class="navbar navbar-expand-lg fixed-top py-1 px-1">
-        <div class="container-fluid d-flex justify-content-between">
-            <a href="/" class="navbar-brand">
-                <h1 class="mb-0"><span class="h1-highlighted">Fit</span>Tude</h1>
+<nav data-bs-theme="dark" class="navbar navbar-expand-lg fixed-top py-1 px-1">
+    <div class="container-fluid d-flex justify-content-between">
+        <a href="/" class="navbar-brand">
+            <h1 class="mb-0"><span class="h1-highlighted">Fit</span>Tude</h1>
+        </a>
+        <div>
+            <a href="../main/login.html" class="me-2">
+                <button class="btn btn-custom px-4" type="button">Login</button>
             </a>
-            <div>
-                <a href="../main/login.html" class="me-2">
-                    <button class="btn btn-custom px-4" type="button">Login</button>
-                </a>
-                <a href="../main/register.html">
-                    <button class="btn btn-custom px-4" type="button">Cadastre-se</button>
-                </a>
-            </div>
+            <a href="../main/register.html">
+                <button class="btn btn-custom px-4" type="button">Cadastre-se</button>
+            </a>
         </div>
-    </nav>
+    </div>
+</nav>
 
     <div class="container-fluid pt-5">
         <div class="row justify-content-center align-items-start min-vh-100 py-4">
             <div class="col-11 col-md-10 col-lg-8">
                 <div class="card bg-light bg-opacity-85 shadow-lg">
                     <div class="card-body p-4 p-md-5">
-                        <h2 class="card-title text-center mb-4">Termos e Condições Gerais de Uso do Site FitTude</h2>
+                        <h2 class="card-title text-center ">Termos e Condições Gerais de Uso do Site FitTude</h2>
                         
-                        <div class="terms-text mb-4">
+                        <div class="terms-text">
                             <p>Os serviços do FitTude são fornecidos pela pessoa física com a seguinte Razão Social 61.237.631 ANA JULIA GUERRA OLIVEIRA GABRIELLI, inscrito no CNPJ sob o nº 61.237.631/0001-13, titular da propriedade intelectual sobre software, website, aplicativos, conteúdos e demais ativos relacionados à plataforma FitTude.</p>
                         </div>
 
-                        <div class="terms-section mb-4">
+                        <div class="terms-section">
                             <h3>1. Do objeto</h3>
                             <p>A plataforma visa licenciar o uso de seu software, website, aplicativos e demais ativos de propriedade intelectual, fornecendo ferramentas para auxiliar e dinamizar o dia a dia dos seus usuários.</p>
                             <p>A plataforma caracteriza-se pela prestação do seguinte serviço: disponibilização de ferramenta online para organização e monitoramento de treinos físicos.</p>
                         </div>
 
-                        <div class="terms-section mb-4">
+                        <div class="terms-section ">
                             <h3>2. Da aceitação</h3>
                             <p>O presente Termo estabelece obrigações contratadas de livre e espontânea vontade, por tempo indeterminado, entre a plataforma e as pessoas físicas ou jurídicas, usuárias do site.</p>
                             <p>Ao utilizar a plataforma o usuário aceita integralmente as presentes normas e compromete-se a observá-las, sob o risco de aplicação das penalidade cabíveis.</p>
                             <p>A aceitação do presente instrumento é imprescindível para o acesso e para a utilização de quaisquer serviços fornecidos pela empresa. Caso não concorde com as disposições deste instrumento, o usuário não deve utilizá-los.</p>
                         </div>
 
-                        <div class="terms-section mb-4">
+                        <div class="terms-section ">
                             <h3>3. Do acesso dos usuários</h3>
                             <p>Serão utilizadas todas as soluções técnicas à disposição do responsável pela plataforma para permitir o acesso ao serviço 24 (vinte e quatro) horas por dia, 7 (sete) dias por semana. No entanto, a navegação na plataforma ou em alguma de suas páginas poderá ser interrompida, limitada ou suspensa para atualizações, modificações ou qualquer ação necessária ao seu bom funcionamento.</p>
                         </div>
 
-                        <div class="terms-section mb-4">
+                        <div class="terms-section ">
                             <h3>4. Do cadastro</h3>
                             <p>O acesso às funcionalidades da plataforma exigirá a realização de um cadastro prévio.</p>
                             <p>Ao se cadastrar o usuário deverá informar dados completos, recentes e válidos, sendo de sua exclusiva responsabilidade manter referidos dados atualizados, bem como o usuário se compromete com a veracidade dos dados fornecidos.</p>
@@ -183,12 +196,12 @@
                             <p>O usuário, ao aceitar os Termos e Política de Privacidade, autoriza expressamente a plataforma a coletar, usar, armazenar, tratar, ceder ou utilizar as informações derivadas do uso dos serviços, do site e quaisquer plataformas, incluindo todas as informações preenchidas pelo usuário no momento em que realizar ou atualizar seu cadastro, além de outras expressamente descritas na Política de Privacidade que deverá ser autorizada pelo usuário.</p>
                         </div>
 
-                        <div class="terms-section mb-4">
-                            <h3>9. Do suporte</h3>
+                        <div class="terms-section">
+                            <h3>5. Do suporte</h3>
                             <p>Em caso de qualquer dúvida, sugestão ou problema com a utilização da plataforma, o usuário poderá entrar em contato com o suporte, através do email fittudegym@gmail.com.</p>
                         </div>
 
-                        <div class="terms-section mb-4">
+                        <div class="terms-section ">
                             <h3>10. Das responsabilidades</h3>
                             <p>É de responsabilidade do usuário:</p>
                             <ul>
@@ -208,16 +221,16 @@
                             <p>Não poderão ser incluídos links externos ou páginas que sirvam para fins comerciais ou publicitários ou quaisquer informações ilícitas, violentas, polêmicas, pornográficas, xenofóbicas, discriminatórias ou ofensivas.</p>
                         </div>
 
-                        <div class="terms-section mb-4">
-                            <h3>11. Dos direitos autorais</h3>
+                        <div class="terms-section ">
+                            <h3>6. Dos direitos autorais</h3>
                             <p>O presente Termo de Uso concede aos usuários uma licença não exclusiva, não transferível e não sublicenciável, para acessar e fazer uso da plataforma e dos serviços e produtos por ela disponibilizados.</p>
                             <p>A estrutura do site ou aplicativo, as marcas, logotipos, nomes comerciais, layouts, gráficos e design de interface, imagens, ilustrações, fotografias, apresentações, vídeos, conteúdos escritos e de som e áudio, programas de computador, banco de dados, arquivos de transmissão e quaisquer outras informações e direitos de propriedade intelectual da razão social 61.237.631 ANA JULIA GUERRA OLIVEIRA GABRIELLI, observados os termos da Lei da Propriedade Industrial (Lei nº 9.279/96), Lei de Direitos Autorais (Lei nº 9.610/98) e Lei do Software (Lei nº 9.609/98), estão devidamente reservados.</p>
                             <p>Este Termos de Uso não cede ou transfere ao usuário qualquer direito, de modo que o acesso não gera qualquer direito de propriedade intelectual ao usuário, exceto pela licença limitada ora concedida.</p>
                             <p>O uso da plataforma pelo usuário é pessoal, individual e intransferível, sendo vedado qualquer uso não autorizado, comercial ou não-comercial. Tais usos consistirão em violação dos direitos de propriedade intelectual da razão social 61.237.631 ANA JULIA GUERRA OLIVEIRA GABRIELLI, puníveis nos termos da legislação aplicável.</p>
                         </div>
 
-                        <div class="terms-section mb-4">
-                            <h3>12. Das sanções</h3>
+                        <div class="terms-section ">
+                            <h3>7. Das sanções</h3>
                             <p>Sem prejuízo das demais medidas legais cabíveis, a razão social 61.237.631 ANA JULIA GUERRA OLIVEIRA GABRIELLI poderá, a qualquer momento, advertir, suspender ou cancelar a conta do usuário:</p>
                             <ul>
                                 <li>que violar qualquer dispositivo do presente Termo;</li>
@@ -226,23 +239,23 @@
                             </ul>
                         </div>
 
-                        <div class="terms-section mb-4">
-                            <h3>13. Da rescisão</h3>
+                        <div class="terms-section ">
+                            <h3>8. Da rescisão</h3>
                             <p>A não observância das obrigações pactuadas neste Termo de Uso ou da legislação aplicável poderá, sem prévio aviso, ensejar a imediata rescisão unilateral por parte da razão social 61.237.631 ANA JULIA GUERRA OLIVEIRA GABRIELLI e o bloqueio de todos os serviços prestados ao usuário.</p>
                         </div>
 
-                        <div class="terms-section mb-4">
-                            <h3>14. Das alterações</h3>
+                        <div class="terms-section ">
+                            <h3>9. Das alterações</h3>
                             <p>Os itens descritos no presente instrumento poderão sofrer alterações, unilateralmente e a qualquer tempo, por parte de FitTude, para adequar ou modificar os serviços, bem como para atender novas exigências legais. As alterações serão veiculadas pelo site FitTude e o usuário poderá optar por aceitar o novo conteúdo ou por cancelar o uso dos serviços, caso seja assinante de algum serviço.</p>
                         </div>
 
-                        <div class="terms-section mb-4">
-                            <h3>15. Da política de privacidade</h3>
+                        <div class="terms-section ">
+                            <h3>10. Da política de privacidade</h3>
                             <p>Além do presente Termo, o usuário deverá consentir com as disposições contidas na respectiva Política de Privacidade a ser apresentada a todos os interessados dentro da interface da plataforma.</p>
                         </div>
 
-                        <div class="terms-section mb-4">
-                            <h3>16. Do foro</h3>
+                        <div class="terms-section ">
+                            <h3>11. Do foro</h3>
                             <p>Para a solução de controvérsias decorrentes do presente instrumento será aplicado integralmente o Direito brasileiro.</p>
                             <p>Os eventuais litígios deverão ser apresentados no foro da comarca em que se encontra a sede da empresa.</p>
                         </div>
