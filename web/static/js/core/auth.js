@@ -134,11 +134,12 @@ export class ApiClient {
                 if (token) {
                     try {
                         await tokenManager.refreshSessionToken();
-                        requestHeaders['Authorization'] = `Bearer ${sessionStorage.getItem('session_token')}`;
+                        requestHeaders['Authorization'] = `Bearer ${token}`;
+                        console.log(requestHeaders);
                         response = await fetch(BASE_URL + endpoint, {
-                            ...requestOptions,
-                            headers: requestHeaders
-                        });
+                        ...requestOptions,
+                        headers: requestHeaders
+                    });
                     } catch (error) {
                         console.error('Erro ao renovar token:', error);
                         tokenManager.redirectToLogin();
@@ -177,8 +178,12 @@ export class ApiClient {
         }
     }
 
-    async get(endpoint) {
-        return this.request(endpoint, { method: 'GET' });
+    async get(endpoint, headers) {
+        return this.request(endpoint, { 
+            method: 'GET',
+            headers: { ...headers }
+
+        });
     }
 
     async post(endpoint, body) {
