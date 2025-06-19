@@ -24,23 +24,22 @@
 
     <div class="content-container">
         <div class="message-box">
-            <h2><i class="bi bi-envelope-check text-primary me-2"></i>Email Enviado!</h2>
+            <h2><i class="bi bi-envelope-check me-2"></i>Email Enviado!</h2>
             <p>Verifique sua caixa de entrada para confirmar seu cadastro.</p>
-            <div class="button-group">
-                <button onclick="window.location.href='https:\/\/mail.google.com'" class="button-style">
+            <div class="button-group d-grid gap-2 d-md-block">
+                <button onclick="window.location.href='https:\/\/mail.google.com'" class="btn btn-custom py-2 px-3">
                     <i class="bi bi-envelope me-2"></i>Ir para o Email
                 </button>
-                <button onclick="window.location.href='/'" class="button-style secondary">
+                <button onclick="window.location.href='/'" class="btn btn-secondary btn-outline-light py-2 px-3 mx-2">
                     <i class="bi bi-house me-2"></i>Voltar para Home
                 </button>
             </div>
         </div>
     </div>
-
     <style>
         body {
             font-family: "Kanit", sans-serif;
-            background-image: url('/web/static/assets/img/background_image.png');
+            background-image: url('static/assets/img/background_image.png');
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center;
@@ -50,6 +49,10 @@
             color: #ececec;
             min-height: 100vh;
             overflow: hidden;
+        }
+
+        .bi-envelope-check {
+            color: #510feb;
         }
 
         .navbar {
@@ -97,52 +100,27 @@
             font-size: 18px;
         }
 
-        .button-group {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
+        .btn-custom {
+            background-color: #510feb !important; 
+            font-family: "Kanit", sans-serif !important;
+            color: white !important;
+            transition: all 0.3s ease !important;
         }
 
-        .button-style {
-            background-color: #510feb;
-            border: none;
-            font-family: "Kanit", sans-serif;
-            font-weight: 450;
-            min-width: 200px;
-            color: #DEE2E6;
-            padding: 12px 24px;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .button-style:hover {
-            background-color: #3d0bc6;
-            transform: scale(1.05);
-        }
-
-        .button-style.secondary {
-            background-color: rgba(222, 226, 230, 0.1);
-            border: 1px solid #DEE2E6;
-        }
-
-        .button-style.secondary:hover {
-            background-color: rgba(222, 226, 230, 0.2);
-        }
-
-        @media (max-width: 768px) {
-            .button-group {
-                flex-direction: column;
+        .btn-secondary {
+            background-color: #00000000 !important;
+            transition: all 0.3s ease !important;
             }
 
-            .button-style {
-                width: 100%;
-            }
+        .btn-secondary:hover {
+            background-color: #ffffff !important;
         }
+
+        .btn-custom:hover {
+            background-color: #ffffff !important; 
+            color: #000000 !important;
+        }
+
     </style>
 </body>
 
