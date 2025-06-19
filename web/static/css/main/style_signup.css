@@ -235,7 +235,7 @@ nav h1 {
     background-color: #510feb !important; 
     font-family: "Kanit", sans-serif !important;
     color: white !important;
-    transition: all 0.3s ease;
+    transition: all 0.3s ease !important;
 }
 
 .btn-custom:hover {
