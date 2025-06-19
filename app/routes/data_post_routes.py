@@ -25,7 +25,7 @@ async def _execute_insert(
     table: MappedAsDataclass,
     values: Dict[str, Any],
     error_mapping: List[schemas.ConstraintErrorHandling],
-    sucess_message: str,
+    success_message: str,
 ) -> str:
     """
     Executes a generic insert operation in the database.
@@ -46,7 +46,7 @@ async def _execute_insert(
         try:
             await session.execute(insert(table).values(values))
             await session.commit()
-            return sucess_message
+            return success_message
 
         except IntegrityError as exc:
             await session.rollback()
