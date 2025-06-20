@@ -81,14 +81,14 @@ async def inactivate_muscle(
     muscle_id: int, user_id: int = Depends(TokenService.validate_token)
 ):
     where = and_(
-        db_mapping.Musculo.id_musculo == muscle_id,
-        db_mapping.Musculo.user_id == user_id,
+        db_mapping.Muscle.muscle_id == muscle_id,
+        db_mapping.Muscle.user_id == user_id,
     )
 
-    returning = db_mapping.Musculo.id_musculo
+    returning = db_mapping.Muscle.muscle_id
 
     await _execute_inactivate_entity(
-        table=db_mapping.Musculo,
+        table=db_mapping.Muscle,
         where_clause=where,
         returning_column=returning,
         entity_name="Musculo",
@@ -100,14 +100,14 @@ async def inactivate_equipment(
     equipment_id: int, user_id: int = Depends(TokenService.validate_token)
 ):
     where = and_(
-        db_mapping.Aparelho.id_aparelho == equipment_id,
-        db_mapping.Aparelho.user_id == user_id,
+        db_mapping.Equipment.equipment_id == equipment_id,
+        db_mapping.Equipment.user_id == user_id,
     )
 
-    returning = db_mapping.Aparelho.id_aparelho
+    returning = db_mapping.Equipment.equipment_id
 
     await _execute_inactivate_entity(
-        table=db_mapping.Aparelho,
+        table=db_mapping.Equipment,
         where_clause=where,
         returning_column=returning,
         entity_name="Aparelho",
