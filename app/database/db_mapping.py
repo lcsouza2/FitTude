@@ -12,6 +12,7 @@ class MuscleGroup:
 
     user_id: Mapped[int] = mapped_column()
     group_name: Mapped[str] = mapped_column(primary_key=True)
+    active: Mapped[bool] = mapped_column(default=True, nullable=False)
 
 
 @reg.mapped_as_dataclass
