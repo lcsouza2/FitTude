@@ -15,6 +15,7 @@ const modalMessage = document.getElementById('modalMessage');
 async function loadMuscleGroups() {
     try {
         const groups = await MuscleGroup.getAll();
+        console.log('Grupamentos carregados:', groups);
         renderMuscleGroups(groups);
     } catch (error) {
         console.error('Erro ao carregar grupamentos:', error);
@@ -22,22 +23,22 @@ async function loadMuscleGroups() {
 }
 
 function renderMuscleGroups(groups) {
-    const existingCards = mainContent.querySelectorAll('.group-card:not(:first-child)');
+    const existingCards = mainContent.querySelectorAll('.group-card');
     existingCards.forEach(card => card.remove());
-    
     groups.forEach(group => {
         const groupCard = createGroupCard(group);
-        groupCard.querySelector('.btn-edit').addEventListener('click', () => editGroup(group.name));
-        groupCard.querySelector('.btn-delete').addEventListener('click', () => deleteGroup(group.name));
         mainContent.appendChild(groupCard);
+        const btnEdit = groupCard.querySelector('.btn-edit');
+        const btnDelete = groupCard.querySelector('.btn-delete');
+        btnEdit.addEventListener('click', () => editGroup(group));
+        btnDelete.addEventListener('click', () => deleteGroup(group.group_name));
     });
 }
 
 function createGroupCard(group) {
     const card = document.createElement('div');
     card.className = 'group-card';
-    card.dataset.groupId = group.id;
-    
+    card.dataset.groupName = group.group_name;
     card.innerHTML = `
         <div class="group-header">
             <h3>${group.group_name}</h3>
@@ -59,7 +60,6 @@ function createGroupCard(group) {
             `).join('') : ''}
         </div>
     `;
-    
     return card;
 }
 
@@ -73,47 +73,50 @@ formNovoGrupamento.addEventListener('submit', async (e) => {
     try {
         await MuscleGroup.create(groupName);
         showMessage(modalMessage, 'Grupamento criado com sucesso!', 'success');
-        loadMuscleGroups(); // Recarrega a lista
+        loadMuscleGroups();
         novoGrupamentoModal.hide();
-        document.getElementById('group_name').value = ''; // Limpa o campo
+        document.getElementById('group_name').value = '';
     } catch (error) {
         showMessage(modalMessage, 'Erro ao criar grupamento', 'danger');
     }
 });
 
-async function editGroup(group) {
+function editGroup(group) {
     const editModal = new bootstrap.Modal(document.getElementById('editarGrupamentoModal'));
     const editForm = document.getElementById('formEditarGrupamento');
     const editNameInput = document.getElementById('edit_group_name');
-    const editIdInput = document.getElementById('edit_group_id');
-    
+    const editModalMessage = document.getElementById('editModalMessage');
     editNameInput.value = group.group_name;
-    editIdInput.value = group.id;
-    
     editModal.show();
-    
+
+    // Remove listener anterior para evitar múltiplos submits
+    editForm.onsubmit = null;
     editForm.onsubmit = async (e) => {
         e.preventDefault();
         try {
-            await MuscleGroup.update(group.id, editNameInput.value);
-            showMessage(document.getElementById('editModalMessage'), 'Grupamento atualizado com sucesso!', 'success');
+            await MuscleGroup.update(group.group_name, editNameInput.value);
+            showMessage(editModalMessage, 'Grupamento atualizado com sucesso!', 'success');
             loadMuscleGroups();
-            editModal.hide();
+            setTimeout(() => {
+                editModal.hide();
+            }, 5000);
+            
         } catch (error) {
-            showMessage(document.getElementById('editModalMessage'), 'Erro ao atualizar grupamento', 'danger');
+            showMessage(editModalMessage, 'Erro ao atualizar grupamento', 'danger');
         }
     };
 }
 
-async function deleteGroup(group_name) {
+function deleteGroup(groupName) {
     const confirmModal = new bootstrap.Modal(document.getElementById('confirmarExclusaoModal'));
     const confirmButton = document.getElementById('btnConfirmarExclusao');
-    
     confirmModal.show();
-    
+
+    // Remove listener anterior para evitar múltiplas execuções
+    confirmButton.onclick = null;
     confirmButton.onclick = async () => {
         try {
-            await MuscleGroup.delete(group_name);
+            await MuscleGroup.delete(groupName);
             loadMuscleGroups();
             confirmModal.hide();
             showMessage(document.getElementById('modalMessage'), 'Grupamento excluído com sucesso!', 'success');
