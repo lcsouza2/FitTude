@@ -23,9 +23,11 @@ async function loadMuscleGroups() {
 }
 
 function renderMuscleGroups(groups) {
+    // Filtra apenas os grupos ativos
+    const activeGroups = groups.filter(group => group.active);
     const existingCards = mainContent.querySelectorAll('.group-card');
     existingCards.forEach(card => card.remove());
-    groups.forEach(group => {
+    activeGroups.forEach(group => {
         const groupCard = createGroupCard(group);
         mainContent.appendChild(groupCard);
         const btnEdit = groupCard.querySelector('.btn-edit');
@@ -39,7 +41,7 @@ function createGroupCard(group) {
     const card = document.createElement('div');
     card.className = 'group-card';
     card.dataset.groupName = group.group_name;
-    card.innerHTML = `
+    card.innerHTML += `
         <div class="group-header">
             <h3>${group.group_name}</h3>
             <div>
