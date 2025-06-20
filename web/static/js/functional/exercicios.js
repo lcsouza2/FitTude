@@ -3,9 +3,7 @@ import { authApiClient, tokenManager } from '../core/auth.js';
 // Exemplo de função para buscar exercícios da API
 async function fetchExercises() {
     try {
-        const response = await authApiClient.get('/api/data/exercises' ,{
-        
-        });
+        const response = await authApiClient.get('/api/data/exercises');
         if (response.ok) {
             renderExercises(response.body);
         } else {
@@ -61,7 +59,10 @@ function renderExercises(exercises) {
 // Função para criar um novo exercício
 async function createExercise(data) {
     try {
-        const response = await authApiClient.post('/api/data/exercises/new', data);
+        const response = await authApiClient.post('/api/data/exercise/new',{
+            exercise_name: data.name,
+            description: data.description
+        });
         if (response.ok) {
             fetchExercises();
             bootstrap.Modal.getInstance(document.getElementById('addExerciseModal')).hide();
@@ -88,7 +89,7 @@ async function deleteExercise(id) {
 }
 
 // Evento do botão de salvar exercício
-document.querySelector('.button-style').addEventListener('click', async () => {
+document.getElementById('btnSubmitdados').addEventListener('click', async () => {
     const name = document.getElementById('exerciseName').value;
     const description = document.getElementById('exerciseDescription').value;
     const muscles = [];
@@ -104,8 +105,9 @@ document.querySelector('.button-style').addEventListener('click', async () => {
         alert('Preencha o nome do exercício');
         return;
     }
-
-    await createExercise({ name, description, muscles, equipments });
+    else{
+        await createExercise({ name, description, muscles, equipments });
+    }
 });
 
 // Logout

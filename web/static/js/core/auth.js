@@ -32,11 +32,9 @@ class TokenManager {
         this.isRefreshing = true;
 
         try {
+            // Não envia Authorization, pois o refresh_token já está no cookie
             const response = await fetch(`${BASE_URL}/api/user/renew_token`, {
                 method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${this.getSessionToken()}`
-                },
                 credentials: 'include'
             });
             
@@ -147,7 +145,6 @@ export class ApiClient {
                     }
                 }
             }
-
             // Se ainda receber 401 ou 403 após tentar renovar, redireciona para login
             if (response.status === 401 || response.status === 403) {
                 tokenManager.redirectToLogin();
@@ -178,12 +175,8 @@ export class ApiClient {
         }
     }
 
-    async get(endpoint, headers) {
-        return this.request(endpoint, { 
-            method: 'GET',
-            headers: { ...headers }
-
-        });
+    async get(endpoint) {
+        return this.request(endpoint, { method: 'GET' });
     }
 
     async post(endpoint, body) {

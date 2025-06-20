@@ -1,19 +1,17 @@
 import { MuscleGroup } from '../../core/mapping/muscleGroupMapping.js';
 import { tokenManager } from '../../core/auth.js';
 
-// Verifica autenticação
 if (!tokenManager.getSessionToken()) {
     tokenManager.redirectToLogin();
 }
 
-// Elementos do DOM
 const mainContent = document.querySelector('.main-content');
 const btnNovoGrupamento = document.getElementById('newgrup');
 const novoGrupamentoModal = new bootstrap.Modal(document.getElementById('novoGrupamentoModal'));
 const formNovoGrupamento = document.getElementById('formNovoGrupamento');
 const modalMessage = document.getElementById('modalMessage');
 
-// Carrega todos os grupamentos ao iniciar
+
 async function loadMuscleGroups() {
     try {
         const groups = await MuscleGroup.getAll();
@@ -23,19 +21,18 @@ async function loadMuscleGroups() {
     }
 }
 
-// Renderiza os grupamentos na tela
 function renderMuscleGroups(groups) {
-    // Limpa todos os group-cards existentes
     const existingCards = mainContent.querySelectorAll('.group-card:not(:first-child)');
     existingCards.forEach(card => card.remove());
     
     groups.forEach(group => {
         const groupCard = createGroupCard(group);
+        groupCard.querySelector('.btn-edit').addEventListener('click', () => editGroup(group.name));
+        groupCard.querySelector('.btn-delete').addEventListener('click', () => deleteGroup(group.name));
         mainContent.appendChild(groupCard);
     });
 }
 
-// Cria um novo card de grupamento
 function createGroupCard(group) {
     const card = document.createElement('div');
     card.className = 'group-card';
@@ -63,23 +60,16 @@ function createGroupCard(group) {
         </div>
     `;
     
-    // Adiciona eventos aos botões
-    card.querySelector('.btn-edit').addEventListener('click', () => editGroup(group));
-    card.querySelector('.btn-delete').addEventListener('click', () => deleteGroup(group.id));
-    
     return card;
 }
 
-// Abre o modal de novo grupamento
 btnNovoGrupamento.addEventListener('click', () => {
     novoGrupamentoModal.show();
 });
 
-// Criar novo grupamento
 formNovoGrupamento.addEventListener('submit', async (e) => {
     e.preventDefault();
     const groupName = document.getElementById('group_name').value;
-    
     try {
         await MuscleGroup.create(groupName);
         showMessage(modalMessage, 'Grupamento criado com sucesso!', 'success');
@@ -91,7 +81,6 @@ formNovoGrupamento.addEventListener('submit', async (e) => {
     }
 });
 
-// Editar grupamento
 async function editGroup(group) {
     const editModal = new bootstrap.Modal(document.getElementById('editarGrupamentoModal'));
     const editForm = document.getElementById('formEditarGrupamento');
@@ -116,8 +105,7 @@ async function editGroup(group) {
     };
 }
 
-// Deletar grupamento
-async function deleteGroup(groupId) {
+async function deleteGroup(group_name) {
     const confirmModal = new bootstrap.Modal(document.getElementById('confirmarExclusaoModal'));
     const confirmButton = document.getElementById('btnConfirmarExclusao');
     
@@ -125,7 +113,7 @@ async function deleteGroup(groupId) {
     
     confirmButton.onclick = async () => {
         try {
-            await MuscleGroup.delete(groupId);
+            await MuscleGroup.delete(group_name);
             loadMuscleGroups();
             confirmModal.hide();
             showMessage(document.getElementById('modalMessage'), 'Grupamento excluído com sucesso!', 'success');
@@ -135,7 +123,6 @@ async function deleteGroup(groupId) {
     };
 }
 
-// Função auxiliar para mostrar mensagens
 function showMessage(element, message, type) {
     element.className = `alert alert-${type}`;
     element.textContent = message;
@@ -146,5 +133,4 @@ function showMessage(element, message, type) {
     }, 3000);
 }
 
-// Inicia o carregamento dos grupamentos
 loadMuscleGroups();
