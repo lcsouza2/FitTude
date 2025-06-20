@@ -58,6 +58,37 @@
                 <button id="newgrup" class="button-style"> + Novo Grupamento</button>
             </div>
             <!-- Os cards de grupamento serão renderizados dinamicamente pelo JS -->
+             <div class="group-card">
+                <div class="group-header">
+                    <h3>Pernas</h3>
+                    <div>
+                        <button class="btn btn-outline-light btn-sm">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-outline-danger btn-sm ms-2">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="muscle-list">
+                    <div class="muscle-item">
+                        <span>Quadríceps</span>
+                        <span class="equipment-tag">7 aparelhos</span>
+                    </div>
+                    <div class="muscle-item">
+                        <span>Isquiotibiais</span>
+                        <span class="equipment-tag">4 aparelhos</span>
+                    </div>
+                    <div class="muscle-item">
+                        <span>Glúteos</span>
+                        <span class="equipment-tag">5 aparelhos</span>
+                    </div>
+                    <div class="muscle-item">
+                        <span>Panturrilhas</span>
+                        <span class="equipment-tag">3 aparelhos</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -95,16 +126,15 @@
         </div>
         <form id="formEditarGrupamento">
             <div class="modal-body">
-            <input type="hidden" id="edit_group_id">
-            <div class="mb-3">
-                <label for="edit_group_name" class="form-label">Nome do Grupamento</label>
-                <input type="text" class="form-control bg-dark text-white" id="edit_group_name" name="edit_group_name" required>
-            </div>
+                <div class="mb-3">
+                    <label for="edit_group_name" class="form-label">Nome do Grupamento</label>
+                    <input type="text" class="form-control bg-dark text-white" id="edit_group_name" name="edit_group_name" required>
+                </div>
             <div id="editModalMessage" class="alert d-none" role="alert"></div>
             </div>
             <div class="modal-footer border-secondary">
-            <button type="button" class="button btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="submit" class="button-style">Salvar</button>
+                <button type="button" class="button btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="button-style">Salvar</button>
             </div>
         </form>
         </div>
@@ -115,17 +145,17 @@
     <div class="modal fade" id="confirmarExclusaoModal" tabindex="-1" aria-labelledby="confirmarExclusaoModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content bg-dark">
-        <div class="modal-header border-secondary">
-            <h5 class="modal-title" id="confirmarExclusaoModalLabel">Confirmar Exclusão</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <p>Tem certeza que deseja excluir este grupamento muscular?</p>
-        </div>
-        <div class="modal-footer border-secondary">
-            <button type="button" class="button btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-danger" id="btnConfirmarExclusao">Excluir</button>
-        </div>
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title" id="confirmarExclusaoModalLabel">Confirmar Exclusão</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza que deseja excluir este grupamento muscular?</p>
+            </div>
+            <div class="modal-footer border-secondary">
+                <button type="button" class="button btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="btnConfirmarExclusao">Excluir</button>
+            </div>
         </div>
     </div>
     </div>
