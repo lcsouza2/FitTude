@@ -17,11 +17,12 @@
     <header class="d-flex justify-content-between align-items-center px-4">
         <h1><span class="h1-highlighted">Fit</span>Tude</h1>
         <div class="d-flex align-items-center">
-            <div class="bg-primary rounded-circle d-flex justify-content-center align-items-center me-2" style="width: 35px; height: 35px;">
-                <strong>R</strong>
+            <div class="bg-primary rounded-circle d-flex justify-content-center align-items-center me-2"
+                style="width: 35px; height: 35px;">
+                <strong id="username">@U</strong>
             </div>
-            <span class="text-white me-3">RafaelSilva</span>
-            <button class="btn btn-outline-light btn-sm">Sair</button>
+            <span id="username"class="text-white me-3 has-username">Oi, @username!</span>
+            <button id="logoff" class="btn btn-outline-light btn-sm">Sair</button>
         </div>
     </header>
 
@@ -165,5 +166,7 @@
     <script type="module" src="../static/js/core/mapping/muscleGroupMapping.js"></script>
     <script type="module" src="../static/js/visual/muscleGroupVisuals.js"></script>
     <script type="module" src="../static/js/functional/widgets/muscleGroup.js"></script>
+    <script type="module" src="../static/js/functional/dashboardFunctions.js"></script>
+
 </body>
 </html>
