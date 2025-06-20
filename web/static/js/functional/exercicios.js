@@ -17,7 +17,6 @@ async function fetchExercises() {
 // Renderiza os cards de exercícios dinamicamente
 function renderExercises(exercises) {
     const row = document.querySelector('.row.g-4');
-    row.innerHTML = '';
     exercises.forEach(ex => {
         row.innerHTML += `
         <div class="col-lg-6">
