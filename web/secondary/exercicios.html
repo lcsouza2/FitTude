@@ -291,13 +291,15 @@
     <header class="d-flex justify-content-between align-items-center px-4">
         <h1><span class="h1-highlighted">Fit</span>Tude</h1>
         <div class="d-flex align-items-center">
-            <div class="bg-primary rounded-circle d-flex justify-content-center align-items-center me-2" style="width: 35px; height: 35px;">
-                <strong>R</strong>
+            <div class="bg-primary rounded-circle d-flex justify-content-center align-items-center me-2"
+                style="width: 35px; height: 35px;">
+                <strong id="username">@U</strong>
             </div>
-            <span id="usuario" class="text-white me-3"></span>
+            <span id="username"class="text-white me-3 has-username">Oi, @username!</span>
             <button id="logoff" class="btn btn-outline-light btn-sm">Sair</button>
         </div>
     </header>
+
     <div class="content-container">
     <div class="sidebar">
         <ul class="sidebar-menu">
@@ -630,8 +632,8 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="button-style">Salvar Exercício</button>
+                    <button type="reset" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancelar</button>
+                    <button id="btnSubmitdados" type="submit" class="button-style">Salvar Exercício</button>
                 </div>
             </div>
         </div>
@@ -639,5 +641,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
     <script type="module" src="../static/js/functional/exercicios.js"></script>
+    <script type="module" src="../static/js/functional/dashboardFunctions.js"></script>
 </body>
 </html>
