@@ -49,13 +49,20 @@ function createGroupCard(group) {
     const card = document.createElement('div');
     card.className = 'group-card';
     card.dataset.groupName = group.group_name;
-    // Monta a lista de músculos
+    // Monta a lista de músculos a partir de string separada por vírgula
     let musclesHtml = '';
-    if (group.muscles && group.muscles.length > 0) {
+    if (group.muscles && typeof group.muscles === 'string') {
+        const muscleArr = group.muscles.split(',').map(m => m.trim()).filter(Boolean);
+        musclesHtml = muscleArr.map(muscleName => `
+            <div class="muscle-item">
+                <span>${muscleName}</span>
+            </div>
+        `).join('');
+    } else if (Array.isArray(group.muscles) && group.muscles.length > 0) {
         musclesHtml = group.muscles.map(muscle => `
             <div class="muscle-item">
-                <span>${muscle.name}</span>
-                <span class="equipment-tag">${muscle.equipment_count || 0} aparelhos</span>
+                <span>${muscle.name || muscle}</span>
+                <span class="equipment-tag">${muscle.equipment_count || ''}</span>
             </div>
         `).join('');
     }

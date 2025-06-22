@@ -1,36 +1,42 @@
 import { authApiClient, tokenManager } from '../core/auth.js';
+import { MuscleGroup } from '../core/mapping/muscleGroupMapping.js';
 
-// Busca exercícios e músculos juntos
+// Busca exercícios, músculos e equipamentos juntos
 async function fetchExercises() {
     try {
-        const [exercisesResp, musclesResp] = await Promise.all([
+        const [exercisesResp, musclesResp, equipmentsResp] = await Promise.all([
             authApiClient.get('/api/data/exercises'),
-            authApiClient.get('/api/data/muscles')
+            authApiClient.get('/api/data/muscles'),
+            //authApiClient.get('/api/data/equipment')
         ]);
-        if (exercisesResp.ok && musclesResp.ok) {
-            renderExercises(exercisesResp.body, musclesResp.body);
+        if (exercisesResp.ok && musclesResp.ok && equipmentsResp.ok) {
+            renderExercises(exercisesResp.body, musclesResp.body, equipmentsResp.body);
         } else {
-            alert('Erro ao buscar exercícios ou músculos');
+            alert('Erro ao buscar exercícios, músculos ou equipamentos');
         }
     } catch (error) {
-        alert('Erro ao buscar exercícios ou músculos');
+        alert('Erro ao buscar exercícios, músculos ou equipamentos');
+        console.error('Erro ao buscar dados:', error);
     }
 }
 
-// Renderiza os cards de exercícios dinamicamente
-function renderExercises(exercises, muscles) {
+// Ajuste no trecho que renderiza os equipamentos corretamente com base no group_name
+function renderExercises(exercises, muscles, equipments) {
     const row = document.querySelector('.row.g-4');
-    // Filtra apenas exercícios ativos
     const activeExercises = exercises.filter(ex => ex.active);
     activeExercises.forEach(ex => {
-        // Associa músculos pelo id
-        let exerciseMuscleNames = [];
-        if (ex.muscles && Array.isArray(ex.muscles)) {
-            exerciseMuscleNames = ex.muscles.map(muscleId => {
-                const muscle = muscles.find(m => m.id === muscleId);
-                return muscle ? muscle.name : '';
-            }).filter(Boolean);
-        }
+        // Musculatura por grupo
+        const exerciseMuscles = muscles
+            .filter(m => m.group_name === ex.group_name)
+            .map(m => m.muscle_name || m.name);
+
+        // Equipamentos por grupo
+        const exerciseEquipments = equipments[0].filter(e => e.group_name === ex.group_name);
+
+        console.log("Equipamentos do exercício:", exerciseEquipments);
+        console.log("Nome do exercício:", ex.exercise_name);
+
+        
         row.innerHTML += `
         <div class="col-lg-6">
             <div class="card exercise-card">
@@ -47,17 +53,18 @@ function renderExercises(exercises, muscles) {
                     </div>
                     <p class="text-muted-custom mb-2">${ex.description || ''}</p>
                     <div class="mb-2">
-                        ${exerciseMuscleNames.map(m => `<span class="badge badge-custom">${m}</span>`).join('')}
+                        ${exerciseMuscles.map(m => `<span class="badge badge-custom">${m}</span>`).join('')}
                     </div>
                     <div class="mb-2">
-                        <small class="text-muted-custom">Equipamentos: ${(ex.equipments || []).join(', ')}</small>
+                        <p class="text-muted-custom mb-2">Equipamentos:</p>
+                        ${exerciseEquipments.map(e => `<span class="badge bg-secondary">${e}</span>`).join('')}
                     </div>
                 </div>
             </div>
         </div>`;
     });
-
-    // Adiciona eventos de exclusão
+    
+    // Eventos de delete
     document.querySelectorAll('.btn-delete').forEach(btn => {
         btn.addEventListener('click', async (e) => {
             e.preventDefault();
@@ -68,58 +75,15 @@ function renderExercises(exercises, muscles) {
     });
 }
 
+
 // Função para criar um novo exercício
 async function createExercise(data) {
     try {
-        // Cria o exercício
         const response = await authApiClient.post('/api/data/exercise/new',{
             exercise_name: data.name,
             description: data.description
         });
         if (response.ok) {
-            const muscleGroupMap = {
-                    'peitoral': 'Peito',
-                    'triceps': 'Braço',
-                    'ombros': 'Ombro',
-                    'costas': 'Costas',
-                    'biceps': 'Braço'
-                };
-            const exerciseId = response.body.id || response.body.exercise_id;
-            console.log("Exercício criado com ID:", exerciseId);
-            for (const muscleKey of data.muscles) {
-                const muscle_group = muscleGroupMap[muscleKey] || 'Outro';
-                const labelEl = document.querySelector(`label[for=${muscleKey}]`);
-                console.log("Label encontrado:", labelEl);
-                if (!labelEl) continue; // segurança
-                const muscle_name = labelEl.textContent;
-                console.log("Criando músculo:", muscle_name, muscle_group);
-
-                
-
-                if (createResp.ok && createResp.body && createResp.body.id) {
-                    await authApiClient.post('/api/data/exercise/bind_muscle', {
-                        exercise_id: exerciseId,
-                        muscle_id: createResp.body.id
-                    });
-                }
-            }
-            
-            // Associa equipamentos existentes
-            if (data.equipments && data.equipments.length > 0 && exerciseId) {
-                const equipmentsResp = await authApiClient.get('/api/data/equipment');
-                if (equipmentsResp.ok) {
-                    const allEquipments = equipmentsResp.body;
-                    await Promise.all(data.equipments.map(async (equipmentName) => {
-                        const equipment = allEquipments.find(eq => eq.name === equipmentName || eq.equipment_name === equipmentName);
-                        if (equipment) {
-                            await authApiClient.post('/api/data/exercise/bind_equipment', {
-                                exercise_id: exerciseId,
-                                equipment_id: equipment.id
-                            });
-                        }
-                    }));
-                }
-            }
             fetchExercises();
             bootstrap.Modal.getInstance(document.getElementById('addExerciseModal')).hide();
         } else {
@@ -130,6 +94,47 @@ async function createExercise(data) {
         console.error('Erro ao criar exercício:', error);
         alert('Erro ao criar exercício');
     }
+    let muscle_name = "";
+    if (data.muscle == "Superior") {
+        muscle_name = "Peitoral,Tríceps,Bíceps,Ombros,Costas,Trapézio,Deltóides,Antebraço";
+    } 
+    else if (data.muscle == "Inferior") {
+        muscle_name = "Quadríceps,Posterior da Coxa,Glúteos,Panturrilha,Adutores,Abdutores,Flexores do Quadril";
+    }
+
+    try{
+        const response = await authApiClient.post('/api/data/muscle/new', {
+            muscle_group: data.name,
+            muscle_name: muscle_name
+        });
+
+        if (!response.ok) {
+            return alert('Erro ao criar músculos');
+        }
+        alert("Músculos criado com sucesso");
+    } catch (error) {
+        console.error('Erro ao associar músculos ao exercício:', error);
+    }
+    try{
+        await MuscleGroup.create(data.name);
+    }
+    catch (error) {
+        console.error('Erro ao criar grupamento de músculos:', error);
+    }
+
+    try{
+        const response = await authApiClient.post('/api/data/equipment/new', {
+            group_name: data.name,
+            equipment_name: data.equipments
+        });
+        if (!response.ok) {
+            return alert('Erro ao criar equipamentos');
+        }
+        alert("Equipamento criado com sucesso");
+    } catch (error) {
+        console.error('Erro ao criar equipamentos:', error);
+    }
+    
 }
 
 // Função para deletar exercício
@@ -137,44 +142,38 @@ async function deleteExercise(id) {
     try {
         const response = await authApiClient.delete(`/api/data/exericse/inactivate/${id}`);
         if (response.ok) {
-            fetchExercises();
+            alert("exercicio excluido com sucesso ");
         } else {
             alert('Erro ao excluir exercício');
         }
     } catch (error) {
-        alert('Erro ao excluir exercício');
+        console.error('Erro ao excluir exercício:', error);
     }
+    setTimeout(() => {
+        fetchExercises();
+    }, 3000);
+    
 }
 
 // Evento do botão de salvar exercício
 document.getElementById('btnSubmitdados').addEventListener('click', async () => {
     const name = document.getElementById('exerciseName').value;
     const description = document.getElementById('exerciseDescription').value;
+    const muscle = document.querySelector('input[name="parteCorpo"]:checked')?.value || null;
+    // Coleta todos os equipamentos selecionados (checkbox)
+    const equipmentEls = document.querySelectorAll('input[name="equipamento"]:checked');
+    const equipmentsArr = Array.from(equipmentEls).map(el => el.value);
+    const equipments = equipmentsArr.join(',');
 
-    // Envia os IDs (não o label text)
-    const muscles = [];
-    ['peitoral', 'triceps', 'ombros', 'costas', 'biceps'].forEach(id => {
-        if (document.getElementById(id).checked) muscles.push(id);
-    });
-
-    const equipments = [];
-    ['barra', 'halter', 'maquina', 'cabo', 'peso-corpo'].forEach(id => {
-        if (document.getElementById(id).checked) equipments.push(document.querySelector(`label[for=${id}]`).textContent);
-    });
-
-    if (!name) {
+    console.log("Músculo selecionado:", muscle);
+    console.log("Equipamentos selecionados:", equipments);
+    
+    if (!name || muscle === null || equipments.length === 0) {
         alert('Preencha o nome do exercício');
         return;
     } else {
-        await createExercise({ name, description, muscles, equipments });
+        await createExercise({ name, description, muscle, equipments });
     }
 });
 
-
-// Logout
-document.getElementById('logoff').addEventListener('click', () => {
-    tokenManager.logout();
-});
-
-// Carrega os exercícios ao abrir a página
 fetchExercises();

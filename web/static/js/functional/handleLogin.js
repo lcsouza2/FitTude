@@ -44,6 +44,8 @@ async function realizarLogin(email, senha, lembrar) {
 
         const cleanToken = bruteToken.split(' ')[1];
         tokenManager.setSessionToken(cleanToken, response.body.expires_in);
+        window.sessionStorage.setItem('user_fullname', response.body.user_fullname); 
+        console.log("Login realizado com sucesso:", response.body.user_fullname);
         window.location.href = "/dashboard";
 
     } catch (error) {

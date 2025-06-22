@@ -567,78 +567,70 @@
                     <h5 class="modal-title">Novo Exercício</h5>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
+
                 <div class="modal-body">
                     <form>
                         <div class="mb-3">
                             <label for="exerciseName" class="form-label">Nome do Exercício</label>
                             <input type="text" class="form-control form-control-custom" id="exerciseName" placeholder="Ex: Supino Inclinado">
                         </div>
+
                         <div class="mb-3">
                             <label for="exerciseDescription" class="form-label">Descrição</label>
                             <textarea class="form-control form-control-custom" id="exerciseDescription" rows="3" placeholder="Descrição detalhada do exercício..."></textarea>
                         </div>
+
                         <div class="row">
+                            <!-- Parte do Corpo -->
                             <div class="col-md-6">
-                                <label class="form-label">Músculos Trabalhados</label>
+                                <label class="form-label">Parte do Corpo</label>
                                 <div class="mb-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="peitoral">
-                                        <label class="form-check-label" for="peitoral">Peitoral</label>
+                                    <div class="form-radio">
+                                        <input class="form-radio-input" type="radio" name="parteCorpo" id="superior" value="Superior">
+                                        <label class="form-radio-label" for="superior">Parte Superior</label>
                                     </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="triceps">
-                                        <label class="form-check-label" for="triceps">Tríceps</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="ombros">
-                                        <label class="form-check-label" for="ombros">Ombros</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="costas">
-                                        <label class="form-check-label" for="costas">Costas</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="biceps">
-                                        <label class="form-check-label" for="biceps">Bíceps</label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Equipamentos</label>
-                                <div class="mb-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="barra">
-                                        <label class="form-check-label" for="barra">Barra</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="halter">
-                                        <label class="form-check-label" for="halter">Halter</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="maquina">
-                                        <label class="form-check-label" for="maquina">Máquina</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="cabo">
-                                        <label class="form-check-label" for="cabo">Cabo</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="peso-corpo">
-                                        <label class="form-check-label" for="peso-corpo">Peso Corporal</label>
+                                    <div class="form-radio">
+                                        <input class="form-radio-input" type="radio" name="parteCorpo" id="inferior" value="Inferior">
+                                        <label class="form-radio-label" for="inferior">Parte Inferior</label>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                           <!-- Equipamentos -->
+                        <div class="col-md-6">
+                            <label class="form-label">Equipamentos</label>
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="equipamento" id="barra" value="Barra">
+                                    <label class="form-check-label" for="barra">Barra</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="equipamento" id="halter" value="Halter">
+                                    <label class="form-check-label" for="halter">Halter</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="equipamento" id="maquina" value="Máquina">
+                                    <label class="form-check-label" for="maquina">Máquina</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="equipamento" id="cabo" value="Cabo">
+                                    <label class="form-check-label" for="cabo">Cabo</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="equipamento" id="peso-corpo" value="Peso Corporal">
+                                    <label class="form-check-label" for="peso-corpo">Peso Corporal</label>
+                                </div>
+                            </div>
+                        </div>
                     </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="reset" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancelar</button>
-                    <button id="btnSubmitdados" type="submit" class="button-style">Salvar Exercício</button>
+                    <div class="modal-footer">
+                        <button type="reset" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancelar</button>
+                        <button id="btnSubmitdados" type="submit" class="button-style">Salvar Exercício</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
     <script type="module" src="../static/js/functional/exercicios.js"></script>
     <script type="module" src="../static/js/functional/dashboardFunctions.js"></script>

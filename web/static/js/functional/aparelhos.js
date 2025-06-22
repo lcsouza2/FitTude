@@ -1,12 +1,5 @@
 import { authApiClient, tokenManager } from '../core/auth.js';
 
-// Exibe o nome do usuário no header
-const usuarioNome = sessionStorage.getItem('usuario_nome');
-if (usuarioNome) {
-    const usuarioSpan = document.getElementById('username');
-    if (usuarioSpan) usuarioSpan.textContent = `Oi, @${usuarioNome}!`;
-}
-
 const mainContent = document.querySelector('.main-content');
 const dashboardHeader = document.querySelector('.dashboard-header');
 
