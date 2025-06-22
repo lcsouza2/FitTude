@@ -73,7 +73,7 @@ async def _execute_update(
 @DATA_PUT_API.put("/groups/update/{group_name}")
 async def update_group(
     group_name: str,
-    updates: schemas.UpdateMuscleGroup,
+    updates: schemas.MuscleGroup,
     user_id: int = Depends(TokenService.validate_token),
 ):
     """Update an existing muscle group"""
