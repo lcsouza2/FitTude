@@ -43,7 +43,7 @@ class Equipment(BaseSchema):
 
 
 class Muscle(BaseSchema):
-    muscle_group: str
+    group_name: str
     muscle_name: str
 
 
