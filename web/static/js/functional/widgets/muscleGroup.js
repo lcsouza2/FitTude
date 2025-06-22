@@ -1,5 +1,5 @@
 import { MuscleGroup } from '../../core/mapping/muscleGroupMapping.js';
-import { tokenManager } from '../../core/auth.js';
+import { tokenManager, authApiClient } from '../../core/auth.js';
 
 if (!tokenManager.getSessionToken()) {
     tokenManager.redirectToLogin();
@@ -14,8 +14,16 @@ const modalMessage = document.getElementById('modalMessage');
 
 async function loadMuscleGroups() {
     try {
-        const groups = await MuscleGroup.getAll();
-        console.log('Grupamentos carregados:', groups);
+        // Busca todos os grupamentos e músculos usando authApiClient
+        const groupsResp = await authApiClient.get('/api/data/groups');
+        const musclesResp = await authApiClient.get('/api/data/muscles');
+        if (!groupsResp.ok || !musclesResp.ok) throw new Error('Erro ao buscar dados');
+        const groups = groupsResp.body;
+        const muscles = musclesResp.body;
+        // Junta músculos ao grupamento
+        groups.forEach(group => {
+            group.muscles = muscles.filter(muscle => muscle.group_name === group.group_name);
+        });
         renderMuscleGroups(groups);
     } catch (error) {
         console.error('Erro ao carregar grupamentos:', error);
@@ -26,7 +34,7 @@ function renderMuscleGroups(groups) {
     // Filtra apenas os grupos ativos
     const activeGroups = groups.filter(group => group.active);
     const existingCards = mainContent.querySelectorAll('.group-card');
-    existingCards.forEach(card => card.remove());
+    //existingCards.forEach(card => card.remove());
     activeGroups.forEach(group => {
         const groupCard = createGroupCard(group);
         mainContent.appendChild(groupCard);
@@ -41,7 +49,17 @@ function createGroupCard(group) {
     const card = document.createElement('div');
     card.className = 'group-card';
     card.dataset.groupName = group.group_name;
-    card.innerHTML += `
+    // Monta a lista de músculos
+    let musclesHtml = '';
+    if (group.muscles && group.muscles.length > 0) {
+        musclesHtml = group.muscles.map(muscle => `
+            <div class="muscle-item">
+                <span>${muscle.name}</span>
+                <span class="equipment-tag">${muscle.equipment_count || 0} aparelhos</span>
+            </div>
+        `).join('');
+    }
+    card.innerHTML = `
         <div class="group-header">
             <h3>${group.group_name}</h3>
             <div>
@@ -54,12 +72,7 @@ function createGroupCard(group) {
             </div>
         </div>
         <div class="muscle-list">
-            ${group.muscles ? group.muscles.map(muscle => `
-                <div class="muscle-item">
-                    <span>${muscle.name}</span>
-                    <span class="equipment-tag">${muscle.equipment_count || 0} aparelhos</span>
-                </div>
-            `).join('') : ''}
+            ${musclesHtml}
         </div>
     `;
     return card;
