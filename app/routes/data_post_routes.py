@@ -58,7 +58,7 @@ async def _execute_insert(
 
 @DATA_POST_API.post("/groups/new")
 async def create_new_group(
-    group: schemas.Musclegroup, user_id: int = Depends(TokenService.validate_token)
+    group: schemas.MuscleGroup, user_id: int = Depends(TokenService.validate_token)
 ):
     """
     Create a new muscle group in the database.
