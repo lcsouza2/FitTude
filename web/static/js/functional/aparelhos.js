@@ -38,15 +38,19 @@ function renderEquipments(equipments) {
     }
     const groups = groupEquipmentsByGroup(equipments);
     Object.entries(groups).forEach(([groupName, items]) => {
-        let itemsHtml = items.map(eq => `
-            <div class="equipment-item">
-                <span>${eq.equipment_name || eq.name || 'Aparelho'}</span>
-                <div class="equipment-actions">
-                    <button class="btn btn-outline-light btn-sm btn-edit" data-group="${groupName}" data-name="${eq.equipment_name}"><i class="bi bi-pencil"></i></button>
-                    <button class="btn btn-outline-danger btn-sm btn-delete" data-group="${groupName}" data-name="${eq.equipment_name}"><i class="bi bi-trash"></i></button>
+        let itemsHtml = items.map(eq => {
+            // Separa nomes por vírgula e gera um botão para cada
+            let names = (eq.equipment_name || eq.name || '').split(',').map(n => n.trim()).filter(Boolean);
+            return names.map(name => `
+                <div class="equipment-item">
+                    <span>${name}</span>
+                    <div class="equipment-actions">
+                        <button class="btn btn-outline-light btn-sm btn-edit" data-group="${groupName}" data-name="${name}"><i class="bi bi-pencil"></i></button>
+                        <button class="btn btn-outline-danger btn-sm btn-delete" data-group="${groupName}" data-name="${name}"><i class="bi bi-trash"></i></button>
+                    </div>
                 </div>
-            </div>
-        `).join('');
+            `).join('');
+        }).join('');
         const cardHtml = `
             <div class="equipment-card">
                 <div class="equipment-header">
