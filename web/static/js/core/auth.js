@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:8000';
+const BASE_URL = 'http://sapecaplay.ddns.net:8000';
 
 class TokenManager {
     constructor() {
