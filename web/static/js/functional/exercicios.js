@@ -38,7 +38,7 @@ async function fetchExercises() {
 }
 
 function renderExercisesGrouped(exercisesByGroup, musclesByGroup, equipmentsByGroup) {
-    const row = document.querySelector('.row.g-4');
+    const row = document.querySelector('.row.g-3.g-md-4');
     // Limpa o conteúdo existente para evitar duplicação em recarregamentos
     row.innerHTML = '';
     Object.entries(exercisesByGroup).forEach(([groupName, exercises]) => {
@@ -61,24 +61,23 @@ function renderExercisesGrouped(exercisesByGroup, musclesByGroup, equipmentsByGr
                 exerciseEquipments = exerciseEquipment.map(e => e.equipment_name).filter(Boolean);
             }    
             return `
-                <div class="col-lg-6">
+                <div class="col-12 col-lg-6">
                     <div class="card exercise-card">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <h5 class="card-title mb-0">${ex.exercise_name}</h5>
-                                <div class="dropdown">
-                                    <button class="btn btn-outline-custom btn-sm" type="button" data-bs-toggle="dropdown">
-                                        ⋯
+                                <div class="action-buttons">
+                                    <button class="btn btn-edit btn-sm-custom" data-id="${ex.exercise_id}">
+                                        <i class="bi bi-pencil me-1"></i>Editar
                                     </button>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" data-id="${ex.exercise_id}" href="#">Editar</a></li>
-                                        <li><a class="dropdown-item" data-id="${ex.exercise_id}" href="#">Excluir</a></li>
-                                    </ul>
+                                    <button class="btn btn-delete btn-sm-custom" data-id="${ex.exercise_id}">
+                                        <i class="bi bi-trash me-1"></i>Excluir
+                                    </button>
                                 </div>
                             </div>
                             <p class="text-muted-custom mb-2">${ex.description || 'Sem descrição'}</p>
                             <div class="mb-2">
-                                ${exerciseMuscles.map(m => `<span class=\"badge badge-custom\">${m}</span>`).join(' ')}
+                                ${exerciseMuscles.map(m => `<span class="badge badge-custom">${m}</span>`).join(' ')}
                             </div>
                             <div class="mb-2">
                                 <small class="text-muted-custom">Equipamentos: ${exerciseEquipments.join(', ') || 'Nenhum equipamento encontrado'}</small>
@@ -91,19 +90,20 @@ function renderExercisesGrouped(exercisesByGroup, musclesByGroup, equipmentsByGr
         const cardHtml = `${itemsHtml}`;
         row.insertAdjacentHTML('beforeend', cardHtml);
     });
-    document.querySelectorAll('.dropdown-item[data-id][href="#"]').forEach(item => {
-        item.addEventListener('click', async (e) => {
+    document.querySelectorAll('.btn-edit').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
             e.preventDefault();
-            const exerciseId = e.target.dataset.id;
-            const action = e.target.textContent.trim(); // "Editar" ou "Excluir"
-
-            if (action === 'Excluir') {
-                if (confirm('Deseja excluir este exercício?')) {
-                    await deleteExercise(exerciseId); // Certifique-se de que deleteExercise está definida
-                }
-            } else if (action === 'Editar') {
-                console.log(`Editar exercício com ID: ${exerciseId}`);
-                
+            const exerciseId = btn.dataset.id;
+            alert(`Editar exercício com ID: ${exerciseId}`);
+            // Aqui vai abrir o modal de edição
+        });
+    });
+    document.querySelectorAll('.btn-delete').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const exerciseId = btn.dataset.id;
+            if (confirm('Deseja excluir este exercício?')) {
+                await deleteExercise(exerciseId);
             }
         });
     });
@@ -212,5 +212,5 @@ document.getElementById('btnSubmitdados').addEventListener('click', async () => 
         await createExercise({ name, description, muscle, equipments });
     }
 });
-
+console.log("Carregando exercícios, músculos e equipamentos...");
 fetchExercises();

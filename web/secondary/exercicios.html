@@ -384,9 +384,9 @@
         <div class="d-flex align-items-center">
             <div class="bg-primary rounded-circle d-flex justify-content-center align-items-center me-2"
                 style="width: 35px; height: 35px;">
-                <strong id="username">US</strong>
+                <strong id="username">@U</strong>
             </div>
-            <span class="text-white me-3 d-none d-md-inline">Oi, User!</span>
+            <span id="username" class="text-white me-3 d-none d-md-inline">Oi, @username!</span>
             <button id="logoff" class="btn btn-outline-light btn-sm">Sair</button>
         </div>
     </header>
@@ -554,14 +554,7 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <h5 class="card-title mb-0">Desenvolvimento com Halteres</h5>
-                                <div class="action-buttons">
-                                    <button class="btn btn-edit btn-sm-custom" onclick="editExercise(4, 'Desenvolvimento com Halteres')">
-                                        <i class="bi bi-pencil me-1"></i>Editar
-                                    </button>
-                                    <button class="btn btn-delete btn-sm-custom" onclick="confirmDelete(4, 'Desenvolvimento com Halteres')">
-                                        <i class="bi bi-trash me-1"></i>Excluir
-                                    </button>
-                                </div>
+                                
                             </div>
                             <p class="text-muted-custom mb-2">Exercício para desenvolvimento dos ombros</p>
                             <div class="mb-2">
@@ -759,7 +752,7 @@
 </div>
 <div class="modal-footer">
     <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancelar</button>
-    <button type="submit" form="addExerciseForm" class="button-style">
+    <button type="submit" form="addExerciseForm" class="button-style" id="btnSubmitdados">
         <i class="bi bi-check-lg me-1"></i>Salvar Exercício
     </button>
 </div>
@@ -909,7 +902,9 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-<script>
+<script type="module" src="../static/js/functional/dashboardFunctions.js"></script>
+<script type="module" src="../static/js/functional/exercicios.js"></script>
+<!-- <script>
 // Função para alternar sidebar mobile
 function toggleSidebar() {
 const sidebar = document.getElementById('sidebar');
@@ -1108,7 +1103,7 @@ if (confirm('Tem certeza que deseja sair?')) {
     // window.location.href = 'login.html';
 }
 });
-</script>
+</script> -->
 
 </body>
 </html>
