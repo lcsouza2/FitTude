@@ -17,10 +17,12 @@ async function loadMuscleGroups() {
         // Busca todos os grupamentos e músculos usando authApiClient
         const groupsResp = await authApiClient.get('/api/data/groups');
         const musclesResp = await authApiClient.get('/api/data/muscles');
+        const equipmentsResp = await authApiClient.get('/api/data/equipment');
         if (!groupsResp.ok || !musclesResp.ok) throw new Error('Erro ao buscar dados');
         const groups = groupsResp.body;
         const muscles = musclesResp.body;
-        // Junta músculos ao grupamento
+        const equipments = equipmentsResp.body;
+        window.equipmentsGlobal = equipments; // Salva para uso na contagem
         groups.forEach(group => {
             group.muscles = muscles.filter(muscle => muscle.group_name === group.group_name);
         });
@@ -56,15 +58,38 @@ function createGroupCard(group) {
         musclesHtml = muscleArr.map(muscleName => `
             <div class="muscle-item">
                 <span>${muscleName}</span>
+                <span class="equipment-tag">0</span>
             </div>
         `).join('');
     } else if (Array.isArray(group.muscles) && group.muscles.length > 0) {
-        musclesHtml = group.muscles.map(muscle => `
-            <div class="muscle-item">
-                <span>${muscle.name || muscle}</span>
-                <span class="equipment-tag">${muscle.equipment_count || ''}</span>
-            </div>
-        `).join('');
+        musclesHtml = group.muscles.map(muscle => {
+            // Se muscle.muscle_name for string separada por vírgula, separa
+            let names = [];
+            if (typeof muscle.muscle_name === 'string') {
+                names = muscle.muscle_name.split(',').map(m => m.trim()).filter(Boolean);
+            } else if (muscle.name) {
+                names = [muscle.name];
+            }
+            // Conta equipamentos do grupo (equipments) para cada músculo
+            let equipmentCount = 0;
+            if (window.equipmentsGlobal && Array.isArray(window.equipmentsGlobal)) {
+                // Busca todos os equipamentos do grupo
+                const eqs = window.equipmentsGlobal.filter(eq => eq.group_name === group.group_name);
+                // Soma todos os nomes de equipamentos separados por vírgula
+                equipmentCount = eqs.reduce((acc, eq) => {
+                    if (typeof eq.equipment_name === 'string') {
+                        return acc + eq.equipment_name.split(',').map(e => e.trim()).filter(Boolean).length;
+                    }
+                    return acc;
+                }, 0);
+            }
+            return names.map(name => `
+                <div class="muscle-item">
+                    <span>${name}</span>
+                    <span class="equipment-tag">${equipmentCount}</span>
+                </div>
+            `).join('');
+        }).join('');
     }
     card.innerHTML = `
         <div class="group-header">
