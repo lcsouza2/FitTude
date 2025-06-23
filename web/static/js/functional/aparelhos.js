@@ -39,15 +39,11 @@ function renderEquipments(equipments) {
     const groups = groupEquipmentsByGroup(equipments);
     Object.entries(groups).forEach(([groupName, items]) => {
         let itemsHtml = items.map(eq => {
-            // Separa nomes por vírgula e gera um botão para cada
             let names = (eq.equipment_name || eq.name || '').split(',').map(n => n.trim()).filter(Boolean);
+            // Renderiza apenas o nome, sem botões
             return names.map(name => `
                 <div class="equipment-item">
                     <span>${name}</span>
-                    <div class="equipment-actions">
-                        <button class="btn btn-outline-light btn-sm btn-edit" data-group="${groupName}" data-name="${name}"><i class="bi bi-pencil"></i></button>
-                        <button class="btn btn-outline-danger btn-sm btn-delete" data-group="${groupName}" data-name="${name}"><i class="bi bi-trash"></i></button>
-                    </div>
                 </div>
             `).join('');
         }).join('');
@@ -63,13 +59,7 @@ function renderEquipments(equipments) {
         `;
         mainContent.insertAdjacentHTML('beforeend', cardHtml);
     });
-    // Adiciona eventos de editar e deletar
-    mainContent.querySelectorAll('.btn-edit').forEach(btn => {
-        btn.addEventListener('click', () => openEditModal(btn.dataset.group, btn.dataset.name));
-    });
-    mainContent.querySelectorAll('.btn-delete').forEach(btn => {
-        btn.addEventListener('click', () => deleteEquipment(btn.dataset.group, btn.dataset.name));
-    });
+    // Remove eventos de editar e deletar
 }
 
 // Modal dinâmico para adicionar/editar
@@ -128,7 +118,7 @@ function openAddModal() {
 }
 
 // Editar aparelho
-function openEditModal(group_name, equipment_name) {
+function openEditModal(equipment_id, group_name, equipment_name) {
     const modal = ensureModal();
     const modalInstance = new bootstrap.Modal(modal);
     document.getElementById('equipmentModalLabel').textContent = 'Editar Aparelho';
@@ -139,7 +129,7 @@ function openEditModal(group_name, equipment_name) {
     const form = document.getElementById('formEquipment');
     form.onsubmit = async (e) => {
         e.preventDefault();
-        await updateEquipment(group_name, equipment_name);
+        await updateEquipment(equipment_id);
     };
 }
 
@@ -169,12 +159,12 @@ async function createEquipment() {
 }
 
 // Edição
-async function updateEquipment(oldGroup, oldName) {
+async function updateEquipment(equipment_id) {
     const group_name = document.getElementById('equipment_group').value;
     const equipment_name = document.getElementById('equipment_name').value;
     const msg = document.getElementById('equipmentModalMessage');
     try {
-        const response = await authApiClient.put(`/api/data/equipment/update/${oldGroup}/${oldName}`, { group_name, equipment_name });
+        const response = await authApiClient.put(`/api/data/equipment/update/${equipment_id}`, { group_name, equipment_name });
         if (response.ok) {
             msg.className = 'alert alert-success';
             msg.textContent = 'Aparelho atualizado com sucesso!';
@@ -194,10 +184,10 @@ async function updateEquipment(oldGroup, oldName) {
 }
 
 // Exclusão
-async function deleteEquipment(group_name, equipment_name) {
+async function deleteEquipment(equipment_id) {
     if (!confirm('Deseja realmente excluir este aparelho?')) return;
     try {
-        const response = await authApiClient.delete(`/api/data/equipment/delete/${group_name}/${equipment_name}`);
+        const response = await authApiClient.delete(`/api/data/equipment/inactivate/${equipment_id}`);
         if (response.ok) {
             fetchEquipments();
         } else {
