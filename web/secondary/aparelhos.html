@@ -26,15 +26,19 @@
             overflow-x: hidden;
         }
 
+        h1, h2, h3, h4, h5, h6 {
+            color: #ffffff !important;
+        }
+
         header {
-            background-color: black;
+            background-color: rgba(0, 0, 0, 0.95);
             padding: 10px 0;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 70px;
-            z-index: 1000;
+            z-index: 1030;
             box-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
 
@@ -47,6 +51,15 @@
 
         .h1-highlighted {
             color: #510feb;
+        }
+
+        /* Menu toggle button for mobile */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
         }
 
         .content-container {
@@ -63,8 +76,9 @@
             left: 0;
             height: calc(100vh - 70px);
             overflow-y: auto;
-            z-index: 999;
+            z-index: 1020;
             transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
         }
 
         .sidebar-menu {
@@ -78,16 +92,18 @@
             cursor: pointer;
             transition: all 0.3s ease;
             border-bottom: 1px solid rgba(255,255,255,0.1);
-            color: #ececec;
+            color: #ffffff;
         }
 
         .sidebar-menu li:hover {
             background-color: rgba(81, 15, 235, 0.7);
+            color: #ffffff;
         }
 
         .sidebar-menu li.active {
             background-color: #510feb;
             border-left: 4px solid white;
+            color: #ffffff;
         }
 
         .main-content {
@@ -104,6 +120,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .button-style {
@@ -112,7 +130,7 @@
             font-family: "Kanit", sans-serif;
             font-weight: 450;
             min-width: 150px;
-            color: #DEE2E6;
+            color: #ffffff;
             padding: 12px 24px;
             text-decoration: none;
             display: inline-block;
@@ -125,14 +143,21 @@
         .button-style:hover {
             background-color: #3d0bc6;
             transform: scale(1.05);
+            color: #ffffff;
         }
 
         .equipment-card {
-            background-color: rgba(60, 60, 60, 0.7);
-            border-radius: 10px;
+            background-color: rgba(80, 80, 80, 0.9);
+            border-radius: 15px;
             padding: 20px;
             margin-bottom: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .equipment-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
         }
 
         .equipment-header {
@@ -170,52 +195,207 @@
             gap: 8px;
         }
 
-        .equipment-group {
-            background-color: rgba(40, 167, 69, 0.2);
-            color: #28a745;
-            padding: 4px 10px;
-            border-radius: 12px;
+        .btn-sm-custom {
+            padding: 4px 8px;
             font-size: 12px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        @media (max-width: 768px) {
+        .btn-edit {
+            background-color: rgba(40, 167, 69, 0.8);
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background-color: rgba(40, 167, 69, 1);
+            transform: scale(1.05);
+        }
+
+        .btn-delete {
+            background-color: rgba(220, 53, 69, 0.8);
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background-color: rgba(220, 53, 69, 1);
+            transform: scale(1.05);
+        }
+
+        /* Modal Styles */
+        .modal-content {
+            background-color: rgba(40, 40, 40, 0.95) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 15px !important;
+            color: #ffffff;
+        }
+
+        .modal-header {
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .modal-footer {
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .modal-title {
+            color: #ffffff;
+        }
+
+        .btn-close-white {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+
+        .form-control, .form-select {
+            background-color: rgba(60, 60, 60, 0.8);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #ffffff;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background-color: rgba(60, 60, 60, 0.9);
+            border-color: #510feb;
+            color: #ffffff;
+            box-shadow: 0 0 0 0.2rem rgba(81, 15, 235, 0.25);
+        }
+
+        .form-control::placeholder {
+            color: #cccccc;
+        }
+
+        .form-label {
+            color: #ffffff !important;
+        }
+
+        .btn-primary {
+            background-color: #510feb;
+            border-color: #510feb;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background-color: #3d0bc6;
+            border-color: #3d0bc6;
+            color: #ffffff;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+            color: #ffffff;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            color: #ffffff;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 991.98px) {
+            .menu-toggle {
+                display: block;
+            }
+            
             .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
+                transform: translateX(-100%);
+                width: 280px;
+            }
+            
+            .sidebar.show {
+                transform: translateX(0);
             }
             
             .main-content {
                 margin-left: 0;
+                padding: 20px 15px;
             }
             
-            .sidebar-menu {
-                display: flex;
-                overflow-x: auto;
-                white-space: nowrap;
+            header h1 {
+                font-size: 32px;
             }
-            
+
+            .button-style {
+                min-width: 120px;
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+
+            .dashboard-header {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+
             .equipment-list {
                 grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .main-content {
+                padding: 15px 10px;
+            }
+            
+            header h1 {
+                font-size: 28px;
+            }
+
+            .equipment-item {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+
+            .equipment-actions {
+                justify-content: center;
+            }
+        }
+
+        /* Overlay for mobile menu */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1010;
+        }
+
+        @media (max-width: 991.98px) {
+            .sidebar-overlay.show {
+                display: block;
             }
         }
     </style>
 </head>
 <body>
-    <header class="d-flex justify-content-between align-items-center px-4">
-        <h1><span class="h1-highlighted">Fit</span>Tude</h1>
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <header class="d-flex justify-content-between align-items-center px-3 px-md-4">
+        <div class="d-flex align-items-center">
+            <button class="menu-toggle me-3" id="menuToggle">
+                <i class="bi bi-list"></i>
+            </button>
+            <h1><span class="h1-highlighted">Fit</span>Tude</h1>
+        </div>
         <div class="d-flex align-items-center">
             <div class="bg-primary rounded-circle d-flex justify-content-center align-items-center me-2"
                 style="width: 35px; height: 35px;">
-                <strong id="username">@U</strong>
+                <strong id="usernameIcon">@U</strong>
             </div>
-            <span id="username"class="text-white me-3 has-username">Oi, @username!</span>
+            <span id="usernameText" class="text-white me-3 d-none d-md-inline">Oi, @username!</span>
             <button id="logoff" class="btn btn-outline-light btn-sm">Sair</button>
         </div>
     </header>
 
     <div class="content-container">
-        <div class="sidebar">
+        <div class="sidebar" id="sidebar">
             <ul class="sidebar-menu">
                 <li onclick="location.href='dashboard'">
                     <i class="bi bi-grid-fill me-2"></i>Dashboard
@@ -244,7 +424,11 @@
         <div class="main-content">
             <div class="dashboard-header">
                 <h2><i class="bi bi-tools text-primary me-2"></i>Aparelhos</h2>
+                <button class="button-style" data-bs-toggle="modal" data-bs-target="#novoAparelhoModal">
+                    <i class="bi bi-plus me-2"></i>Novo Aparelho
+                </button>
             </div>
+
             <div class="equipment-card">
                 <div class="equipment-header">
                     <h3>Peitoral</h3>
@@ -253,33 +437,33 @@
                     <div class="equipment-item">
                         <span>Supino Reto Smith</span>
                         <div class="equipment-actions">
-                            <button class="btn btn-outline-light btn-sm">
-                                <i class="bi bi-pencil"></i>
+                            <button class="btn btn-edit btn-sm-custom" onclick="editEquipment('Supino Reto Smith', 'Peitoral', 'Máquina Smith para supino reto')">
+                                <i class="bi bi-pencil me-1"></i>Editar
                             </button>
-                            <button class="btn btn-outline-danger btn-sm">
-                                <i class="bi bi-trash"></i>
+                            <button class="btn btn-delete btn-sm-custom" onclick="confirmDeleteEquipment('Supino Reto Smith')">
+                                <i class="bi bi-trash me-1"></i>Excluir
                             </button>
                         </div>
                     </div>
                     <div class="equipment-item">
                         <span>Máquina Peck Deck</span>
                         <div class="equipment-actions">
-                            <button class="btn btn-outline-light btn-sm">
-                                <i class="bi bi-pencil"></i>
+                            <button class="btn btn-edit btn-sm-custom" onclick="editEquipment('Máquina Peck Deck', 'Peitoral', 'Máquina para exercícios de peitoral')">
+                                <i class="bi bi-pencil me-1"></i>Editar
                             </button>
-                            <button class="btn btn-outline-danger btn-sm">
-                                <i class="bi bi-trash"></i>
+                            <button class="btn btn-delete btn-sm-custom" onclick="confirmDeleteEquipment('Máquina Peck Deck')">
+                                <i class="bi bi-trash me-1"></i>Excluir
                             </button>
                         </div>
                     </div>
                     <div class="equipment-item">
                         <span>Cross Over</span>
                         <div class="equipment-actions">
-                            <button class="btn btn-outline-light btn-sm">
-                                <i class="bi bi-pencil"></i>
+                            <button class="btn btn-edit btn-sm-custom" onclick="editEquipment('Cross Over', 'Peitoral', 'Equipamento de cabos para múltiplos exercícios')">
+                                <i class="bi bi-pencil me-1"></i>Editar
                             </button>
-                            <button class="btn btn-outline-danger btn-sm">
-                                <i class="bi bi-trash"></i>
+                            <button class="btn btn-delete btn-sm-custom" onclick="confirmDeleteEquipment('Cross Over')">
+                                <i class="bi bi-trash me-1"></i>Excluir
                             </button>
                         </div>
                     </div>
@@ -294,22 +478,22 @@
                     <div class="equipment-item">
                         <span>Puxador Frontal</span>
                         <div class="equipment-actions">
-                            <button class="btn btn-outline-light btn-sm">
-                                <i class="bi bi-pencil"></i>
+                            <button class="btn btn-edit btn-sm-custom" onclick="editEquipment('Puxador Frontal', 'Costas', 'Equipamento para exercícios de puxada frontal')">
+                                <i class="bi bi-pencil me-1"></i>Editar
                             </button>
-                            <button class="btn btn-outline-danger btn-sm">
-                                <i class="bi bi-trash"></i>
+                            <button class="btn btn-delete btn-sm-custom" onclick="confirmDeleteEquipment('Puxador Frontal')">
+                                <i class="bi bi-trash me-1"></i>Excluir
                             </button>
                         </div>
                     </div>
                     <div class="equipment-item">
                         <span>Máquina Remada</span>
                         <div class="equipment-actions">
-                            <button class="btn btn-outline-light btn-sm">
-                                <i class="bi bi-pencil"></i>
+                            <button class="btn btn-edit btn-sm-custom" onclick="editEquipment('Máquina Remada', 'Costas', 'Máquina para exercícios de remada')">
+                                <i class="bi bi-pencil me-1"></i>Editar
                             </button>
-                            <button class="btn btn-outline-danger btn-sm">
-                                <i class="bi bi-trash"></i>
+                            <button class="btn btn-delete btn-sm-custom" onclick="confirmDeleteEquipment('Máquina Remada')">
+                                <i class="bi bi-trash me-1"></i>Excluir
                             </button>
                         </div>
                     </div>
@@ -324,33 +508,33 @@
                     <div class="equipment-item">
                         <span>Leg Press 45°</span>
                         <div class="equipment-actions">
-                            <button class="btn btn-outline-light btn-sm">
-                                <i class="bi bi-pencil"></i>
+                            <button class="btn btn-edit btn-sm-custom" onclick="editEquipment('Leg Press 45°', 'Pernas', 'Máquina de leg press inclinado')">
+                                <i class="bi bi-pencil me-1"></i>Editar
                             </button>
-                            <button class="btn btn-outline-danger btn-sm">
-                                <i class="bi bi-trash"></i>
+                            <button class="btn btn-delete btn-sm-custom" onclick="confirmDeleteEquipment('Leg Press 45°')">
+                                <i class="bi bi-trash me-1"></i>Excluir
                             </button>
                         </div>
                     </div>
                     <div class="equipment-item">
                         <span>Cadeira Extensora</span>
                         <div class="equipment-actions">
-                            <button class="btn btn-outline-light btn-sm">
-                                <i class="bi bi-pencil"></i>
+                            <button class="btn btn-edit btn-sm-custom" onclick="editEquipment('Cadeira Extensora', 'Pernas', 'Máquina para extensão de quadríceps')">
+                                <i class="bi bi-pencil me-1"></i>Editar
                             </button>
-                            <button class="btn btn-outline-danger btn-sm">
-                                <i class="bi bi-trash"></i>
+                            <button class="btn btn-delete btn-sm-custom" onclick="confirmDeleteEquipment('Cadeira Extensora')">
+                                <i class="bi bi-trash me-1"></i>Excluir
                             </button>
                         </div>
                     </div>
                     <div class="equipment-item">
                         <span>Mesa Flexora</span>
                         <div class="equipment-actions">
-                            <button class="btn btn-outline-light btn-sm">
-                                <i class="bi bi-pencil"></i>
+                            <button class="btn btn-edit btn-sm-custom" onclick="editEquipment('Mesa Flexora', 'Pernas', 'Máquina para flexão de pernas')">
+                                <i class="bi bi-pencil me-1"></i>Editar
                             </button>
-                            <button class="btn btn-outline-danger btn-sm">
-                                <i class="bi bi-trash"></i>
+                            <button class="btn btn-delete btn-sm-custom" onclick="confirmDeleteEquipment('Mesa Flexora')">
+                                <i class="bi bi-trash me-1"></i>Excluir
                             </button>
                         </div>
                     </div>
@@ -359,8 +543,211 @@
         </div>
     </div>
 
+    <!-- Modal Novo Aparelho -->
+    <div class="modal fade" id="novoAparelhoModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-plus-circle me-2"></i>Novo Aparelho</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="formNovoAparelho">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="equipment_name" class="form-label">Nome do Aparelho</label>
+                            <input type="text" class="form-control" id="equipment_name" name="equipment_name" placeholder="Ex: Esteira Ergométrica" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="equipment_category" class="form-label">Categoria</label>
+                            <select class="form-select" id="equipment_category" name="equipment_category" required>
+                                <option value="">Selecione a categoria</option>
+                                <option value="Peitoral">Peitoral</option>
+                                <option value="Costas">Costas</option>
+                                <option value="Pernas">Pernas</option>
+                                <option value="Ombros">Ombros</option>
+                                <option value="Braços">Braços</option>
+                                <option value="Cardio">Cardio</option>
+                                <option value="Funcional">Funcional</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="equipment_description" class="form-label">Descrição</label>
+                            <textarea class="form-control" id="equipment_description" name="equipment_description" rows="3" placeholder="Descrição do aparelho e sua função..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-lg me-1"></i>Salvar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Aparelho -->
+    <div class="modal fade" id="editarAparelhoModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-pencil me-2"></i>Editar Aparelho</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="formEditarAparelho">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="edit_equipment_name" class="form-label">Nome do Aparelho</label>
+                            <input type="text" class="form-control" id="edit_equipment_name" name="edit_equipment_name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_equipment_category" class="form-label">Categoria</label>
+                            <select class="form-select" id="edit_equipment_category" name="edit_equipment_category" required>
+                                <option value="">Selecione a categoria</option>
+                                <option value="Peitoral">Peitoral</option>
+                                <option value="Costas">Costas</option>
+                                <option value="Pernas">Pernas</option>
+                                <option value="Ombros">Ombros</option>
+                                <option value="Braços">Braços</option>
+                                <option value="Cardio">Cardio</option>
+                                <option value="Funcional">Funcional</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="edit_equipment_description" class="form-label">Descrição</label>
+                            <textarea class="form-control" id="edit_equipment_description" name="edit_equipment_description" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-lg me-1"></i>Salvar Alterações
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Confirmar Exclusão -->
+    <div class="modal fade" id="confirmarExclusaoModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-exclamation-triangle me-2 text-warning"></i>Confirmar Exclusão</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-white">Tem certeza que deseja excluir o aparelho <strong id="equipmentToDelete"></strong>?</p>
+                    <p class="text-warning">Esta ação não pode ser desfeita.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="btnConfirmarExclusao">
+                        <i class="bi bi-trash me-1"></i>Excluir
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <script type="module" src="../static/js/functional/dashboardFunctions.js"></script>
-    <script type="module" src="../static/js/functional/aparelhos.js"></script>
+    <script>
+        // Mobile menu functionality
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            sidebar.classList.toggle('show');
+            overlay.classList.toggle('show');
+        });
+
+        document.getElementById('sidebarOverlay').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            sidebar.classList.remove('show');
+            overlay.classList.remove('show');
+        });
+
+        // Close sidebar when clicking on menu items on mobile
+        const sidebarItems = document.querySelectorAll('.sidebar-menu li');
+        sidebarItems.forEach(item => {
+            item.addEventListener('click', function() {
+                if (window.innerWidth <= 991.98) {
+                    const sidebar = document.getElementById('sidebar');
+                    const overlay = document.getElementById('sidebarOverlay');
+                    
+                    sidebar.classList.remove('show');
+                    overlay.classList.remove('show');
+                }
+            });
+        });
+
+        // Responsive adjustments
+        window.addEventListener('resize', function() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            if (window.innerWidth > 991.98) {
+                sidebar.classList.remove('show');
+                overlay.classList.remove('show');
+            }
+        });
+
+        // Equipment management functions
+        let currentEquipmentName = '';
+
+        // Edit equipment function
+        function editEquipment(name, category, description) {
+            currentEquipmentName = name;
+            document.getElementById('edit_equipment_name').value = name;
+            document.getElementById('edit_equipment_category').value = category;
+            document.getElementById('edit_equipment_description').value = description;
+            
+            const modal = new bootstrap.Modal(document.getElementById('editarAparelhoModal'));
+            modal.show();
+        }
+
+        // Confirm delete function
+        function confirmDeleteEquipment(name) {
+            currentEquipmentName = name;
+            document.getElementById('equipmentToDelete').textContent = name;
+            
+            const modal = new bootstrap.Modal(document.getElementById('confirmarExclusaoModal'));
+            modal.show();
+        }
+
+        // Handle delete confirmation
+        document.getElementById('btnConfirmarExclusao').addEventListener('click', function() {
+            alert(`Aparelho "${currentEquipmentName}" excluído com sucesso!`);
+            
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editarAparelhoModal'));
+            modal.hide();
+        });
+
+        // Reset forms when modals are hidden
+        document.getElementById('novoAparelhoModal').addEventListener('hidden.bs.modal', function() {
+            document.getElementById('formNovoAparelho').reset();
+        });
+
+        document.getElementById('editarAparelhoModal').addEventListener('hidden.bs.modal', function() {
+            document.getElementById('formEditarAparelho').reset();
+        });
+
+        // Logoff function
+        document.getElementById('logoff').addEventListener('click', function() {
+            if (confirm('Deseja realmente sair?')) {
+                alert('Logout realizado!');
+            }
+        });
+
+        // Set username on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const username = 'User';
+            document.getElementById('usernameIcon').textContent = username.substring(0, 2).toUpperCase();
+            document.getElementById('usernameText').textContent = `Oi, ${username}!`;
+        });
+    </script>
 </body>
 </html>
