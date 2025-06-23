@@ -631,7 +631,6 @@
             }
         });
 
-        // Edit group function
         function editGroup(groupName) {
             currentGroupName = groupName;
             document.getElementById('edit_group_name').value = groupName;
@@ -639,8 +638,6 @@
             const modal = new bootstrap.Modal(document.getElementById('editarGrupamentoModal'));
             modal.show();
         }
-
-        // Confirm delete function
         function confirmDeleteGroup(groupName) {
             currentGroupName = groupName;
             document.getElementById('groupToDelete').textContent = groupName;
@@ -649,8 +646,6 @@
             modal.show();
         }
 
-
-        // Form submission handlers
         document.getElementById('formNovoGrupamento').addEventListener('submit', function(e) {
             e.preventDefault();
             

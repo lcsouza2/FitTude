@@ -343,7 +343,6 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Mobile menu functionality
         document.getElementById('menuToggle').addEventListener('click', function() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebarOverlay');
@@ -360,7 +359,6 @@
             overlay.classList.remove('show');
         });
 
-        // Close sidebar when clicking on menu items on mobile
         const sidebarItems = document.querySelectorAll('.sidebar-menu li');
         sidebarItems.forEach(item => {
             item.addEventListener('click', function() {
@@ -374,7 +372,6 @@
             });
         });
 
-        // Responsive adjustments
         window.addEventListener('resize', function() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebarOverlay');
@@ -383,20 +380,6 @@
                 sidebar.classList.remove('show');
                 overlay.classList.remove('show');
             }
-        });
-
-        // Logoff function
-        document.getElementById('logoff').addEventListener('click', function() {
-            if (confirm('Deseja realmente sair?')) {
-                alert('Logout realizado!');
-            }
-        });
-
-        // Set username on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            const username = 'User';
-            document.getElementById('usernameIcon').textContent = username.substring(0, 2).toUpperCase();
-            document.getElementById('usernameText').textContent = `Oi, ${username}!`;
         });
     </script>
 </body>
