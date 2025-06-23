@@ -13,7 +13,10 @@
     <style>
         body {
             font-family: "Kanit", sans-serif;
-            background-image: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+            background-image: url('static/assets/img/background_image.png');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
             background-attachment: fixed;
             margin: 0;
             padding: 0;
@@ -22,16 +25,19 @@
             overflow-x: hidden;
         }
 
+        h1, h2, h3, h4, h5, h6 {
+            color: #ffffff !important;
+        }
+
         header {
             background-color: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(10px);
             padding: 10px 0;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 70px;
-            z-index: 1000;
+            z-index: 1030;
             box-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
 
@@ -39,30 +45,33 @@
             font-family: "Righteous", sans-serif;
             margin: 0;
             color: #ffffff;
-            font-size: 2.5rem;
+            font-size: 40px;
         }
 
         .h1-highlighted {
             color: #510feb;
         }
 
-        .content-container {
-            display: flex;
-            margin-top: 70px;
-            min-height: calc(100vh - 70px);
+        /* Menu toggle button for mobile */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
         }
 
         .sidebar {
             width: 250px;
             background-color: rgba(20, 20, 20, 0.95);
-            backdrop-filter: blur(10px);
             position: fixed;
             top: 70px;
             left: 0;
             height: calc(100vh - 70px);
             overflow-y: auto;
-            z-index: 999;
+            z-index: 1020;
             transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
         }
 
         .sidebar-menu {
@@ -76,9 +85,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             border-bottom: 1px solid rgba(255,255,255,0.1);
-            color: #ececec;
-            display: flex;
-            align-items: center;
+            color: #ffffff;
         }
 
         .sidebar-menu li:hover {
@@ -94,11 +101,11 @@
 
         .main-content {
             margin-left: 250px;
+            margin-top: 70px;
             padding: 30px;
             background-color: rgba(30, 30, 30, 0.85);
             backdrop-filter: blur(10px);
             min-height: calc(100vh - 70px);
-            width: calc(100% - 250px);
         }
 
         .button-style {
@@ -124,54 +131,92 @@
         }
 
         .card-custom {
-            background-color: rgba(60, 60, 60, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(60, 60, 60, 0.9);
+            border: none;
             color: #ececec;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s ease;
+            border-radius: 15px;
         }
 
         .card-custom:hover {
-            transform: translateY(-2px);
+            transform: translateY(-5px);
         }
 
         .card-header-custom {
-            background-color: rgba(80, 80, 80, 0.8);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            color: #ffffff;
+            background-color: rgba(81, 15, 235, 0.8);
+            border-bottom: none;
+            color: white;
             font-weight: 600;
+            border-radius: 15px 15px 0 0 !important;
         }
 
         .exercise-card {
-            background-color: rgba(80, 80, 80, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(80, 80, 80, 0.9);
+            border: none;
             color: #ececec;
             margin-bottom: 15px;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
         }
 
         .exercise-card:hover {
             background-color: rgba(81, 15, 235, 0.3);
             transform: translateY(-2px);
-            border-color: rgba(81, 15, 235, 0.5);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn-sm-custom {
+            padding: 4px 8px;
+            font-size: 12px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-edit {
+            background-color: rgba(40, 167, 69, 0.8);
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background-color: rgba(40, 167, 69, 1);
+            transform: scale(1.05);
+        }
+
+        .btn-delete {
+            background-color: rgba(220, 53, 69, 0.8);
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background-color: rgba(220, 53, 69, 1);
+            transform: scale(1.05);
         }
 
         .badge-custom {
-            background-color: rgba(81, 15, 235, 0.8);
-            color: #ffffff;
+            background-color: rgba(81, 15, 235, 0.7);
+            color: white;
             margin-right: 5px;
             margin-bottom: 5px;
+            padding: 0.5em 0.75em;
             font-size: 0.75rem;
         }
 
-        .form-control-custom {
+        .form-control-custom, .form-select-custom {
             background-color: rgba(60, 60, 60, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.2);
             color: #ececec;
         }
 
-        .form-control-custom:focus {
+        .form-control-custom:focus, .form-select-custom:focus {
             background-color: rgba(60, 60, 60, 0.9);
             border-color: #510feb;
             color: #ececec;
@@ -182,201 +227,187 @@
             color: #adb5bd;
         }
 
-        .form-select-custom {
-            background-color: rgba(60, 60, 60, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #ececec;
-        }
-
-        .form-select-custom:focus {
-            background-color: rgba(60, 60, 60, 0.9);
-            border-color: #510feb;
-            color: #ececec;
-            box-shadow: 0 0 0 0.2rem rgba(81, 15, 235, 0.25);
-        }
-
         .btn-outline-custom {
             border-color: #adb5bd;
             color: #adb5bd;
-            background: transparent;
+            background: none;
         }
 
         .btn-outline-custom:hover {
             background-color: #adb5bd;
             color: #000;
-            border-color: #adb5bd;
         }
 
         .text-muted-custom {
             color: #adb5bd !important;
         }
 
-        .modal-custom .modal-content {
-            background-color: rgba(40, 40, 40, 0.95);
-            color: #ececec;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+        /* Modal Styles */
+        .modal-content {
+            background-color: rgba(40, 40, 40, 0.95) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 15px !important;
+            color: #ffffff;
         }
 
-        .modal-custom .modal-header {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        .modal-header {
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
-        .modal-custom .modal-footer {
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        .modal-footer {
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .modal-title {
+            color: #ffffff;
         }
 
         .btn-close-white {
-            filter: invert(1);
+            filter: invert(1) grayscale(100%) brightness(200%);
         }
 
-        .action-buttons {
-            display: flex;
-            gap: 8px;
+        .form-control, .form-select, .form-check-input {
+            background-color: rgba(60, 60, 60, 0.8);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #ffffff;
         }
 
-        .btn-sm-custom {
-            padding: 6px 12px;
-            font-size: 0.875rem;
-            border-radius: 6px;
-            font-weight: 500;
-        }
-
-        .btn-edit {
-            background-color: #ffc107;
-            border-color: #ffc107;
-            color: #000;
-        }
-
-        .btn-edit:hover {
-            background-color: #e0a800;
-            border-color: #d39e00;
-            color: #000;
-        }
-
-        .btn-delete {
-            background-color: #dc3545;
-            border-color: #dc3545;
-            color: #fff;
-        }
-
-        .btn-delete:hover {
-            background-color: #c82333;
-            border-color: #bd2130;
-            color: #fff;
-        }
-
-        .form-check-input:checked {
-            background-color: #510feb;
+        .form-control:focus, .form-select:focus {
+            background-color: rgba(60, 60, 60, 0.9);
             border-color: #510feb;
+            color: #ffffff;
+            box-shadow: 0 0 0 0.2rem rgba(81, 15, 235, 0.25);
+        }
+
+        .form-control::placeholder {
+            color: #cccccc;
+        }
+
+        .form-label {
+            color: #ffffff !important;
         }
 
         .form-check-label {
-            color: #ececec;
+            color: #ffffff !important;
         }
 
-        .page-link {
+        .btn-primary {
+            background-color: #510feb;
+            border-color: #510feb;
+            color: #ffffff;
+        }
+
+        .btn-primary:hover {
+            background-color: #3d0bc6;
+            border-color: #3d0bc6;
+            color: #ffffff;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+            color: #ffffff;
+        }
+
+        .pagination .page-link {
             background-color: rgba(60, 60, 60, 0.8);
-            border-color: rgba(255, 255, 255, 0.2);
-            color: #ececec;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #ffffff;
         }
 
-        .page-link:hover {
-            background-color: #510feb;
+        .pagination .page-link:hover {
+            background-color: rgba(81, 15, 235, 0.8);
             border-color: #510feb;
             color: #ffffff;
         }
 
-        .page-item.active .page-link {
+        .pagination .page-item.active .page-link {
             background-color: #510feb;
             border-color: #510feb;
-            color: #ffffff;
         }
 
-        /* Mobile Styles */
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: fixed;
-                top: 70px;
-                left: 0;
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-                z-index: 1001;
+        .pagination .page-item.disabled .page-link {
+            background-color: rgba(40, 40, 40, 0.8);
+            color: #6c757d;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 991.98px) {
+            .menu-toggle {
+                display: block;
             }
-
+            
+            .sidebar {
+                transform: translateX(-100%);
+                width: 280px;
+            }
+            
             .sidebar.show {
                 transform: translateX(0);
             }
-
+            
             .main-content {
                 margin-left: 0;
-                width: 100%;
-                padding: 15px;
+                padding: 20px 15px;
             }
-
-            .sidebar-menu {
-                display: block;
-            }
-
-            .sidebar-menu li {
-                padding: 12px 20px;
-                font-size: 0.9rem;
-            }
-
-            header {
-                padding: 5px 15px;
-            }
-
+            
             header h1 {
-                font-size: 1.8rem;
+                font-size: 32px;
             }
 
-            .content-container {
-                flex-direction: column;
+            .button-style {
+                min-width: 120px;
+                padding: 10px 16px;
+                font-size: 14px;
             }
+        }
 
-            .mobile-menu-toggle {
-                display: block;
-                background: none;
-                border: none;
-                color: #ffffff;
-                font-size: 1.5rem;
-                cursor: pointer;
+        @media (max-width: 575.98px) {
+            .main-content {
+                padding: 15px 10px;
             }
-
-            .exercise-card {
-                margin-bottom: 1rem;
+            
+            header h1 {
+                font-size: 28px;
             }
 
             .action-buttons {
                 flex-direction: column;
-                gap: 5px;
+                gap: 2px;
             }
 
             .btn-sm-custom {
-                width: 100%;
-                font-size: 0.8rem;
-                padding: 8px 12px;
-            }
-
-            .modal-dialog {
-                margin: 10px;
+                font-size: 10px;
+                padding: 3px 6px;
             }
         }
 
-        @media (min-width: 769px) {
-            .mobile-menu-toggle {
-                display: none;
+        /* Overlay for mobile menu */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1010;
+        }
+
+        @media (max-width: 991.98px) {
+            .sidebar-overlay.show {
+                display: block;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
     <header class="d-flex justify-content-between align-items-center px-3 px-md-4">
         <div class="d-flex align-items-center">
-            <button class="mobile-menu-toggle me-3" onclick="toggleSidebar()">
+            <button class="menu-toggle me-3" id="menuToggle">
                 <i class="bi bi-list"></i>
             </button>
             <h1><span class="h1-highlighted">Fit</span>Tude</h1>
@@ -384,267 +415,272 @@
         <div class="d-flex align-items-center">
             <div class="bg-primary rounded-circle d-flex justify-content-center align-items-center me-2"
                 style="width: 35px; height: 35px;">
-                <strong id="username">@U</strong>
+                <strong id="usernameIcon">@U</strong>
             </div>
-            <span id="username" class="text-white me-3 d-none d-md-inline">Oi, @username!</span>
+            <span id="usernameText" class="text-white me-3 d-none d-md-inline">Oi, @username!</span>
             <button id="logoff" class="btn btn-outline-light btn-sm">Sair</button>
         </div>
     </header>
 
-    <div class="content-container">
-        <div class="sidebar" id="sidebar">
-            <ul class="sidebar-menu">
-                <li onclick="location.href='dashboard'">
-                    <i class="bi bi-grid-fill me-2"></i>Dashboard
+    <div class="sidebar" id="sidebar">
+        <ul class="sidebar-menu">
+            <li onclick="location.href='dashboard'">
+                <i class="bi bi-grid-fill me-2"></i>Dashboard
+            </li>
+            <li onclick="location.href='active'">
+                <i class="bi bi-journal-text me-2"></i>Minhas Fichas
+            </li>
+            <li class="active" onclick="location.href='exercicios'">
+                <i class="bi bi-lightning-fill me-2"></i>Exercícios
+            </li>
+            <li onclick="location.href='relatorios'">
+                <i class="bi bi-graph-up me-2"></i>Relatórios
+            </li>
+            <li onclick="location.href='grupamentos'">
+                <i class="bi bi-collection me-2"></i>Grupamentos
+            </li>
+            <li onclick="location.href='aparelhos'">
+                <i class="bi bi-tools me-2"></i>Aparelhos
+            </li>
+            <li onclick="location.href='configuracoes'">
+                <i class="bi bi-gear-fill me-2"></i>Configurações
+            </li>
+        </ul>
+    </div>
+        
+    <div class="main-content">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
+            <h2 class="mb-0"><i class="bi bi-lightning-fill text-primary me-2"></i>Gerenciar Exercícios</h2>
+            <button class="button-style" data-bs-toggle="modal" data-bs-target="#addExerciseModal">
+                <i class="bi bi-plus-lg me-1"></i>Novo Exercício
+            </button>
+        </div>
+
+        <!-- Filtros -->
+        <div class="card card-custom mb-4">
+            <div class="card-header card-header-custom">
+                <h5 class="mb-0"><i class="bi bi-funnel me-2"></i>Filtros</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-12 col-md-4">
+                        <input type="text" class="form-control form-control-custom" placeholder="Buscar exercício..." id="searchInput">
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <select class="form-select form-select-custom" id="muscleGroupFilter">
+                            <option selected>Todos os Grupamentos</option>
+                            <option value="peitoral">Peitoral</option>
+                            <option value="costas">Costas</option>
+                            <option value="pernas">Pernas</option>
+                            <option value="ombros">Ombros</option>
+                            <option value="biceps">Bíceps</option>
+                            <option value="triceps">Tríceps</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <select class="form-select form-select-custom" id="equipmentFilter">
+                            <option selected>Todos os Equipamentos</option>
+                            <option value="barra">Barra</option>
+                            <option value="halter">Halter</option>
+                            <option value="maquina">Máquina</option>
+                            <option value="cabo">Cabo</option>
+                            <option value="peso-corpo">Peso Corporal</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-2">
+                        <button class="btn btn-outline-custom w-100" onclick="clearFilters()">
+                            <i class="bi bi-x-circle me-1"></i>Limpar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de Exercícios -->
+        <div class="row g-3 g-md-4" id="exercisesList">
+            <div class="col-12 col-lg-6">
+                <div class="card exercise-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title mb-0">Supino Reto</h5>
+                            <div class="action-buttons">
+                                <button class="btn btn-edit btn-sm-custom" onclick="editExercise(1, 'Supino Reto')">
+                                    <i class="bi bi-pencil me-1"></i>Editar
+                                </button>
+                                <button class="btn btn-delete btn-sm-custom" onclick="confirmDelete(1, 'Supino Reto')">
+                                    <i class="bi bi-trash me-1"></i>Excluir
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-muted-custom mb-2">Exercício composto para desenvolvimento do peitoral</p>
+                        <div class="mb-2">
+                            <span class="badge badge-custom">Peitoral</span>
+                            <span class="badge badge-custom">Tríceps</span>
+                            <span class="badge badge-custom">Ombros</span>
+                        </div>
+                        <div class="mb-2">
+                            <small class="text-muted-custom"><i class="bi bi-tools me-1"></i>Equipamentos: Barra, Banco</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-6">
+                <div class="card exercise-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title mb-0">Remada Curvada</h5>
+                            <div class="action-buttons">
+                                <button class="btn btn-edit btn-sm-custom" onclick="editExercise(2, 'Remada Curvada')">
+                                    <i class="bi bi-pencil me-1"></i>Editar
+                                </button>
+                                <button class="btn btn-delete btn-sm-custom" onclick="confirmDelete(2, 'Remada Curvada')">
+                                    <i class="bi bi-trash me-1"></i>Excluir
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-muted-custom mb-2">Exercício composto para desenvolvimento das costas</p>
+                        <div class="mb-2">
+                            <span class="badge badge-custom">Costas</span>
+                            <span class="badge badge-custom">Bíceps</span>
+                            <span class="badge badge-custom">Ombros</span>
+                        </div>
+                        <div class="mb-2">
+                            <small class="text-muted-custom"><i class="bi bi-tools me-1"></i>Equipamentos: Barra</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-6">
+                <div class="card exercise-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title mb-0">Agachamento Livre</h5>
+                            <div class="action-buttons">
+                                <button class="btn btn-edit btn-sm-custom" onclick="editExercise(3, 'Agachamento Livre')">
+                                    <i class="bi bi-pencil me-1"></i>Editar
+                                </button>
+                                <button class="btn btn-delete btn-sm-custom" onclick="confirmDelete(3, 'Agachamento Livre')">
+                                    <i class="bi bi-trash me-1"></i>Excluir
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-muted-custom mb-2">Exercício fundamental para desenvolvimento das pernas</p>
+                        <div class="mb-2">
+                            <span class="badge badge-custom">Quadríceps</span>
+                            <span class="badge badge-custom">Glúteos</span>
+                            <span class="badge badge-custom">Panturrilha</span>
+                        </div>
+                        <div class="mb-2">
+                            <small class="text-muted-custom"><i class="bi bi-tools me-1"></i>Equipamentos: Barra, Rack</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-6">
+                <div class="card exercise-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title mb-0">Desenvolvimento com Halteres</h5>
+                            <div class="action-buttons">
+                                <button class="btn btn-edit btn-sm-custom" onclick="editExercise(4, 'Desenvolvimento com Halteres')">
+                                    <i class="bi bi-pencil me-1"></i>Editar
+                                </button>
+                                <button class="btn btn-delete btn-sm-custom" onclick="confirmDelete(4, 'Desenvolvimento com Halteres')">
+                                    <i class="bi bi-trash me-1"></i>Excluir
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-muted-custom mb-2">Exercício para desenvolvimento dos ombros</p>
+                        <div class="mb-2">
+                            <span class="badge badge-custom">Ombros</span>
+                            <span class="badge badge-custom">Tríceps</span>
+                        </div>
+                        <div class="mb-2">
+                            <small class="text-muted-custom"><i class="bi bi-tools me-1"></i>Equipamentos: Halteres, Banco</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-6">
+                <div class="card exercise-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title mb-0">Rosca Direta</h5>
+                            <div class="action-buttons">
+                                <button class="btn btn-edit btn-sm-custom" onclick="editExercise(5, 'Rosca Direta')">
+                                    <i class="bi bi-pencil me-1"></i>Editar
+                                </button>
+                                <button class="btn btn-delete btn-sm-custom" onclick="confirmDelete(5, 'Rosca Direta')">
+                                    <i class="bi bi-trash me-1"></i>Excluir
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-muted-custom mb-2">Exercício isolado para bíceps</p>
+                        <div class="mb-2">
+                            <span class="badge badge-custom">Bíceps</span>
+                            <span class="badge badge-custom">Antebraço</span>
+                        </div>
+                        <div class="mb-2">
+                            <small class="text-muted-custom"><i class="bi bi-tools me-1"></i>Equipamentos: Barra, Halteres</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-6">
+                <div class="card exercise-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title mb-0">Tríceps Testa</h5>
+                            <div class="action-buttons">
+                                <button class="btn btn-edit btn-sm-custom" onclick="editExercise(6, 'Tríceps Testa')">
+                                    <i class="bi bi-pencil me-1"></i>Editar
+                                </button>
+                                <button class="btn btn-delete btn-sm-custom" onclick="confirmDelete(6, 'Tríceps Testa')">
+                                    <i class="bi bi-trash me-1"></i>Excluir
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-muted-custom mb-2">Exercício isolado para tríceps</p>
+                        <div class="mb-2">
+                            <span class="badge badge-custom">Tríceps</span>
+                        </div>
+                        <div class="mb-2">
+                            <small class="text-muted-custom"><i class="bi bi-tools me-1"></i>Equipamentos: Barra, Banco</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Paginação -->
+        <nav class="mt-4" aria-label="Navegação dos exercícios">
+            <ul class="pagination justify-content-center">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                        <i class="bi bi-chevron-left me-1"></i>Anterior
+                    </a>
                 </li>
-                <li onclick="location.href='active'">
-                    <i class="bi bi-journal-text me-2"></i>Minhas Fichas
+                <li class="page-item active" aria-current="page">
+                    <a class="page-link" href="#">1</a>
                 </li>
-                <li class="active" onclick="location.href='exercicios'">
-                    <i class="bi bi-lightning-fill me-2"></i>Exercícios
-                </li>
-                <li onclick="location.href='relatorios'">
-                    <i class="bi bi-graph-up me-2"></i>Relatórios
-                </li>
-                <li onclick="location.href='grupamentos'">
-                    <i class="bi bi-collection me-2"></i>Grupamentos
-                </li>
-                <li onclick="location.href='aparelhos'">
-                    <i class="bi bi-tools me-2"></i>Aparelhos
-                </li>
-                <li onclick="location.href='configuracoes'">
-                    <i class="bi bi-gear-fill me-2"></i>Configurações
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#">
+                        Próximo<i class="bi bi-chevron-right ms-1"></i>
+                    </a>
                 </li>
             </ul>
-        </div>
-        
-        <div class="main-content">
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4 gap-3">
-                <h2 class="mb-0"><i class="bi bi-lightning-fill text-primary me-2"></i>Gerenciar Exercícios</h2>
-                <button class="button-style" data-bs-toggle="modal" data-bs-target="#addExerciseModal">
-                    <i class="bi bi-plus-lg me-1"></i>Novo Exercício
-                </button>
-            </div>
-
-            <!-- Filtros -->
-            <div class="card card-custom mb-4">
-                <div class="card-header card-header-custom">
-                    <h5 class="mb-0"><i class="bi bi-funnel me-2"></i>Filtros</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row g-3">
-                        <div class="col-12 col-md-4">
-                            <input type="text" class="form-control form-control-custom" placeholder="Buscar exercício..." id="searchInput">
-                        </div>
-                        <div class="col-12 col-md-3">
-                            <select class="form-select form-select-custom" id="muscleGroupFilter">
-                                <option selected>Todos os Grupamentos</option>
-                                <option value="peitoral">Peitoral</option>
-                                <option value="costas">Costas</option>
-                                <option value="pernas">Pernas</option>
-                                <option value="ombros">Ombros</option>
-                                <option value="biceps">Bíceps</option>
-                                <option value="triceps">Tríceps</option>
-                            </select>
-                        </div>
-                        <div class="col-12 col-md-3">
-                            <select class="form-select form-select-custom" id="equipmentFilter">
-                                <option selected>Todos os Equipamentos</option>
-                                <option value="barra">Barra</option>
-                                <option value="halter">Halter</option>
-                                <option value="maquina">Máquina</option>
-                                <option value="cabo">Cabo</option>
-                                <option value="peso-corpo">Peso Corporal</option>
-                            </select>
-                        </div>
-                        <div class="col-12 col-md-2">
-                            <button class="btn btn-outline-custom w-100" onclick="clearFilters()">
-                                <i class="bi bi-x-circle me-1"></i>Limpar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Lista de Exercícios -->
-            <div class="row g-3 g-md-4" id="exercisesList">
-                <div class="col-12 col-lg-6">
-                    <div class="card exercise-card">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h5 class="card-title mb-0">Supino Reto</h5>
-                                <div class="action-buttons">
-                                    <button class="btn btn-edit btn-sm-custom" onclick="editExercise(1, 'Supino Reto')">
-                                        <i class="bi bi-pencil me-1"></i>Editar
-                                    </button>
-                                    <button class="btn btn-delete btn-sm-custom" onclick="confirmDelete(1, 'Supino Reto')">
-                                        <i class="bi bi-trash me-1"></i>Excluir
-                                    </button>
-                                </div>
-                            </div>
-                            <p class="text-muted-custom mb-2">Exercício composto para desenvolvimento do peitoral</p>
-                            <div class="mb-2">
-                                <span class="badge badge-custom">Peitoral</span>
-                                <span class="badge badge-custom">Tríceps</span>
-                                <span class="badge badge-custom">Ombros</span>
-                            </div>
-                            <div class="mb-2">
-                                <small class="text-muted-custom"><i class="bi bi-tools me-1"></i>Equipamentos: Barra, Banco</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-lg-6">
-                    <div class="card exercise-card">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h5 class="card-title mb-0">Remada Curvada</h5>
-                                <div class="action-buttons">
-                                    <button class="btn btn-edit btn-sm-custom" onclick="editExercise(2, 'Remada Curvada')">
-                                        <i class="bi bi-pencil me-1"></i>Editar
-                                    </button>
-                                    <button class="btn btn-delete btn-sm-custom" onclick="confirmDelete(2, 'Remada Curvada')">
-                                        <i class="bi bi-trash me-1"></i>Excluir
-                                    </button>
-                                </div>
-                            </div>
-                            <p class="text-muted-custom mb-2">Exercício composto para desenvolvimento das costas</p>
-                            <div class="mb-2">
-                                <span class="badge badge-custom">Costas</span>
-                                <span class="badge badge-custom">Bíceps</span>
-                                <span class="badge badge-custom">Ombros</span>
-                            </div>
-                            <div class="mb-2">
-                                <small class="text-muted-custom"><i class="bi bi-tools me-1"></i>Equipamentos: Barra</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-lg-6">
-                    <div class="card exercise-card">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h5 class="card-title mb-0">Agachamento Livre</h5>
-                                <div class="action-buttons">
-                                    <button class="btn btn-edit btn-sm-custom" onclick="editExercise(3, 'Agachamento Livre')">
-                                        <i class="bi bi-pencil me-1"></i>Editar
-                                    </button>
-                                    <button class="btn btn-delete btn-sm-custom" onclick="confirmDelete(3, 'Agachamento Livre')">
-                                        <i class="bi bi-trash me-1"></i>Excluir
-                                    </button>
-                                </div>
-                            </div>
-                            <p class="text-muted-custom mb-2">Exercício fundamental para desenvolvimento das pernas</p>
-                            <div class="mb-2">
-                                <span class="badge badge-custom">Quadríceps</span>
-                                <span class="badge badge-custom">Glúteos</span>
-                                <span class="badge badge-custom">Panturrilha</span>
-                            </div>
-                            <div class="mb-2">
-                                <small class="text-muted-custom"><i class="bi bi-tools me-1"></i>Equipamentos: Barra, Rack</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-lg-6">
-                    <div class="card exercise-card">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h5 class="card-title mb-0">Desenvolvimento com Halteres</h5>
-                                
-                            </div>
-                            <p class="text-muted-custom mb-2">Exercício para desenvolvimento dos ombros</p>
-                            <div class="mb-2">
-                                <span class="badge badge-custom">Ombros</span>
-                                <span class="badge badge-custom">Tríceps</span>
-                            </div>
-                            <div class="mb-2">
-                                <small class="text-muted-custom"><i class="bi bi-tools me-1"></i>Equipamentos: Halteres, Banco</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-lg-6">
-                    <div class="card exercise-card">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h5 class="card-title mb-0">Rosca Direta</h5>
-                                <div class="action-buttons">
-                                    <button class="btn btn-edit btn-sm-custom" onclick="editExercise(5, 'Rosca Direta')">
-                                        <i class="bi bi-pencil me-1"></i>Editar
-                                    </button>
-                                    <button class="btn btn-delete btn-sm-custom" onclick="confirmDelete(5, 'Rosca Direta')">
-                                        <i class="bi bi-trash me-1"></i>Excluir
-                                    </button>
-                                </div>
-                            </div>
-                            <p class="text-muted-custom mb-2">Exercício isolado para bíceps</p>
-                            <div class="mb-2">
-                                <span class="badge badge-custom">Bíceps</span>
-                                <span class="badge badge-custom">Antebraço</span>
-                            </div>
-                            <div class="mb-2">
-                                <small class="text-muted-custom"><i class="bi bi-tools me-1"></i>Equipamentos: Barra, Halteres</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-lg-6">
-                    <div class="card exercise-card">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start mb-2">
-                                <h5 class="card-title mb-0">Tríceps Testa</h5>
-                                <div class="action-buttons">
-                                    <button class="btn btn-edit btn-sm-custom" onclick="editExercise(6, 'Tríceps Testa')">
-                                        <i class="bi bi-pencil me-1"></i>Editar
-                                    </button>
-                                    <button class="btn btn-delete btn-sm-custom" onclick="confirmDelete(6, 'Tríceps Testa')">
-                                        <i class="bi bi-trash me-1"></i>Excluir
-                                    </button>
-                                </div>
-                            </div>
-                            <p class="text-muted-custom mb-2">Exercício isolado para tríceps</p>
-                            <div class="mb-2">
-                                <span class="badge badge-custom">Tríceps</span>
-                            </div>
-                            <div class="mb-2">
-                                <small class="text-muted-custom"><i class="bi bi-tools me-1"></i>Equipamentos: Barra, Banco</small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Paginação -->
-            <nav class="mt-4" aria-label="Navegação dos exercícios">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
-                            <i class="bi bi-chevron-left me-1"></i>Anterior
-                        </a>
-                    </li>
-                    <li class="page-item active" aria-current="page">
-                        <a class="page-link" href="#">1</a>
-                    </li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">
-                            Próximo<i class="bi bi-chevron-right ms-1"></i>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
+        </nav>
     </div>
 
     <!-- Modal para Adicionar Exercício -->
-    <div class="modal fade modal-custom" id="addExerciseModal" tabindex="-1">
+    <div class="modal fade" id="addExerciseModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -655,12 +691,12 @@
                     <form id="addExerciseForm">
                         <div class="mb-3">
                             <label for="exerciseName" class="form-label">Nome do Exercício</label>
-                            <input type="text" class="form-control form-control-custom" id="exerciseName" placeholder="Ex: Supino Inclinado" required>
+                            <input type="text" class="form-control" id="exerciseName" placeholder="Ex: Supino Inclinado" required>
                         </div>
 
                         <div class="mb-3">
                             <label for="exerciseDescription" class="form-label">Descrição</label>
-                            <textarea class="form-control form-control-custom" id="exerciseDescription" rows="3" placeholder="Descrição detalhada do exercício..." required></textarea>
+                            <textarea class="form-control" id="exerciseDescription" rows="3" placeholder="Descrição detalhada do exercício..." required></textarea>
                         </div>
 
                         <div class="row">
@@ -685,425 +721,289 @@
                                         <label class="form-check-label" for="ombros">Ombros</label>
                                     </div>
                                     <div class="form-check">
-                                        <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="parteCorpo" id="costas" value="Costas">
-                        <label class="form-check-label" for="costas">Costas</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="parteCorpo" id="antebraco" value="Antebraço">
-                        <label class="form-check-label" for="antebraco">Antebraço</label>
-                    </div>
-                </div>
-            </div>
+                                        <input class="form-check-input" type="checkbox" name="parteCorpo" id="costas" value="Costas">
+                                        <label class="form-check-label" for="costas">Costas</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="parteCorpo" id="antebraco" value="Antebraço">
+                                        <label class="form-check-label" for="antebraco">Antebraço</label>
+                                    </div>
+                                </div>
+                            </div>
 
-            <!-- Parte Inferior -->
-            <div class="col-md-4">
-                <label class="form-label">Parte Inferior</label>
-                <div class="mb-3">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="parteCorpo" id="quadriceps" value="Quadríceps">
-                        <label class="form-check-label" for="quadriceps">Quadríceps</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="parteCorpo" id="posterior" value="Posterior">
-                        <label class="form-check-label" for="posterior">Posterior</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="parteCorpo" id="gluteos" value="Glúteos">
-                        <label class="form-check-label" for="gluteos">Glúteos</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="parteCorpo" id="panturrilha" value="Panturrilha">
-                        <label class="form-check-label" for="panturrilha">Panturrilha</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="parteCorpo" id="adutores" value="Adutores">
-                        <label class="form-check-label" for="adutores">Adutores</label>
-                    </div>
-                </div>
-            </div>
+                            <!-- Parte Inferior -->
+                            <div class="col-md-4">
+                                <label class="form-label">Parte Inferior</label>
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="parteCorpo" id="quadriceps" value="Quadríceps">
+                                        <label class="form-check-label" for="quadriceps">Quadríceps</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="parteCorpo" id="posterior" value="Posterior">
+                                        <label class="form-check-label" for="posterior">Posterior</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="parteCorpo" id="gluteos" value="Glúteos">
+                                        <label class="form-check-label" for="gluteos">Glúteos</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="parteCorpo" id="panturrilha" value="Panturrilha">
+                                        <label class="form-check-label" for="panturrilha">Panturrilha</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="parteCorpo" id="adutores" value="Adutores">
+                                        <label class="form-check-label" for="adutores">Adutores</label>
+                                    </div>
+                                </div>
+                            </div>
 
-            <!-- Core -->
-            <div class="col-md-4">
-                <label class="form-label">Core</label>
-                <div class="mb-3">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="parteCorpo" id="abdomen" value="Abdômen">
-                        <label class="form-check-label" for="abdomen">Abdômen</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="parteCorpo" id="lombar" value="Lombar">
-                        <label class="form-check-label" for="lombar">Lombar</label>
-                    </div>
+                            <!-- Core -->
+                            <div class="col-md-4">
+                                <label class="form-label">Core</label>
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="parteCorpo" id="abdomen" value="Abdômen">
+                                        <label class="form-check-label" for="abdomen">Abdômen</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="parteCorpo" id="lombar" value="Lombar">
+                                        <label class="form-check-label" for="lombar">Lombar</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="exerciseEquipment" class="form-label">Equipamentos</label>
+                            <input type="text" class="form-control" id="exerciseEquipment" placeholder="Ex: Barra, Banco, Halteres" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="exerciseInstructions" class="form-label">Instruções de Execução</label>
+                            <textarea class="form-control" id="exerciseInstructions" rows="4" placeholder="Descreva como executar o exercício corretamente..."></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" form="addExerciseForm" class="btn btn-primary" id="btnSubmitdados">
+                        <i class="bi bi-check-lg me-1"></i>Salvar Exercício
+                    </button>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="mb-3">
-            <label for="exerciseEquipment" class="form-label">Equipamentos</label>
-            <input type="text" class="form-control form-control-custom" id="exerciseEquipment" placeholder="Ex: Barra, Banco, Halteres" required>
+    <!-- Modal para Editar Exercício -->
+    <div class="modal fade" id="editExerciseModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-pencil me-2"></i>Editar Exercício</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editExerciseForm">
+                        <input type="hidden" id="editExerciseId">
+                        <div class="mb-3">
+                            <label for="editExerciseName" class="form-label">Nome do Exercício</label>
+                            <input type="text" class="form-control" id="editExerciseName" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="editExerciseDescription" class="form-label">Descrição</label>
+                            <textarea class="form-control" id="editExerciseDescription" rows="3" required></textarea>
+                        </div>
+
+                        <div class="row">
+                            <!-- Parte Superior -->
+                            <div class="col-md-4">
+                                <label class="form-label">Parte Superior</label>
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="editParteCorpo" id="editPeitoral" value="Peitoral">
+                                        <label class="form-check-label" for="editPeitoral">Peitoral</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="editParteCorpo" id="editTriceps" value="Tríceps">
+                                        <label class="form-check-label" for="editTriceps">Tríceps</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="editParteCorpo" id="editBiceps" value="Bíceps">
+                                        <label class="form-check-label" for="editBiceps">Bíceps</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="editParteCorpo" id="editOmbros" value="Ombros">
+                                        <label class="form-check-label" for="editOmbros">Ombros</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="editParteCorpo" id="editCostas" value="Costas">
+                                        <label class="form-check-label" for="editCostas">Costas</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="editParteCorpo" id="editAntebraco" value="Antebraço">
+                                        <label class="form-check-label" for="editAntebraco">Antebraço</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Parte Inferior -->
+                            <div class="col-md-4">
+                                <label class="form-label">Parte Inferior</label>
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="editParteCorpo" id="editQuadriceps" value="Quadríceps">
+                                        <label class="form-check-label" for="editQuadriceps">Quadríceps</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="editParteCorpo" id="editPosterior" value="Posterior">
+                                        <label class="form-check-label" for="editPosterior">Posterior</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="editParteCorpo" id="editGluteos" value="Glúteos">
+                                        <label class="form-check-label" for="editGluteos">Glúteos</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="editParteCorpo" id="editPanturrilha" value="Panturrilha">
+                                        <label class="form-check-label" for="editPanturrilha">Panturrilha</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="editParteCorpo" id="editAdutores" value="Adutores">
+                                        <label class="form-check-label" for="editAdutores">Adutores</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Core -->
+                            <div class="col-md-4">
+                                <label class="form-label">Core</label>
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="editParteCorpo" id="editAbdomen" value="Abdômen">
+                                        <label class="form-check-label" for="editAbdomen">Abdômen</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="editParteCorpo" id="editLombar" value="Lombar">
+                                        <label class="form-check-label" for="editLombar">Lombar</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="editExerciseEquipment" class="form-label">Equipamentos</label>
+                            <input type="text" class="form-control" id="editExerciseEquipment" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="editExerciseInstructions" class="form-label">Instruções de Execução</label>
+                            <textarea class="form-control" id="editExerciseInstructions" rows="4"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" form="editExerciseForm" class="btn btn-primary">
+                        <i class="bi bi-check-lg me-1"></i>Salvar Alterações
+                    </button>
+                </div>
+            </div>
         </div>
+    </div>
 
-        <div class="mb-3">
-            <label for="exerciseInstructions" class="form-label">Instruções de Execução</label>
-            <textarea class="form-control form-control-custom" id="exerciseInstructions" rows="4" placeholder="Descreva como executar o exercício corretamente..."></textarea>
+    <!-- Modal de Confirmação de Exclusão -->
+    <div class="modal fade" id="deleteExerciseModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-exclamation-triangle me-2 text-warning"></i>Confirmar Exclusão</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-white">Tem certeza que deseja excluir o exercício <strong id="exerciseToDelete"></strong>?</p>
+                    <p class="text-warning">Esta ação não pode ser desfeita.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                        <i class="bi bi-trash me-1"></i>Excluir
+                    </button>
+                </div>
+            </div>
         </div>
-    </form>
-</div>
-<div class="modal-footer">
-    <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancelar</button>
-    <button type="submit" form="addExerciseForm" class="button-style" id="btnSubmitdados">
-        <i class="bi bi-check-lg me-1"></i>Salvar Exercício
-    </button>
-</div>
-</div>
-</div>
-</div>
-
-<!-- Modal para Editar Exercício -->
-<div class="modal fade modal-custom" id="editExerciseModal" tabindex="-1">
-<div class="modal-dialog modal-lg">
-<div class="modal-content">
-    <div class="modal-header">
-        <h5 class="modal-title"><i class="bi bi-pencil me-2"></i>Editar Exercício</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
     </div>
-    <div class="modal-body">
-        <form id="editExerciseForm">
-            <input type="hidden" id="editExerciseId">
-            <div class="mb-3">
-                <label for="editExerciseName" class="form-label">Nome do Exercício</label>
-                <input type="text" class="form-control form-control-custom" id="editExerciseName" required>
-            </div>
 
-            <div class="mb-3">
-                <label for="editExerciseDescription" class="form-label">Descrição</label>
-                <textarea class="form-control form-control-custom" id="editExerciseDescription" rows="3" required></textarea>
-            </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            sidebar.classList.toggle('show');
+            overlay.classList.toggle('show');
+        });
 
-            <div class="row">
-                <!-- Parte Superior -->
-                <div class="col-md-4">
-                    <label class="form-label">Parte Superior</label>
-                    <div class="mb-3">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="editParteCorpo" id="editPeitoral" value="Peitoral">
-                            <label class="form-check-label" for="editPeitoral">Peitoral</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="editParteCorpo" id="editTriceps" value="Tríceps">
-                            <label class="form-check-label" for="editTriceps">Tríceps</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="editParteCorpo" id="editBiceps" value="Bíceps">
-                            <label class="form-check-label" for="editBiceps">Bíceps</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="editParteCorpo" id="editOmbros" value="Ombros">
-                            <label class="form-check-label" for="editOmbros">Ombros</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="editParteCorpo" id="editCostas" value="Costas">
-                            <label class="form-check-label" for="editCostas">Costas</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="editParteCorpo" id="editAntebraco" value="Antebraço">
-                            <label class="form-check-label" for="editAntebraco">Antebraço</label>
-                        </div>
-                    </div>
-                </div>
+        document.getElementById('sidebarOverlay').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            sidebar.classList.remove('show');
+            overlay.classList.remove('show');
+        });
 
-                <!-- Parte Inferior -->
-                <div class="col-md-4">
-                    <label class="form-label">Parte Inferior</label>
-                    <div class="mb-3">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="editParteCorpo" id="editQuadriceps" value="Quadríceps">
-                            <label class="form-check-label" for="editQuadriceps">Quadríceps</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="editParteCorpo" id="editPosterior" value="Posterior">
-                            <label class="form-check-label" for="editPosterior">Posterior</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="editParteCorpo" id="editGluteos" value="Glúteos">
-                            <label class="form-check-label" for="editGluteos">Glúteos</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="editParteCorpo" id="editPanturrilha" value="Panturrilha">
-                            <label class="form-check-label" for="editPanturrilha">Panturrilha</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="editParteCorpo" id="editAdutores" value="Adutores">
-                            <label class="form-check-label" for="editAdutores">Adutores</label>
-                        </div>
-                    </div>
-                </div>
+        const sidebarItems = document.querySelectorAll('.sidebar-menu li');
+        sidebarItems.forEach(item => {
+            item.addEventListener('click', function() {
+                if (window.innerWidth <= 991.98) {
+                    const sidebar = document.getElementById('sidebar');
+                    const overlay = document.getElementById('sidebarOverlay');
+                    
+                    sidebar.classList.remove('show');
+                    overlay.classList.remove('show');
+                }
+            });
+        });
 
-                <!-- Core -->
-                <div class="col-md-4">
-                    <label class="form-label">Core</label>
-                    <div class="mb-3">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="editParteCorpo" id="editAbdomen" value="Abdômen">
-                            <label class="form-check-label" for="editAbdomen">Abdômen</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="editParteCorpo" id="editLombar" value="Lombar">
-                            <label class="form-check-label" for="editLombar">Lombar</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mb-3">
-                <label for="editExerciseEquipment" class="form-label">Equipamentos</label>
-                <input type="text" class="form-control form-control-custom" id="editExerciseEquipment" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="editExerciseInstructions" class="form-label">Instruções de Execução</label>
-                <textarea class="form-control form-control-custom" id="editExerciseInstructions" rows="4"></textarea>
-            </div>
-        </form>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancelar</button>
-        <button type="submit" form="editExerciseForm" class="button-style">
-            <i class="bi bi-check-lg me-1"></i>Salvar Alterações
-        </button>
-    </div>
-</div>
-</div>
-</div>
-
-<!-- Modal de Confirmação de Exclusão -->
-<div class="modal fade modal-custom" id="deleteExerciseModal" tabindex="-1">
-<div class="modal-dialog">
-<div class="modal-content">
-    <div class="modal-header">
-        <h5 class="modal-title text-danger"><i class="bi bi-exclamation-triangle me-2"></i>Confirmar Exclusão</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-    </div>
-    <div class="modal-body">
-        <p class="mb-0">Você tem certeza que deseja excluir esse exercício?</p>
-        <p class="text-muted-custom mb-0 mt-2">Esta ação não pode ser desfeita.</p>
-        <input type="hidden" id="deleteExerciseId">
-        <p class="fw-bold mt-3 mb-0" id="deleteExerciseName"></p>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancelar</button>
-        <button type="button" class="btn btn-delete" onclick="deleteExercise()">
-            <i class="bi bi-trash me-1"></i>Excluir
-        </button>
-    </div>
-</div>
-</div>
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-<script type="module" src="../static/js/functional/dashboardFunctions.js"></script>
-<script type="module" src="../static/js/functional/exercicios.js"></script>
-<!-- <script>
-// Função para alternar sidebar mobile
-function toggleSidebar() {
-const sidebar = document.getElementById('sidebar');
-sidebar.classList.toggle('show');
-}
-
-// Fechar sidebar ao clicar fora (mobile)
-document.addEventListener('click', function(event) {
-const sidebar = document.getElementById('sidebar');
-const toggleButton = document.querySelector('.mobile-menu-toggle');
-
-if (window.innerWidth <= 768 && 
-    !sidebar.contains(event.target) && 
-    !toggleButton.contains(event.target) && 
-    sidebar.classList.contains('show')) {
-    sidebar.classList.remove('show');
-}
-});
-
-// Função para limpar filtros
-function clearFilters() {
-document.getElementById('searchInput').value = '';
-document.getElementById('muscleGroupFilter').value = '';
-document.getElementById('equipmentFilter').value = '';
-// Aqui você pode adicionar lógica para recarregar a lista
-}
-
-// Função para editar exercício
-function editExercise(id, name) {
-document.getElementById('editExerciseId').value = id;
-document.getElementById('editExerciseName').value = name;
-
-// Aqui você carregaria os dados do exercício do servidor
-// Por enquanto, vamos apenas preencher alguns campos como exemplo
-if (name === 'Supino Reto') {
-    document.getElementById('editExerciseDescription').value = 'Exercício composto para desenvolvimento do peitoral';
-    document.getElementById('editExerciseEquipment').value = 'Barra, Banco';
-    document.getElementById('editPeitoral').checked = true;
-    document.getElementById('editTriceps').checked = true;
-    document.getElementById('editOmbros').checked = true;
-}
-
-const editModal = new bootstrap.Modal(document.getElementById('editExerciseModal'));
-editModal.show();
-}
-
-// Função para confirmar exclusão
-function confirmDelete(id, name) {
-document.getElementById('deleteExerciseId').value = id;
-document.getElementById('deleteExerciseName').textContent = name;
-
-const deleteModal = new bootstrap.Modal(document.getElementById('deleteExerciseModal'));
-deleteModal.show();
-}
-
-// Função para excluir exercício
-function deleteExercise() {
-const id = document.getElementById('deleteExerciseId').value;
-const name = document.getElementById('deleteExerciseName').textContent;
-
-// Aqui você faria a requisição para excluir o exercício
-console.log('Excluindo exercício:', id, name);
-
-// Fechar modal
-const deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteExerciseModal'));
-deleteModal.hide();
-
-// Aqui você recarregaria a lista de exercícios
-alert('Exercício excluído com sucesso!');
-}
-
-// Função para salvar novo exercício
-document.getElementById('addExerciseForm').addEventListener('submit', function(e) {
-e.preventDefault();
-
-const formData = new FormData();
-formData.append('name', document.getElementById('exerciseName').value);
-formData.append('description', document.getElementById('exerciseDescription').value);
-formData.append('equipment', document.getElementById('exerciseEquipment').value);
-formData.append('instructions', document.getElementById('exerciseInstructions').value);
-
-// Coletar músculos selecionados
-const selectedMuscles = [];
-document.querySelectorAll('input[name="parteCorpo"]:checked').forEach(function(checkbox) {
-    selectedMuscles.push(checkbox.value);
-});
-formData.append('muscles', selectedMuscles.join(','));
-
-// Aqui você faria a requisição para salvar
-console.log('Salvando exercício:', Object.fromEntries(formData));
-
-// Fechar modal
-const addModal = bootstrap.Modal.getInstance(document.getElementById('addExerciseModal'));
-addModal.hide();
-
-// Limpar formulário
-this.reset();
-
-alert('Exercício adicionado com sucesso!');
-});
-
-// Função para salvar edição de exercício
-document.getElementById('editExerciseForm').addEventListener('submit', function(e) {
-e.preventDefault();
-
-const id = document.getElementById('editExerciseId').value;
-const formData = new FormData();
-formData.append('id', id);
-formData.append('name', document.getElementById('editExerciseName').value);
-formData.append('description', document.getElementById('editExerciseDescription').value);
-formData.append('equipment', document.getElementById('editExerciseEquipment').value);
-formData.append('instructions', document.getElementById('editExerciseInstructions').value);
-
-// Coletar músculos selecionados
-const selectedMuscles = [];
-document.querySelectorAll('input[name="editParteCorpo"]:checked').forEach(function(checkbox) {
-    selectedMuscles.push(checkbox.value);
-});
-formData.append('muscles', selectedMuscles.join(','));
-
-// Aqui você faria a requisição para salvar as alterações
-console.log('Salvando alterações do exercício:', Object.fromEntries(formData));
-
-// Fechar modal
-const editModal = bootstrap.Modal.getInstance(document.getElementById('editExerciseModal'));
-editModal.hide();
-
-alert('Exercício atualizado com sucesso!');
-});
-
-// Função de busca em tempo real
-document.getElementById('searchInput').addEventListener('input', function() {
-const searchTerm = this.value.toLowerCase();
-const exerciseCards = document.querySelectorAll('.exercise-card');
-
-exerciseCards.forEach(function(card) {
-    const title = card.querySelector('.card-title').textContent.toLowerCase();
-    const description = card.querySelector('.text-muted-custom').textContent.toLowerCase();
-    
-    if (title.includes(searchTerm) || description.includes(searchTerm)) {
-        card.closest('.col-12').style.display = 'block';
-    } else {
-        card.closest('.col-12').style.display = 'none';
-    }
-});
-});
-
-// Função para filtro por grupamento muscular
-document.getElementById('muscleGroupFilter').addEventListener('change', function() {
-const selectedGroup = this.value.toLowerCase();
-const exerciseCards = document.querySelectorAll('.exercise-card');
-
-exerciseCards.forEach(function(card) {
-    if (selectedGroup === '') {
-        card.closest('.col-12').style.display = 'block';
-    } else {
-        const badges = card.querySelectorAll('.badge-custom');
-        let hasGroup = false;
-        
-        badges.forEach(function(badge) {
-            if (badge.textContent.toLowerCase().includes(selectedGroup)) {
-                hasGroup = true;
+        window.addEventListener('resize', function() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            if (window.innerWidth > 991.98) {
+                sidebar.classList.remove('show');
+                overlay.classList.remove('show');
             }
         });
+        function editExercise(id, name) {
+            currentExerciseId = id;
+            currentExerciseName = name;
         
-        card.closest('.col-12').style.display = hasGroup ? 'block' : 'none';
-    }
-});
-});
-
-// Função para filtro por equipamento
-document.getElementById('equipmentFilter').addEventListener('change', function() {
-const selectedEquipment = this.value.toLowerCase();
-const exerciseCards = document.querySelectorAll('.exercise-card');
-
-exerciseCards.forEach(function(card) {
-    if (selectedEquipment === '') {
-        card.closest('.col-12').style.display = 'block';
-    } else {
-        const equipmentText = card.querySelector('small').textContent.toLowerCase();
-        
-        if (equipmentText.includes(selectedEquipment)) {
-            card.closest('.col-12').style.display = 'block';
-        } else {
-            card.closest('.col-12').style.display = 'none';
+            const modal = new bootstrap.Modal(document.getElementById('editExerciseModal'));
+            modal.show();
         }
-    }
-});
-});
 
-// Função de logout
-document.getElementById('logoff').addEventListener('click', function() {
-if (confirm('Tem certeza que deseja sair?')) {
-    // Aqui você faria o logout
-    console.log('Fazendo logout...');
-    // window.location.href = 'login.html';
-}
-});
-</script> -->
+        function confirmDelete(id, name) {
+            currentExerciseId = id;
+            currentExerciseName = name;
+            
+        }
+        document.getElementById('addExerciseForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const modal = bootstrap.Modal.getInstance(document.getElementById('addExerciseModal'));
+            modal.hide();
+            
+            this.reset();
+        });
+        document.getElementById('addExerciseModal').addEventListener('hidden.bs.modal', function() {
+            document.getElementById('addExerciseForm').reset();
+        });
 
+        document.getElementById('editExerciseModal').addEventListener('hidden.bs.modal', function() {
+            document.querySelectorAll('#editExerciseModal input[type="checkbox"]').forEach(cb => cb.checked = false);
+            document.getElementById('editExerciseForm').reset();
+        });
+
+    </script>
 </body>
 </html>

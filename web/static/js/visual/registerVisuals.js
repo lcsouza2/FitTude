@@ -14,7 +14,7 @@ const passwordRequirements = document.querySelector('.password-requirements');
 function setPasswordRequirementsVisible(passwordContainer) {
     passwordContainer.classList.add('active');
 
-    passwordContainer.animate([
+    passwordgoContainer.animate([
         {width: '0%', height: '0px'},
         {width: '100%', height: '100%   '}
     ], {
