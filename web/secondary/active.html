@@ -20,24 +20,24 @@
             background-attachment: fixed;
             margin: 0;
             padding: 0;
-            color: #ececec;
-            height: 100vh;
+            color: #ffffff;
+            min-height: 100vh;
             overflow-x: hidden;
         }
 
-        h2, h3, h4, h5, h6 {
-            color: #ffffff;  /* Títulos em branco */
+        h1, h2, h3, h4, h5, h6 {
+            color: #ffffff !important;
         }
 
         header {
-            background-color: black;
+            background-color: rgba(0, 0, 0, 0.95);
             padding: 10px 0;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 70px;
-            z-index: 1000;
+            z-index: 1030;
             box-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
 
@@ -52,6 +52,15 @@
             color: #510feb;
         }
 
+        /* Menu toggle button for mobile */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+        }
+
         .sidebar {
             width: 250px;
             background-color: rgba(20, 20, 20, 0.95);
@@ -60,8 +69,9 @@
             left: 0;
             height: calc(100vh - 70px);
             overflow-y: auto;
-            z-index: 999;
+            z-index: 1020;
             transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
         }
 
         .sidebar-menu {
@@ -75,15 +85,18 @@
             cursor: pointer;
             transition: all 0.3s ease;
             border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: #ffffff;
         }
 
         .sidebar-menu li:hover {
             background-color: rgba(81, 15, 235, 0.7);
+            color: #ffffff;
         }
 
         .sidebar-menu li.active {
             background-color: #510feb;
             border-left: 4px solid white;
+            color: #ffffff;
         }
 
         .main-content {
@@ -101,7 +114,7 @@
             font-family: "Kanit", sans-serif;
             font-weight: 450;
             min-width: 150px;
-            color: #DEE2E6;
+            color: #ffffff;
             padding: 12px 24px;
             text-decoration: none;
             display: inline-block;
@@ -114,6 +127,7 @@
         .button-style:hover {
             background-color: #3d0bc6;
             transform: scale(1.05);
+            color: #ffffff;
         }
 
         .card {
@@ -121,7 +135,7 @@
             border: none;
             border-radius: 15px;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-            color: #ececec;
+            color: #ffffff;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
@@ -130,15 +144,19 @@
             box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
         }
 
-
+        .modal-content {
+            background-color: rgba(40, 40, 40, 0.95);
+            color: #ffffff;
+            border: none;
+            border-radius: 15px;
+        }
 
         .modal-title {
             color: #ffffff;
         }
 
-        /* Textos secundários */
         .text-muted, small, .card-subtitle {
-            color: #adb5bd !important;
+            color: #cccccc !important;
         }
 
         .card-header {
@@ -154,42 +172,143 @@
             border-color: #510feb;
             font-weight: 500;
             transition: all 0.3s ease;
+            color: #ffffff;
         }
 
         .btn-primary:hover {
             background-color: #3d0bc6;
             border-color: #3d0bc6;
             transform: scale(1.05);
+            color: #ffffff;
         }
 
-        .btn-outline-primary {
-            color: #510feb;
+        .form-control, .form-select {
+            background-color: rgba(60, 60, 60, 0.8);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #ffffff;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background-color: rgba(60, 60, 60, 0.9);
             border-color: #510feb;
+            color: #ffffff;
+            box-shadow: 0 0 0 0.2rem rgba(81, 15, 235, 0.25);
         }
 
-        .btn-outline-primary:hover {
+        .form-control::placeholder {
+            color: #cccccc;
+        }
+
+        .table {
+            color: #ffffff;
+        }
+
+        .table-dark {
+            --bs-table-bg: rgba(40, 40, 40, 0.8);
+            --bs-table-color: #ffffff;
+        }
+
+        .accordion-button {
+            background-color: rgba(60, 60, 60, 0.8);
+            color: #ffffff;
+            border: none;
+        }
+
+        .accordion-button:focus {
+            box-shadow: 0 0 0 0.2rem rgba(81, 15, 235, 0.25);
+        }
+
+        .accordion-button:not(.collapsed) {
+            background-color: rgba(81, 15, 235, 0.8);
+            color: #ffffff;
+        }
+
+        .accordion-item {
+            background-color: transparent;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .accordion-body {
+            background-color: rgba(40, 40, 40, 0.8);
+            color: #ffffff;
+        }
+
+        .input-group-text {
+            background-color: rgba(81, 15, 235, 0.8);
+            border-color: rgba(255,255,255,0.2);
+            color: #ffffff;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 991.98px) {
+            .menu-toggle {
+                display: block;
+            }
+            
+            .sidebar {
+                transform: translateX(-100%);
+                width: 280px;
+            }
+            
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 20px 15px;
+            }
+            
+            header h1 {
+                font-size: 32px;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .main-content {
+                padding: 15px 10px;
+            }
+            
+            header h1 {
+                font-size: 28px;
+            }
+            
+            .button-style {
+                min-width: 120px;
+                padding: 10px 16px;
+                font-size: 14px;
+            }
+            
+            .btn-group .btn {
+                font-size: 12px;
+                padding: 6px 10px;
+            }
+        }
+
+        /* Overlay for mobile menu */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1010;
+        }
+
+        @media (max-width: 991.98px) {
+            .sidebar-overlay.show {
+                display: block;
+            }
+        }
+
+        .progress {
+            background-color: rgba(40, 40, 40, 0.8);
+        }
+
+        .progress-bar {
             background-color: #510feb;
-            border-color: #510feb;
-        }
-
-        .btn-success {
-            background-color: #28a745;
-            border-color: #28a745;
-        }
-
-        .btn-warning {
-            background-color: #ffc107;
-            border-color: #ffc107;
-            color: #000;
-        }
-
-        .btn-danger {
-            background-color: #dc3545;
-            border-color: #dc3545;
-        }
-
-        .text-primary {
-            color: #510feb !important;
         }
 
         .badge {
@@ -201,13 +320,6 @@
             background-color: #510feb;
         }
 
-        .modal-content {
-            background-color: rgba(40, 40, 40, 0.95);
-            color: #ececec;
-            border: none;
-            border-radius: 15px;
-        }
-
         .modal-header {
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
@@ -216,81 +328,38 @@
             border-top: 1px solid rgba(255,255,255,0.1);
         }
 
-        .form-control, .form-select {
-            background-color: rgba(60, 60, 60, 0.8);
-            border: 1px solid rgba(255,255,255,0.2);
-            color: #ececec;
-        }
-
-        .form-control:focus, .form-select:focus {
-            background-color: rgba(60, 60, 60, 0.9);
-            border-color: #510feb;
-            color: #ececec;
-            box-shadow: 0 0 0 0.2rem rgba(81, 15, 235, 0.25);
-        }
-
-        .table {
-            color: #ececec;
-        }
-
-        .table-dark {
-            --bs-table-bg: rgba(40, 40, 40, 0.8);
-        }
-
-        .progress {
-            background-color: rgba(40, 40, 40, 0.8);
-        }
-
-        .progress-bar {
-            background-color: #510feb;
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-                top: 0;
-            }
-            
-            .main-content {
-                margin-left: 0;
-                margin-top: 0;
-            }
-            
-            .sidebar-menu {
-                display: flex;
-                overflow-x: auto;
-                white-space: nowrap;
-            }
-            
-            .sidebar-menu li {
-                flex-shrink: 0;
-                min-width: 120px;
-                text-align: center;
-            }
+        .btn-close-white {
+            filter: invert(1) grayscale(100%) brightness(200%);
         }
     </style>
 </head>
 <body>
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
     <header class="d-flex justify-content-between align-items-center px-4">
-        <h1><span class="h1-highlighted">Fit</span>Tude</h1>
+        <div class="d-flex align-items-center">
+            <button class="menu-toggle me-3" id="menuToggle">
+                <i class="bi bi-list"></i>
+            </button>
+            <h1><span class="h1-highlighted">Fit</span>Tude</h1>
+        </div>
         <div class="d-flex align-items-center">
             <div class="bg-primary rounded-circle d-flex justify-content-center align-items-center me-2"
                 style="width: 35px; height: 35px;">
                 <strong id="username">@U</strong>
             </div>
-            <span id="username"class="text-white me-3 has-username">Oi, @username!</span>
+            <span class="text-white me-3 d-none d-sm-inline">Oi, @username!</span>
             <button id="logoff" class="btn btn-outline-light btn-sm">Sair</button>
         </div>
     </header>
     
-            <div class="sidebar">
-            <ul class="sidebar-menu">
-            <li  onclick="location.href='dashboard'">
+    <div class="sidebar" id="sidebar">
+        <ul class="sidebar-menu">
+            <li onclick="location.href='dashboard'">
                 <i class="bi bi-grid-fill me-2"></i>Dashboard
             </li>
-            <li class="active"onclick="location.href='active'">
+            <li class="active" onclick="location.href='active'">
                 <i class="bi bi-journal-text me-2"></i>Minhas Fichas
             </li>
             <li onclick="location.href='exercicios'">
@@ -312,10 +381,10 @@
     </div>
     
     <div class="main-content">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2><i class="bi bi-journal-text text-primary me-2"></i>Minhas Fichas de Treino</h2>
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-4">
+            <h2 class="mb-3 mb-md-0"><i class="bi bi-journal-text text-primary me-2"></i>Minhas Fichas de Treino</h2>
             <button class="button-style" data-bs-toggle="modal" data-bs-target="#novaFichaModal">
-                <i class=" me-2"></i>+ Nova Ficha
+                <i class="bi bi-plus me-2"></i>Nova Ficha
             </button>
         </div>
 
@@ -349,15 +418,15 @@
                         </div>
                     </div>
                     <div class="card-footer bg-transparent">
-                        <div class="btn-group w-100">
+                        <div class="btn-group w-100" role="group">
                             <button class="btn btn-primary btn-sm" onclick="verDetalhes(1)">
-                                <i class="bi bi-eye me-1"></i>Ver
+                                <i class="bi bi-eye me-1"></i><span class="d-none d-sm-inline">Ver</span>
                             </button>
                             <button class="btn btn-warning btn-sm" onclick="editarFicha(1)">
-                                <i class="bi bi-pencil me-1"></i>Editar
+                                <i class="bi bi-pencil me-1"></i><span class="d-none d-sm-inline">Editar</span>
                             </button>
                             <button class="btn btn-success btn-sm" onclick="iniciarTreino(1, 'B')">
-                                <i class="bi bi-play-fill me-1"></i>Treinar
+                                <i class="bi bi-play-fill me-1"></i><span class="d-none d-sm-inline">Treinar</span>
                             </button>
                         </div>
                     </div>
@@ -390,15 +459,15 @@
                         </div>
                     </div>
                     <div class="card-footer bg-transparent">
-                        <div class="btn-group w-100">
+                        <div class="btn-group w-100" role="group">
                             <button class="btn btn-primary btn-sm" onclick="verDetalhes(2)">
-                                <i class="bi bi-eye me-1"></i>Ver
+                                <i class="bi bi-eye me-1"></i><span class="d-none d-sm-inline">Ver</span>
                             </button>
                             <button class="btn btn-warning btn-sm" onclick="editarFicha(2)">
-                                <i class="bi bi-pencil me-1"></i>Editar
+                                <i class="bi bi-pencil me-1"></i><span class="d-none d-sm-inline">Editar</span>
                             </button>
                             <button class="btn btn-outline-success btn-sm" onclick="ativarFicha(2)">
-                                <i class="bi bi-check-circle me-1"></i>Ativar
+                                <i class="bi bi-check-circle me-1"></i><span class="d-none d-sm-inline">Ativar</span>
                             </button>
                         </div>
                     </div>
@@ -428,15 +497,15 @@
                         </div>
                     </div>
                     <div class="card-footer bg-transparent">
-                        <div class="btn-group w-100">
+                        <div class="btn-group w-100" role="group">
                             <button class="btn btn-primary btn-sm" onclick="verDetalhes(3)">
-                                <i class="bi bi-eye me-1"></i>Ver
+                                <i class="bi bi-eye me-1"></i><span class="d-none d-sm-inline">Ver</span>
                             </button>
                             <button class="btn btn-warning btn-sm" onclick="editarFicha(3)">
-                                <i class="bi bi-pencil me-1"></i>Editar
+                                <i class="bi bi-pencil me-1"></i><span class="d-none d-sm-inline">Editar</span>
                             </button>
                             <button class="btn btn-outline-success btn-sm" onclick="ativarFicha(3)">
-                                <i class="bi bi-check-circle me-1"></i>Ativar
+                                <i class="bi bi-check-circle me-1"></i><span class="d-none d-sm-inline">Ativar</span>
                             </button>
                         </div>
                     </div>
@@ -446,7 +515,7 @@
 
         <!-- Estatísticas -->
         <div class="row g-4">
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <div class="card text-center">
                     <div class="card-body">
                         <i class="bi bi-journal-text display-4 text-primary mb-2"></i>
@@ -455,7 +524,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <div class="card text-center">
                     <div class="card-body">
                         <i class="bi bi-check-circle display-4 text-success mb-2"></i>
@@ -464,7 +533,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <div class="card text-center">
                     <div class="card-body">
                         <i class="bi bi-calendar-week display-4 text-warning mb-2"></i>
@@ -473,13 +542,149 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-6 col-md-3">
                 <div class="card text-center">
                     <div class="card-body">
                         <i class="bi bi-lightning display-4 text-info mb-2"></i>
                         <h4 class="text-info">42</h4>
                         <p class="mb-0">Exercícios Únicos</p>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Treino -->
+    <div class="modal fade" id="treinoModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-play-fill me-2"></i>Treino - <span id="treinoTitulo">Divisão A - Peito e Tríceps</span>
+                    </h5>
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-primary me-3" id="treinoProgresso">1/4 exercícios</span>
+                        <span class="text-white me-3" id="treinoTempo">00:00</span>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- Exercício Atual -->
+                        <div class="col-md-8 mb-4">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0" id="exercicioAtual">Supino Reto</h5>
+                                    <button class="btn btn-outline-primary btn-sm" onclick="verDemonstracao()">
+                                        <i class="bi bi-play-circle me-1"></i>Demonstração
+                                    </button>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-sm-6 mb-3">
+                                            <label class="form-label text-white">Séries Planejadas</label>
+                                            <input type="text" class="form-control" id="seriesPlanejadas" value="4 séries" readonly>
+                                        </div>
+                                        <div class="col-sm-6 mb-3">
+                                            <label class="form-label text-white">Repetições</label>
+                                            <input type="text" class="form-control" id="repeticoesPlanejadas" value="8-10 reps" readonly>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Séries Executadas -->
+                                    <h6 class="text-white mb-3">Séries Executadas:</h6>
+                                    <div id="seriesContainer">
+                                        <div class="row g-2 mb-2 serie-row">
+                                            <div class="col-3">
+                                                <label class="form-label text-white small">Série 1</label>
+                                            </div>
+                                            <div class="col-3">
+                                                <input type="number" class="form-control form-control-sm" placeholder="Peso (kg)" min="0" step="0.5">
+                                            </div>
+                                            <div class="col-3">
+                                                <input type="number" class="form-control form-control-sm" placeholder="Reps" min="1">
+                                            </div>
+                                            <div class="col-3">
+                                                <button class="btn btn-success btn-sm w-100" onclick="confirmarSerie(this)">
+                                                    <i class="bi bi-check"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="d-flex justify-content-between mt-3">
+                                        <button class="btn btn-outline-primary" onclick="adicionarSerie()">
+                                            <i class="bi bi-plus me-1"></i>Adicionar Série
+                                        </button>
+                                        <button class="btn btn-primary" onclick="proximoExercicio()">
+                                            <i class="bi bi-arrow-right me-1"></i>Próximo Exercício
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Painel Lateral -->
+                        <div class="col-md-4">
+                            <!-- Timer de Descanso -->
+                            <div class="card mb-3">
+                                <div class="card-header">
+                                    <h6 class="mb-0"><i class="bi bi-clock me-2"></i>Descanso</h6>
+                                </div>
+                                <div class="card-body text-center">
+                                    <div class="display-4 text-primary mb-2" id="timerDescanso">01:30</div>
+                                    <div class="btn-group w-100 mb-2">
+                                        <button class="btn btn-success btn-sm" onclick="iniciarTimer()">
+                                            <i class="bi bi-play-fill"></i>
+                                        </button>
+                                        <button class="btn btn-warning btn-sm" onclick="pausarTimer()">
+                                            <i class="bi bi-pause-fill"></i>
+                                        </button>
+                                        <button class="btn btn-danger btn-sm" onclick="resetarTimer()">
+                                            <i class="bi bi-arrow-clockwise"></i>
+                                        </button>
+                                    </div>
+                                    <input type="range" class="form-range" min="30" max="300" value="90" id="timerRange" oninput="ajustarTimer(this.value)">
+                                    <small class="text-muted">30s - 5min</small>
+                                </div>
+                            </div>
+                            
+                            <!-- Lista de Exercícios -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6 class="mb-0"><i class="bi bi-list me-2"></i>Exercícios</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="list-group list-group-flush" id="listaExercicios">
+                                        <div class="list-group-item list-group-item-action active d-flex justify-content-between align-items-center">
+                                            <span>Supino Reto</span>
+                                            <i class="bi bi-arrow-right text-primary"></i>
+                                        </div>
+                                        <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                            <span>Supino Inclinado</span>
+                                            <i class="bi bi-circle text-muted"></i>
+                                        </div>
+                                        <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                            <span>Crucifixo</span>
+                                            <i class="bi bi-circle text-muted"></i>
+                                        </div>
+                                        <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                            <span>Mergulho</span>
+                                            <i class="bi bi-circle text-muted"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="pausarTreino()">
+                        <i class="bi bi-pause me-2"></i>Pausar Treino
+                    </button>
+                    <button type="button" class="btn btn-danger" onclick="finalizarTreino()">
+                        <i class="bi bi-stop me-2"></i>Finalizar Treino
+                    </button>
                 </div>
             </div>
         </div>
@@ -548,664 +753,708 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal Detalhes -->
     <div class="modal fade" id="detalhesModal" tabindex="-1">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="bi bi-eye me-2"></i>Detalhes da Ficha - Hipertrofia 2025
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-4 mb-4">
-                        <div class="card h-100">
-                            <div class="card-header">
-                                <h6 class="mb-0"><i class="bi bi-info-circle me-2"></i>Informações Gerais</h6>
-                            </div>
-                            <div class="card-body">
-                                <p><strong>Nome:</strong> Hipertrofia 2025</p>
-                                <p><strong>Objetivo:</strong> Hipertrofia avançada</p>
-                                <p><strong>Status:</strong> <span class="badge bg-success">Ativa</span></p>
-                                <p><strong>Criada em:</strong> 15/01/2025</p>
-                                <p><strong>Última modificação:</strong> 20/01/2025</p>
-                                <p><strong>Total de exercícios:</strong> 42</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card">
-                            <div class="card-header">
-                                <h6 class="mb-0"><i class="bi bi-calendar-week me-2"></i>Divisões de Treino</h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="accordion" id="divisoesAccordion">
-                                    <div class="accordion-item">
-                                        <h2 class="accordion-header">
-                                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseA">
-                                                <strong>Divisão A - Peito e Tríceps</strong>
-                                                <span class="badge bg-primary ms-2">12 exercícios</span>
-                                            </button>
-                                        </h2>
-                                        <div id="collapseA" class="accordion-collapse collapse show" data-bs-parent="#divisoesAccordion">
-                                            <div class="accordion-body">
-                                                <div class="table-responsive">
-                                                    <table class="table table-dark table-sm">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Exercício</th>
-                                                                <th>Séries</th>
-                                                                <th>Repetições</th>
-                                                                <th>Descanso</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>Supino Reto</td>
-                                                                <td>4</td>
-                                                                <td>8-10</td>
-                                                                <td>90s</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Supino Inclinado</td>
-                                                                <td>3</td>
-                                                                <td>10-12</td>
-                                                                <td>75s</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Crucifixo</td>
-                                                                <td>3</td>
-                                                                <td>12-15</td>
-                                                                <td>60s</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Tríceps Testa</td>
-                                                                <td>4</td>
-                                                                <td>10-12</td>
-                                                                <td>60s</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Tríceps Corda</td>
-                                                                <td>3</td>
-                                                                <td>12-15</td>
-                                                                <td>45s</td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="accordion-item">
-                                        <h2 class="accordion-header">
-                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseB">
-                                                <strong>Divisão B - Costas e Bíceps</strong>
-                                                <span class="badge bg-primary ms-2">15 exercícios</span>
-                                            </button>
-                                        </h2>
-                                        <div id="collapseB" class="accordion-collapse collapse" data-bs-parent="#divisoesAccordion">
-                                            <div class="accordion-body">
-                                                <div class="table-responsive">
-                                                    <table class="table table-dark table-sm">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Exercício</th>
-                                                                <th>Séries</th>
-                                                                <th>Repetições</th>
-                                                                <th>Descanso</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>Puxada Alta</td>
-                                                                <td>4</td>
-                                                                <td>8-10</td>
-                                                                <td>90s</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Remada Baixa</td>
-                                                                <td>4</td>
-                                                                <td>10-12</td>
-                                                                <td>75s</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Rosca Direta</td>
-                                                                <td>3</td>
-                                                                <td>12-15</td>
-                                                                <td>60s</td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="accordion-item">
-                                        <h2 class="accordion-header">
-                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseC">
-                                                <strong>Divisão C - Pernas e Ombros</strong>
-                                                <span class="badge bg-primary ms-2">15 exercícios</span>
-                                            </button>
-                                        </h2>
-                                        <div id="collapseC" class="accordion-collapse collapse" data-bs-parent="#divisoesAccordion">
-                                            <div class="accordion-body">
-                                                <div class="table-responsive">
-                                                    <table class="table table-dark table-sm">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Exercício</th>
-                                                                <th>Séries</th>
-                                                                <th>Repetições</th>
-                                                                <th>Descanso</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>Agachamento Livre</td>
-                                                                <td>4</td>
-                                                                <td>8-10</td>
-                                                                <td>120s</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Leg Press</td>
-                                                                <td>4</td>
-                                                                <td>12-15</td>
-                                                                <td>90s</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>Desenvolvimento</td>
-                                                                <td>4</td>
-                                                                <td>10-12</td>
-                                                                <td>75s</td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-eye me-2"></i>Detalhes da Ficha - <span id="nomeDetalhes">Hipertrofia 2025</span>
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-warning" onclick="editarFicha(1)">
-                    <i class="bi bi-pencil me-2"></i>Editar Ficha
-                </button>
-                <button type="button" class="btn btn-success" onclick="iniciarTreino(1, 'B')">
-                    <i class="bi bi-play-fill me-2"></i>Iniciar Treino
-                </button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Editar Ficha -->
-<div class="modal fade" id="editarFichaModal" tabindex="-1">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="bi bi-pencil me-2"></i>Editar Ficha - Hipertrofia 2025
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <form id="editarFichaForm">
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <label class="form-label">Nome da Ficha</label>
-                            <input type="text" class="form-control" value="Hipertrofia 2025" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label">Objetivo</label>
-                            <select class="form-select" required>
-                                <option value="hipertrofia" selected>Hipertrofia</option>
-                                <option value="forca">Ganho de Força</option>
-                                <option value="resistencia">Resistência</option>
-                                <option value="condicionamento">Condicionamento Geral</option>
-                                <option value="definicao">Definição Muscular</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="card mb-4">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <h6 class="mb-0"><i class="bi bi-list-task me-2"></i>Divisões de Treino</h6>
-                            <button type="button" class="btn btn-primary btn-sm" onclick="adicionarDivisaoEdit()">
-                                <i class="bi bi-plus me-1"></i>Adicionar Divisão
-                            </button>
-                        </div>
-                        <div class="card-body">
-                            <div id="divisoesEdit">
-                                <div class="card mb-3">
-                                    <div class="card-header d-flex justify-content-between align-items-center">
-                                        <div class="input-group" style="max-width: 300px;">
-                                            <span class="input-group-text">A</span>
-                                            <input type="text" class="form-control" value="Peito, Tríceps">
-                                        </div>
-                                        <button class="btn btn-outline-danger btn-sm" type="button">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="table-responsive">
-                                            <table class="table table-dark table-sm">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Exercício</th>
-                                                        <th>Séries</th>
-                                                        <th>Reps</th>
-                                                        <th>Descanso</th>
-                                                        <th>Ações</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            <select class="form-select form-select-sm">
-                                                                <option selected>Supino Reto</option>
-                                                                <option>Supino Inclinado</option>
-                                                                <option>Crucifixo</option>
-                                                            </select>
-                                                        </td>
-                                                        <td><input type="number" class="form-control form-control-sm" value="4"></td>
-                                                        <td><input type="text" class="form-control form-control-sm" value="8-10"></td>
-                                                        <td><input type="number" class="form-control form-control-sm" value="90"></td>
-                                                        <td>
-                                                            <button class="btn btn-outline-danger btn-sm">
-                                                                <i class="bi bi-trash"></i>
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td>
-                                                            <select class="form-select form-select-sm">
-                                                                <option>Supino Reto</option>
-                                                                <option selected>Supino Inclinado</option>
-                                                                <option>Crucifixo</option>
-                                                            </select>
-                                                        </td>
-                                                        <td><input type="number" class="form-control form-control-sm" value="3"></td>
-                                                        <td><input type="text" class="form-control form-control-sm" value="10-12"></td>
-                                                        <td><input type="number" class="form-control form-control-sm" value="75"></td>
-                                                        <td>
-                                                            <button class="btn btn-outline-danger btn-sm">
-                                                                <i class="bi bi-trash"></i>
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <button type="button" class="btn btn-outline-primary btn-sm">
-                                            <i class="bi bi-plus me-1"></i>Adicionar Exercício
-                                        </button>
-                                    </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-header">
+                                    <h6 class="mb-0"><i class="bi bi-info-circle me-2"></i>Informações Gerais</h6>
                                 </div>
-
-                                <div class="card mb-3">
-                                    <div class="card-header d-flex justify-content-between align-items-center">
-                                        <div class="input-group" style="max-width: 300px;">
-                                            <span class="input-group-text">B</span>
-                                            <input type="text" class="form-control" value="Costas, Bíceps">
-                                        </div>
-                                        <button class="btn btn-outline-danger btn-sm" type="button">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="table-responsive">
-                                            <table class="table table-dark table-sm">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Exercício</th>
-                                                        <th>Séries</th>
-                                                        <th>Reps</th>
-                                                        <th>Descanso</th>
-                                                        <th>Ações</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            <select class="form-select form-select-sm">
-                                                                <option selected>Puxada Alta</option>
-                                                                <option>Remada Baixa</option>
-                                                                <option>Rosca Direta</option>
-                                                            </select>
-                                                        </td>
-                                                        <td><input type="number" class="form-control form-control-sm" value="4"></td>
-                                                        <td><input type="text" class="form-control form-control-sm" value="8-10"></td>
-                                                        <td><input type="number" class="form-control form-control-sm" value="90"></td>
-                                                        <td>
-                                                            <button class="btn btn-outline-danger btn-sm">
-                                                                <i class="bi bi-trash"></i>
-                                                            </button>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <button type="button" class="btn btn-outline-primary btn-sm">
-                                            <i class="bi bi-plus me-1"></i>Adicionar Exercício
-                                        </button>
-                                    </div>
+                                <div class="card-body">
+                                    <p><strong>Nome:</strong> <span id="detalhesNome">Hipertrofia 2025</span></p>
+                                    <p><strong>Objetivo:</strong> <span id="detalhesObjetivo">Hipertrofia avançada</span></p>
+                                    <p><strong>Status:</strong> <span id="detalhesStatus" class="badge bg-success">Ativa</span></p>
+                                    <p><strong>Criada em:</strong> <span id="detalhesCriada">15/01/2025</span></p>
+                                    <p><strong>Última modificação:</strong> <span id="detalhesModificacao">20/01/2025</span></p>
+                                    <p><strong>Total de exercícios:</strong> <span id="detalhesTotalExercicios">42</span></p>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="manterAtiva" checked>
-                        <label class="form-check-label" for="manterAtiva">
-                            Manter esta ficha como ativa
-                        </label>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" onclick="salvarEdicaoFicha()">
-                    <i class="bi bi-save me-2"></i>Salvar Alterações
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Iniciar Treino -->
-<div class="modal fade" id="iniciarTreinoModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">
-                    <i class="bi bi-play-fill me-2"></i>Iniciar Treino - Divisão B (Costas e Bíceps)
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row mb-4">
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-body text-center">
-                                <i class="bi bi-clock display-4 text-primary mb-2"></i>
-                                <h5>Tempo de Treino</h5>
-                                <h3 id="cronometro" class="text-primary">00:00:00</h3>
-                                <button class="btn btn-success btn-sm" id="btnIniciarPausar">
-                                    <i class="bi bi-play-fill me-1"></i>Iniciar
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card">
-                            <div class="card-body text-center">
-                                <i class="bi bi-list-check display-4 text-warning mb-2"></i>
-                                <h5>Progresso</h5>
-                                <div class="progress mb-2">
-                                    <div class="progress-bar bg-warning" style="width: 0%" id="progressoTreino"></div>
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6 class="mb-0"><i class="bi bi-calendar-week me-2"></i>Divisões de Treino</h6>
                                 </div>
-                                <p class="mb-0"><span id="exerciciosCompletados">0</span> de <span id="totalExercicios">4</span> exercícios</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <h6 class="mb-0">
-                            <i class="bi bi-lightning me-2"></i>Exercícios da Divisão B
-                        </h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="accordion" id="exerciciosTreinoacordion">
-                            <div class="accordion-item">
-                                <h2 class="accordion-header">
-                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#exercicio1">
-                                        <div class="d-flex align-items-center w-100">
-                                            <span class="badge bg-primary me-3">1</span>
-                                            <div class="flex-grow-1">
-                                                <strong>Puxada Alta</strong>
-                                                <small class="d-block text-muted">4 séries × 8-10 reps × 90s descanso</small>
-                                            </div>
-                                            <span class="badge bg-secondary ms-2">Pendente</span>
-                                        </div>
-                                    </button>
-                                </h2>
-                                <div id="exercicio1" class="accordion-collapse collapse show" data-bs-parent="#exerciciosTreinoacordion">
-                                    <div class="accordion-body">
-                                        <div class="row">
-                                            <div class="col-md-8">
-                                                <div class="table-responsive">
-                                                    <table class="table table-dark table-sm">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Série</th>
-                                                                <th>Peso (kg)</th>
-                                                                <th>Repetições</th>
-                                                                <th>Status</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>1</td>
-                                                                <td><input type="number" class="form-control form-control-sm" placeholder="0"></td>
-                                                                <td><input type="number" class="form-control form-control-sm" placeholder="0"></td>
-                                                                <td>
-                                                                    <button class="btn btn-success btn-sm">
-                                                                        <i class="bi bi-check"></i>
-                                                                    </button>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>2</td>
-                                                                <td><input type="number" class="form-control form-control-sm" placeholder="0"></td>
-                                                                <td><input type="number" class="form-control form-control-sm" placeholder="0"></td>
-                                                                <td>
-                                                                    <button class="btn btn-success btn-sm">
-                                                                        <i class="bi bi-check"></i>
-                                                                    </button>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>3</td>
-                                                                <td><input type="number" class="form-control form-control-sm" placeholder="0"></td>
-                                                                <td><input type="number" class="form-control form-control-sm" placeholder="0"></td>
-                                                                <td>
-                                                                    <button class="btn btn-success btn-sm">
-                                                                        <i class="bi bi-check"></i>
-                                                                    </button>
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>4</td>
-                                                                <td><input type="number" class="form-control form-control-sm" placeholder="0"></td>
-                                                                <td><input type="number" class="form-control form-control-sm" placeholder="0"></td>
-                                                                <td>
-                                                                    <button class="btn btn-success btn-sm">
-                                                                        <i class="bi bi-check"></i>
-                                                                    </button>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="card">
-                                                    <div class="card-body text-center">
-                                                        <h6>Timer de Descanso</h6>
-                                                        <h4 class="text-warning" id="timerDescanso">01:30</h4>
-                                                        <button class="btn btn-warning btn-sm">
-                                                            <i class="bi bi-play-fill"></i> Iniciar
-                                                        </button>
+                                <div class="card-body">
+                                    <div class="accordion" id="divisoesAccordion">
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header">
+                                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseA">
+                                                    <strong>Divisão A - Peito e Tríceps</strong>
+                                                    <span class="badge bg-primary ms-2">12 exercícios</span>
+                                                </button>
+                                            </h2>
+                                            <div id="collapseA" class="accordion-collapse collapse show" data-bs-parent="#divisoesAccordion">
+                                                <div class="accordion-body">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-dark table-sm">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Exercício</th>
+                                                                    <th>Séries</th>
+                                                                    <th>Repetições</th>
+                                                                    <th>Descanso</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>Supino Reto</td>
+                                                                    <td>4</td>
+                                                                    <td>8-10</td>
+                                                                    <td>90s</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Supino Inclinado</td>
+                                                                    <td>3</td>
+                                                                    <td>10-12</td>
+                                                                    <td>75s</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Crucifixo</td>
+                                                                    <td>3</td>
+                                                                    <td>10-12</td>
+                                                                    <td>60s</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Mergulho</td>
+                                                                    <td>3</td>
+                                                                    <td>12-15</td>
+                                                                    <td>60s</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Tríceps Testa</td>
+                                                                    <td>4</td>
+                                                                    <td>10-12</td>
+                                                                    <td>45s</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
                                                     </div>
                                                 </div>
-                                                <div class="mt-3">
-                                                    <label class="form-label">Observações</label>
-                                                    <textarea class="form-control" rows="3" placeholder="Notas sobre o exercício..."></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header">
+                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseB">
+                                                    <strong>Divisão B - Costas e Bíceps</strong>
+                                                    <span class="badge bg-primary ms-2">14 exercícios</span>
+                                                </button>
+                                            </h2>
+                                            <div id="collapseB" class="accordion-collapse collapse" data-bs-parent="#divisoesAccordion">
+                                                <div class="accordion-body">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-dark table-sm">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Exercício</th>
+                                                                    <th>Séries</th>
+                                                                    <th>Repetições</th>
+                                                                    <th>Descanso</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>Barra Fixa</td>
+                                                                    <td>4</td>
+                                                                    <td>8-12</td>
+                                                                    <td>90s</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Remada Curvada</td>
+                                                                    <td>4</td>
+                                                                    <td>10-12</td>
+                                                                    <td>75s</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Rosca Direta</td>
+                                                                    <td>3</td>
+                                                                    <td>12-15</td>
+                                                                    <td>60s</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header">
+                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseC">
+                                                    <strong>Divisão C - Pernas e Ombros</strong>
+                                                    <span class="badge bg-primary ms-2">16 exercícios</span>
+                                                </button>
+                                            </h2>
+                                            <div id="collapseC" class="accordion-collapse collapse" data-bs-parent="#divisoesAccordion">
+                                                <div class="accordion-body">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-dark table-sm">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Exercício</th>
+                                                                    <th>Séries</th>
+                                                                    <th>Repetições</th>
+                                                                    <th>Descanso</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>Agachamento</td>
+                                                                    <td>4</td>
+                                                                    <td>12-15</td>
+                                                                    <td>120s</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Desenvolvimento</td>
+                                                                    <td>4</td>
+                                                                    <td>8-10</td>
+                                                                    <td>90s</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>Elevação Lateral</td>
+                                                                    <td>3</td>
+                                                                    <td>12-15</td>
+                                                                    <td>45s</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-warning" onclick="editarFicha(1)">
+                        <i class="bi bi-pencil me-2"></i>Editar Ficha
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                            <div class="accordion-item">
-                                <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#exercicio2">
-                                        <div class="d-flex align-items-center w-100">
-                                            <span class="badge bg-primary me-3">2</span>
-                                            <div class="flex-grow-1">
-                                                <strong>Remada Baixa</strong>
-                                                <small class="d-block text-muted">4 séries × 10-12 reps × 75s descanso</small>
+    <!-- Modal Editar Ficha -->
+    <div class="modal fade" id="editarFichaModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="bi bi-pencil me-2"></i>Editar Ficha - <span id="nomeEdicao">Hipertrofia 2025</span>
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editarFichaForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-white">Nome da Ficha</label>
+                                <input type="text" class="form-control" id="editNomeFicha" value="Hipertrofia 2025">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label text-white">Objetivo</label>
+                                <select class="form-select" id="editObjetivo">
+                                    <option value="hipertrofia" selected>Hipertrofia</option>
+                                    <option value="forca">Ganho de Força</option>
+                                    <option value="resistencia">Resistência</option>
+                                    <option value="condicionamento">Condicionamento Geral</option>
+                                    <option value="definicao">Definição Muscular</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <!-- Divisões Editáveis -->
+                        <div class="mb-4">
+                            <h6 class="text-white mb-3"><i class="bi bi-calendar-week me-2"></i>Divisões de Treino</h6>
+                            <div class="accordion" id="editDivisoesAccordion">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#editCollapseA">
+                                            <strong>Divisão A - Peito e Tríceps</strong>
+                                            <span class="badge bg-warning ms-2 text-dark">Editando</span>
+                                        </button>
+                                    </h2>
+                                    <div id="editCollapseA" class="accordion-collapse collapse show" data-bs-parent="#editDivisoesAccordion">
+                                        <div class="accordion-body">
+                                            <div class="mb-3">
+                                                <label class="form-label text-white">Nome da Divisão</label>
+                                                <input type="text" class="form-control" value="Peito e Tríceps">
                                             </div>
-                                            <span class="badge bg-secondary ms-2">Pendente</span>
+                                            <div class="table-responsive">
+                                                <table class="table table-dark">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Exercício</th>
+                                                            <th>Séries</th>
+                                                            <th>Repetições</th>
+                                                            <th>Descanso</th>
+                                                            <th>Ações</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="exerciciosA">
+                                                        <tr>
+                                                            <td><input type="text" class="form-control form-control-sm" value="Supino Reto"></td>
+                                                            <td><input type="number" class="form-control form-control-sm" value="4" style="width: 60px;"></td>
+                                                            <td><input type="text" class="form-control form-control-sm" value="8-10" style="width: 80px;"></td>
+                                                            <td><input type="text" class="form-control form-control-sm" value="90s" style="width: 70px;"></td>
+                                                            <td>
+                                                                <button class="btn btn-danger btn-sm" onclick="removerExercicio(this)">
+                                                                    <i class="bi bi-trash"></i>
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td><input type="text" class="form-control form-control-sm" value="Supino Inclinado"></td>
+                                                            <td><input type="number" class="form-control form-control-sm" value="3" style="width: 60px;"></td>
+                                                            <td><input type="text" class="form-control form-control-sm" value="10-12" style="width: 80px;"></td>
+                                                            <td><input type="text" class="form-control form-control-sm" value="75s" style="width: 70px;"></td>
+                                                            <td>
+                                                                <button class="btn btn-danger btn-sm" onclick="removerExercicio(this)">
+                                                                    <i class="bi bi-trash"></i>
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="adicionarExercicio('exerciciosA')">
+                                                <i class="bi bi-plus me-1"></i>Adicionar Exercício
+                                            </button>
                                         </div>
-                                    </button>
-                                </h2>
-                                <div id="exercicio2" class="accordion-collapse collapse" data-bs-parent="#exerciciosTreinoacordion">
-                                    <div class="accordion-body">
-                                        <p class="text-muted">Complete o exercício anterior para liberar este.</p>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="accordion-item">
-                                <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#exercicio3">
-                                        <div class="d-flex align-items-center w-100">
-                                            <span class="badge bg-primary me-3">3</span>
-                                            <div class="flex-grow-1">
-                                                <strong>Rosca Direta</strong>
-                                                <small class="d-block text-muted">3 séries × 12-15 reps × 60s descanso</small>
+                                
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#editCollapseB">
+                                            <strong>Divisão B - Costas e Bíceps</strong>
+                                        </button>
+                                    </h2>
+                                    <div id="editCollapseB" class="accordion-collapse collapse" data-bs-parent="#editDivisoesAccordion">
+                                        <div class="accordion-body">
+                                            <div class="mb-3">
+                                                <label class="form-label text-white">Nome da Divisão</label>
+                                                <input type="text" class="form-control" value="Costas e Bíceps">
                                             </div>
-                                            <span class="badge bg-secondary ms-2">Pendente</span>
-                                        </div>
-                                    </button>
-                                </h2>
-                                <div id="exercicio3" class="accordion-collapse collapse" data-bs-parent="#exerciciosTreinoacordion">
-                                    <div class="accordion-body">
-                                        <p class="text-muted">Complete os exercícios anteriores para liberar este.</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="accordion-item">
-                                <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#exercicio4">
-                                        <div class="d-flex align-items-center w-100">
-                                            <span class="badge bg-primary me-3">4</span>
-                                            <div class="flex-grow-1">
-                                                <strong>Rosca Martelo</strong>
-                                                <small class="d-block text-muted">3 séries × 10-12 reps × 45s descanso</small>
+                                            <div class="table-responsive">
+                                                <table class="table table-dark">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Exercício</th>
+                                                            <th>Séries</th>
+                                                            <th>Repetições</th>
+                                                            <th>Descanso</th>
+                                                            <th>Ações</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="exerciciosB">
+                                                        <tr>
+                                                            <td><input type="text" class="form-control form-control-sm" value="Barra Fixa"></td>
+                                                            <td><input type="number" class="form-control form-control-sm" value="4" style="width: 60px;"></td>
+                                                            <td><input type="text" class="form-control form-control-sm" value="8-12" style="width: 80px;"></td>
+                                                            <td><input type="text" class="form-control form-control-sm" value="90s" style="width: 70px;"></td>
+                                                            <td>
+                                                                <button class="btn btn-danger btn-sm" onclick="removerExercicio(this)">
+                                                                    <i class="bi bi-trash"></i>
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
                                             </div>
-                                            <span class="badge bg-secondary ms-2">Pendente</span>
+                                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="adicionarExercicio('exerciciosB')">
+                                                <i class="bi bi-plus me-1"></i>Adicionar Exercício
+                                            </button>
                                         </div>
-                                    </button>
-                                </h2>
-                                <div id="exercicio4" class="accordion-collapse collapse" data-bs-parent="#exerciciosTreinoacordion">
-                                    <div class="accordion-body">
-                                        <p class="text-muted">Complete os exercícios anteriores para liberar este.</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="editAtivarFicha">
+                                    <label class="form-check-label text-white" for="editAtivarFicha">
+                                        Manter como ficha ativa
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" onclick="cancelarTreino()">
-                    <i class="bi bi-x-circle me-2"></i>Cancelar Treino
-                </button>
-                <button type="button" class="btn btn-success" onclick="finalizarTreino()">
-                    <i class="bi bi-check-circle me-2"></i>Finalizar Treino
-                </button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" onclick="excluirFicha()">
+                        <i class="bi bi-trash me-2"></i>Excluir Ficha
+                    </button>
+                    <button type="button" class="btn btn-success" onclick="salvarEdicaoFicha()">
+                        <i class="bi bi-save me-2"></i>Salvar Alterações
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <script type="module" src="../static/js/functional/dashboardFunctions.js"></script>
     <script>
-        let divisaoAtual = 'B';
-        
-        function adicionarDivisao() {
-            const container = document.getElementById('divisoes');
-            const letra = String.fromCharCode(65 + container.children.length);
+        // Mobile menu functionality
+        document.getElementById('menuToggle').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
             
-            if (container.children.length >= 7) {
-                alert('Máximo de 7 divisões permitidas');
+            sidebar.classList.toggle('show');
+            overlay.classList.toggle('show');
+        });
+
+        document.getElementById('sidebarOverlay').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            sidebar.classList.remove('show');
+            overlay.classList.remove('show');
+        });
+
+        // Close sidebar when clicking on menu items on mobile
+        const sidebarItems = document.querySelectorAll('.sidebar-menu li');
+        sidebarItems.forEach(item => {
+            item.addEventListener('click', function() {
+                if (window.innerWidth <= 991.98) {
+                    const sidebar = document.getElementById('sidebar');
+                    const overlay = document.getElementById('sidebarOverlay');
+                    
+                    sidebar.classList.remove('show');
+                    overlay.classList.remove('show');
+                }
+            });
+        });
+
+        // Responsive adjustments
+        window.addEventListener('resize', function() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            if (window.innerWidth > 991.98) {
+                sidebar.classList.remove('show');
+                overlay.classList.remove('show');
+            }
+        });
+
+        // Nova ficha functions
+        let divisaoCounter = 1;
+        const letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+
+        function adicionarDivisao() {
+            if (divisaoCounter >= letras.length) {
+                alert('Máximo de divisões atingido!');
                 return;
             }
             
-            const div = document.createElement('div');
-            div.className = 'input-group mb-2';
-            div.innerHTML = `
-                <span class="input-group-text">${letra}</span>
-                <input type="text" class="form-control" placeholder="Ex: Costas, Bíceps">
+            const divisoesContainer = document.getElementById('divisoes');
+            const newDiv = document.createElement('div');
+            newDiv.className = 'input-group mb-2';
+            newDiv.innerHTML = `
+                <span class="input-group-text">${letras[divisaoCounter]}</span>
+                <input type="text" class="form-control" placeholder="Ex: Pernas, Glúteos">
                 <button class="btn btn-outline-danger" type="button" onclick="removerDivisao(this)">
                     <i class="bi bi-trash"></i>
                 </button>
             `;
-            container.appendChild(div);
+            divisoesContainer.appendChild(newDiv);
+            divisaoCounter++;
         }
-        
-        function removerDivisao(btn) {
-            const container = document.getElementById('divisoes');
-            if (container.children.length > 1) {
-                btn.parentElement.remove();
-                reorganizarDivisoes();
+
+        function removerDivisao(button) {
+            const divisoesContainer = document.getElementById('divisoes');
+            if (divisoesContainer.children.length > 1) {
+                button.parentElement.remove();
+                divisaoCounter--;
+                
+                // Reorder letters
+                const divs = divisoesContainer.querySelectorAll('.input-group');
+                divs.forEach((div, index) => {
+                    div.querySelector('.input-group-text').textContent = letras[index];
+                });
             } else {
-                alert('Pelo menos uma divisão é necessária');
+                alert('Pelo menos uma divisão é necessária!');
             }
         }
-        
-        function reorganizarDivisoes() {
-            const container = document.getElementById('divisoes');
-            Array.from(container.children).forEach((div, index) => {
-                const letra = String.fromCharCode(65 + index);
-                div.querySelector('.input-group-text').textContent = letra;
-            });
-        }
-        
+
         function salvarNovaFicha() {
-            // Aqui seria a integração com a API
+            // Here you would implement the save logic
             alert('Ficha salva com sucesso!');
-            bootstrap.Modal.getInstance(document.getElementById('novaFichaModal')).hide();
-            // Recarregar a página ou atualizar a lista
+            const modal = bootstrap.Modal.getInstance(document.getElementById('novaFichaModal'));
+            modal.hide();
         }
-        
+
+        // Ver detalhes function
         function verDetalhes(fichaId) {
-            // Redirecionar para página de detalhes da ficha
-            alert(`Ver detalhes da ficha ${fichaId}`);
+            // Populate modal with ficha details based on fichaId
+            const modal = new bootstrap.Modal(document.getElementById('detalhesModal'));
+            modal.show();
         }
-        
+
+        // Editar ficha function
         function editarFicha(fichaId) {
-            // Abrir modal de edição
-            alert(`Editar ficha ${fichaId}`);
+            // Close details modal if open
+            const detalhesModal = bootstrap.Modal.getInstance(document.getElementById('detalhesModal'));
+            if (detalhesModal) {
+                detalhesModal.hide();
+            }
+            
+            // Open edit modal
+            const editModal = new bootstrap.Modal(document.getElementById('editarFichaModal'));
+            editModal.show();
         }
-        
-        function iniciarTreino(fichaId, divisao) {
-            // Redirecionar para página de treino
-            alert(`Iniciar treino da ficha ${fichaId}, divisão ${divisao}`);
+
+        // Adicionar exercício function
+        function adicionarExercicio(tbodyId) {
+            const tbody = document.getElementById(tbodyId);
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td><input type="text" class="form-control form-control-sm" placeholder="Nome do exercício"></td>
+                <td><input type="number" class="form-control form-control-sm" value="3" style="width: 60px;"></td>
+                <td><input type="text" class="form-control form-control-sm" value="10-12" style="width: 80px;"></td>
+                <td><input type="text" class="form-control form-control-sm" value="60s" style="width: 70px;"></td>
+                <td>
+                    <button class="btn btn-danger btn-sm" onclick="removerExercicio(this)">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(newRow);
         }
-        
+
+        // Remover exercício function
+        function removerExercicio(button) {
+            button.closest('tr').remove();
+        }
+
+        // Salvar edição function
+        function salvarEdicaoFicha() {
+            alert('Alterações salvas com sucesso!');
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editarFichaModal'));
+            modal.hide();
+        }
+
+        // Excluir ficha function
+        function excluirFicha() {
+            if (confirm('Tem certeza que deseja excluir esta ficha? Esta ação não pode ser desfeita.')) {
+                alert('Ficha excluída com sucesso!');
+                const modal = bootstrap.Modal.getInstance(document.getElementById('editarFichaModal'));
+                modal.hide();
+            }
+        }
+
+        // Ativar ficha function
         function ativarFicha(fichaId) {
             if (confirm('Deseja ativar esta ficha? A ficha atual será desativada.')) {
-                // Integração com API
-                alert(`Ficha ${fichaId} ativada!`);
+                alert('Ficha ativada com sucesso!');
                 location.reload();
             }
         }
+
+        // Treino functionality
+        let timerInterval;
+        let tempoDescanso = 90;
+        let tempoTreino = 0;
+        let exercicioAtualIndex = 0;
+        let serieAtual = 1;
+
+        function iniciarTreino(fichaId, divisao) {
+            document.getElementById('treinoTitulo').textContent = `Divisão ${divisao} - Peito e Tríceps`;
+            document.getElementById('treinoProgresso').textContent = '1/4 exercícios';
+            
+            // Iniciar contador de tempo do treino
+            const inicioTreino = Date.now();
+            setInterval(() => {
+                const agora = Date.now();
+                const tempoDecorrido = Math.floor((agora - inicioTreino) / 1000);
+                const minutos = Math.floor(tempoDecorrido / 60);
+                const segundos = tempoDecorrido % 60;
+                document.getElementById('treinoTempo').textContent = 
+                    `${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
+            }, 1000);
+            
+            const modal = new bootstrap.Modal(document.getElementById('treinoModal'));
+            modal.show();
+        }
+
+        function adicionarSerie() {
+            serieAtual++;
+            const container = document.getElementById('seriesContainer');
+            const newSerie = document.createElement('div');
+            newSerie.className = 'row g-2 mb-2 serie-row';
+            newSerie.innerHTML = `
+                <div class="col-3">
+                    <label class="form-label text-white small">Série ${serieAtual}</label>
+                </div>
+                <div class="col-3">
+                    <input type="number" class="form-control form-control-sm" placeholder="Peso (kg)" min="0" step="0.5">
+                </div>
+                <div class="col-3">
+                    <input type="number" class="form-control form-control-sm" placeholder="Reps" min="1">
+                </div>
+                <div class="col-3">
+                    <button class="btn btn-success btn-sm w-100" onclick="confirmarSerie(this)">
+                        <i class="bi bi-check"></i>
+                    </button>
+                </div>
+            `;
+            container.appendChild(newSerie);
+        }
+
+        function confirmarSerie(button) {
+            const row = button.closest('.serie-row');
+            const peso = row.querySelector('input[placeholder="Peso (kg)"]').value;
+            const reps = row.querySelector('input[placeholder="Reps"]').value;
+            
+            if (peso && reps) {
+                button.innerHTML = '<i class="bi bi-check-circle-fill text-success"></i>';
+                button.disabled = true;
+                row.querySelectorAll('input').forEach(input => input.disabled = true);
+                iniciarTimer();
+            } else {
+                alert('Preencha peso e repetições!');
+            }
+        }
+
+        function proximoExercicio() {
+            exercicioAtualIndex++;
+            if (exercicioAtualIndex < 4) {
+                // Atualizar exercício atual
+                const exercicios = ['Supino Reto', 'Supino Inclinado', 'Crucifixo', 'Mergulho'];
+                document.getElementById('exercicioAtual').textContent = exercicios[exercicioAtualIndex];
+                document.getElementById('treinoProgresso').textContent = `${exercicioAtualIndex + 1}/4 exercícios`;
+                
+                // Reset séries
+                document.getElementById('seriesContainer').innerHTML = `
+                    <div class="row g-2 mb-2 serie-row">
+                        <div class="col-3">
+                            <label class="form-label text-white small">Série 1</label>
+                        </div>
+                        <div class="col-3">
+                            <input type="number" class="form-control form-control-sm" placeholder="Peso (kg)" min="0" step="0.5">
+                        </div>
+                        <div class="col-3">
+                            <input type="number" class="form-control form-control-sm" placeholder="Reps" min="1">
+                        </div>
+                        <div class="col-3">
+                            <button class="btn btn-success btn-sm w-100" onclick="confirmarSerie(this)">
+                                <i class="bi bi-check"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                serieAtual = 1;
+                
+                // Atualizar lista
+                const items = document.querySelectorAll('#listaExercicios .list-group-item');
+                items.forEach((item, index) => {
+                    item.classList.remove('active');
+                    const icon = item.querySelector('i');
+                    if (index < exercicioAtualIndex) {
+                        icon.className = 'bi bi-check-circle-fill text-success';
+                    } else if (index === exercicioAtualIndex) {
+                        item.classList.add('active');
+                        icon.className = 'bi bi-arrow-right text-primary';
+                    } else {
+                        icon.className = 'bi bi-circle text-muted';
+                    }
+                });
+            } else {
+                alert('Treino concluído! Parabéns! 🎉');
+                finalizarTreino();
+            }
+        }
+
+        function iniciarTimer() {
+            clearInterval(timerInterval);
+            let tempo = tempoDescanso;
+            
+            timerInterval = setInterval(() => {
+                tempo--;
+                const minutos = Math.floor(tempo / 60);
+                const segundos = tempo % 60;
+                document.getElementById('timerDescanso').textContent = 
+                    `${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
+                
+                if (tempo <= 0) {
+                    clearInterval(timerInterval);
+                    // Vibrar se suportado
+                    if (navigator.vibrate) {
+                        navigator.vibrate([200, 100, 200, 100, 200]);
+                    }
+                    alert('Tempo de descanso finalizado!');
+                }
+            }, 1000);
+        }
+
+        function pausarTimer() {
+            clearInterval(timerInterval);
+        }
+
+        function resetarTimer() {
+            clearInterval(timerInterval);
+            const minutos = Math.floor(tempoDescanso / 60);
+            const segundos = tempoDescanso % 60;
+            document.getElementById('timerDescanso').textContent = 
+                `${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
+        }
+
+        function ajustarTimer(valor) {
+            tempoDescanso = parseInt(valor);
+            resetarTimer();
+        }
+
+        function verDemonstracao() {
+            alert('Abrindo demonstração do exercício...');
+            // Aqui você implementaria a demonstração
+        }
+
+        function pausarTreino() {
+            if (confirm('Deseja pausar o treino? O progresso será salvo.')) {
+                const modal = bootstrap.Modal.getInstance(document.getElementById('treinoModal'));
+                modal.hide();
+            }
+        }
+
+        function finalizarTreino() {
+            if (confirm('Deseja finalizar o treino? O progresso será salvo.')) {
+                clearInterval(timerInterval);
+                const modal = bootstrap.Modal.getInstance(document.getElementById('treinoModal'));
+                modal.hide();
+                alert('Treino finalizado e salvo com sucesso! 💪');
+            }
+        }
+
+        // Logoff function
+        document.getElementById('logoff').addEventListener('click', function() {
+            if (confirm('Deseja realmente sair?')) {
+                // Implement logout logic
+                alert('Logout realizado!');
+            }
+        });
+
+        // Set username
+        document.addEventListener('DOMContentLoaded', function() {
+            const username = 'User'; // This would come from your backend
+            document.getElementById('username').textContent = username.substring(0, 2).toUpperCase();
+            document.querySelector('span.text-white.me-3').textContent = `Oi, ${username}!`;
+        });
     </script>
 </body>
-</html>
