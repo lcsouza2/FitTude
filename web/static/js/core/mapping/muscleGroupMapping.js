@@ -21,7 +21,6 @@ export class MuscleGroup {
         try {
             const response = await authApiClient.post("/api/data/groups/new", {
                 "group_name": groupName,
-                "user_id": 0
             });
             return response.body;
         } catch (error) {
