@@ -3,8 +3,8 @@ export function populateUsername(username) {
     elements.forEach(element => {
         element.textContent = element.textContent.replace("@username", username);
         element.textContent = element.textContent.replace("@U", username[0]);
+        element.value = username;
     });
-    
 }
 
 export function populateFirstStats(visuals) {
