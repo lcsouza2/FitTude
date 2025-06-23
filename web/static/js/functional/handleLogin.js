@@ -10,6 +10,8 @@ loginForm.addEventListener('submit', async function(event) {
     event.preventDefault();
     try {
         if (formEmail.value && formSenha.value) {
+            window.sessionStorage.removeItem('user_fullname'); // Limpar fullname anterior
+            window.sessionStorage.setItem('user_email', formEmail.value); // Armazenar email no sessionStorage
             await realizarLogin(formEmail.value, formSenha.value, formLembrar.checked);
         } else {
             mensagem_de_erro("Por favor, preencha todos os campos.")
