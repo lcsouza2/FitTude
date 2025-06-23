@@ -14,7 +14,7 @@
     <style>
         body {
             font-family: "Kanit", sans-serif ;
-            background-image: url('/web/static/assets/img/background_image.png');
+            background-image: url('static/assets/img/background_image.png');
             background-repeat: no-repeat;
             background-size: cover;
             background-position: center;
@@ -219,11 +219,11 @@
                 <form>
                     <div class="mb-3">
                         <label for="userName" class="form-label">Nome</label>
-                        <input type="text" class="form-control" id="userName" value="Rafael Silva">
+                        <input type="text" class="form-control" id="username" value="Username">
                     </div>
                     <div class="mb-3">
                         <label for="userEmail" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="userEmail" value="rafael.silva@email.com">
+                        <input type="email" class="form-control" id="useremail" value="rafael.silva@email.com">
                     </div>
                     <button type="submit" class="button-style">Salvar Alterações</button>
                 </form>
@@ -231,7 +231,7 @@
 
             <div class="config-section">
                 <h3>Alterar Senha</h3>
-                <form>
+                <form id="changePasswordForm">
                     <div class="mb-3">
                         <label for="currentPassword" class="form-label">Senha Atual</label>
                         <input type="password" class="form-control" id="currentPassword">
@@ -244,6 +244,8 @@
                         <label for="confirmPassword" class="form-label">Confirmar Nova Senha</label>
                         <input type="password" class="form-control" id="confirmPassword">
                     </div>
+                    <div id="changePasswordMessage"></div>
+
                     <button type="submit" class="button-style">Alterar Senha</button>
                 </form>
             </div>
@@ -276,5 +278,6 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script type="module" src="../static/js/functional/dashboardFunctions.js"></script>
+    <script type="module" src="../static/js/functional/configuracao.js"></script>
 </body>
 </html>
