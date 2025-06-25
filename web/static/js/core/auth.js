@@ -148,7 +148,7 @@ export class ApiClient {
             // Se ainda receber 401 ou 403 após tentar renovar, redireciona para login
             if (response.status === 401 || response.status === 403) {
                 tokenManager.redirectToLogin();
-                throw new Error('Não autorizado');
+                //throw new Error('Não autorizado');
             }
 
             // Processa a resposta

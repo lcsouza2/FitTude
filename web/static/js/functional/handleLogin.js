@@ -7,17 +7,18 @@ const formLembrar = document.getElementById('remember');
 const mensagemElement = document.getElementById('mensagem');
 
 loginForm.addEventListener('submit', async function(event) {
-    event.preventDefault();
+    event.preventDefault(); // Garante que o submit padrão nunca ocorre
     try {
         if (formEmail.value && formSenha.value) {
-            window.sessionStorage.removeItem('user_fullname'); // Limpar fullname anterior
-            window.sessionStorage.setItem('user_email', formEmail.value); // Armazenar email no sessionStorage
+            window.sessionStorage.removeItem('user_fullname');
+            window.sessionStorage.setItem('user_email', formEmail.value);
             await realizarLogin(formEmail.value, formSenha.value, formLembrar.checked);
         } else {
             mensagem_de_erro("Por favor, preencha todos os campos.")
         }
     } catch (error) {
         console.error("Erro no submit:", error);
+        mensagem_de_erro("Erro inesperado ao tentar logar.");
     }
 });
 
@@ -34,10 +35,13 @@ async function realizarLogin(email, senha, lembrar) {
 
         // Se a resposta não for bem-sucedida, mostra mensagem de erro
         if (!response.ok) {
-            mensagem_de_erro(response.body.detail)
+            let msg = 'Usuário ou senha incorretos.';
+            console.log("login falhou")
+            mensagem_de_erro(msg);
             formSenha.value = '';
             return;
         }
+        
 
         const bruteToken = response.headers.get("Authorization");
         if (!bruteToken) {
@@ -48,12 +52,12 @@ async function realizarLogin(email, senha, lembrar) {
         tokenManager.setSessionToken(cleanToken, response.body.expires_in);
         window.sessionStorage.setItem('user_fullname', response.body.user_fullname); 
         console.log("Login realizado com sucesso:", response.body.user_fullname);
-        window.location.href = "/dashboard";
-
+        setTimeout(() => {
+            window.location.href = "/dashboard";
+        }, 3000);
     } catch (error) {
         console.error("[Login] Erro ao realizar login:", error.message);
-        // Mostrar mensagem de erro para o usuário
-        mensagem_de_erro("Erro interno ")
+        mensagem_de_erro("Erro interno ao tentar logar.");
     }
 }
 function mensagem_de_erro(mensagem){

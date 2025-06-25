@@ -108,7 +108,7 @@ function renderExercisesGrouped(exercisesByGroup, musclesByGroup, equipmentsByGr
         });
     });
 }
-
+// Função para criar exercício
 async function createExercise(data) {
     try {
         try {
@@ -212,5 +212,36 @@ document.getElementById('btnSubmitdados').addEventListener('click', async () => 
         await createExercise({ name, description, muscle, equipments });
     }
 });
-console.log("Carregando exercícios, músculos e equipamentos...");
+
+function editExercise(id, name) {
+    currentExerciseId = id;
+    currentExerciseName = name;
+
+    const modal = new bootstrap.Modal(document.getElementById('editExerciseModal'));
+    modal.show();
+}
+
+function confirmDelete(id, name) {
+    currentExerciseId = id;
+    currentExerciseName = name;
+    document.getElementById('exerciseToDelete').textContent = name;
+    const modal = new bootstrap.Modal(document.getElementById('deleteExerciseModal'));
+    modal.show();
+}
+document.getElementById('addExerciseForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const modal = bootstrap.Modal.getInstance(document.getElementById('addExerciseModal'));
+    modal.hide();
+    
+    this.reset();
+});
+document.getElementById('addExerciseModal').addEventListener('hidden.bs.modal', function() {
+    document.getElementById('addExerciseForm').reset();
+});
+
+document.getElementById('editExerciseModal').addEventListener('hidden.bs.modal', function() {
+    document.querySelectorAll('#editExerciseModal input[type="checkbox"]').forEach(cb => cb.checked = false);
+    document.getElementById('editExerciseForm').reset();
+});
 fetchExercises();
