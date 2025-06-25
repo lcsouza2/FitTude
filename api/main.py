@@ -32,10 +32,6 @@ async def return_active_page(request: Request):
 async def return_aparelhos_page(request: Request):
     return templates.TemplateResponse("secondary/aparelhos.html", {"request": request})
 
-@MAIN_APP.get("/relatorios")
-async def return_relatorios_page(request: Request):
-    return templates.TemplateResponse("secondary/relatorios.html", {"request": request})
-
 @MAIN_APP.get("/exercicios")
 async def return_exercicios_page(request: Request):
     return templates.TemplateResponse("secondary/exercicios.html", {"request": request})
