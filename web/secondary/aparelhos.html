@@ -387,9 +387,9 @@
         <div class="d-flex align-items-center">
             <div class="bg-primary rounded-circle d-flex justify-content-center align-items-center me-2"
                 style="width: 35px; height: 35px;">
-                <strong id="username">@U</strong>
+                <strong class="username">@U</strong>
             </div>
-            <span id="username" class="text-white me-3 d-none d-md-inline">Oi, @username!</span>
+            <span class="username text-white me-3 d-none d-md-inline">Oi, @username!</span>
             <button id="logoff" class="btn btn-outline-light btn-sm">Sair</button>
         </div>
     </header>
@@ -406,7 +406,6 @@
                 <li onclick="location.href='exercicios'">
                     <i class="bi bi-lightning-fill me-2"></i>Exercícios
                 </li>
-            
                 <li onclick="location.href='grupamentos'">
                     <i class="bi bi-collection me-2"></i>Grupamentos
                 </li>
@@ -653,45 +652,6 @@
     <script type="module" src="../static/js/functional/dashboardFunctions.js"></script>
     <script type="module" src="../static/js/functional/aparelhos.js"></script>
     <script>
-        document.getElementById('menuToggle').addEventListener('click', function() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            
-            sidebar.classList.toggle('show');
-            overlay.classList.toggle('show');
-        });
-
-        document.getElementById('sidebarOverlay').addEventListener('click', function() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            
-            sidebar.classList.remove('show');
-            overlay.classList.remove('show');
-        });
-
-        const sidebarItems = document.querySelectorAll('.sidebar-menu li');
-        sidebarItems.forEach(item => {
-            item.addEventListener('click', function() {
-                if (window.innerWidth <= 991.98) {
-                    const sidebar = document.getElementById('sidebar');
-                    const overlay = document.getElementById('sidebarOverlay');
-                    
-                    sidebar.classList.remove('show');
-                    overlay.classList.remove('show');
-                }
-            });
-        });
-
-        window.addEventListener('resize', function() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            
-            if (window.innerWidth > 991.98) {
-                sidebar.classList.remove('show');
-                overlay.classList.remove('show');
-            }
-        });
-
         function editEquipment(name, category, description) {
             currentEquipmentName = name;
             document.getElementById('edit_equipment_name').value = name;
