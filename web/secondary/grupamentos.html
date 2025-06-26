@@ -387,9 +387,9 @@
         <div class="d-flex align-items-center">
             <div class="bg-primary rounded-circle d-flex justify-content-center align-items-center me-2"
                 style="width: 35px; height: 35px;">
-                <strong id="usernameIcon">@U</strong>
+                <strong id="username">@U</strong>
             </div>
-            <span id="usernameText" class="text-white me-3 d-none d-md-inline">Oi, @username!</span>
+            <span id="username" class="text-white me-3 d-none d-md-inline">Oi, @username!</span>
             <button id="logoff" class="btn btn-outline-light btn-sm">Sair</button>
         </div>
     </header>
@@ -427,91 +427,90 @@
             </div>
 
             <!-- Cards de Grupamento -->
-            <div class="group-card">
-                <div class="group-header">
-                    <h3>Pernas</h3>
-                    <div>
-                        <button class="btn btn-edit btn-sm-custom" onclick="editGroup('Pernas')">
-                            <i class="bi bi-pencil me-1"></i>Editar
-                        </button>
-                        <button class="btn btn-delete btn-sm-custom ms-2" onclick="confirmDeleteGroup('Pernas')">
-                            <i class="bi bi-trash me-1"></i>Excluir
-                        </button>
-                    </div>
-                </div>
-                <div class="muscle-list">
-                    <div class="muscle-item">
-                        <span>Quadríceps</span>
-                        <span class="equipment-tag">7 aparelhos</span>
-                    </div>
-                    <div class="muscle-item">
-                        <span>Isquiotibiais</span>
-                        <span class="equipment-tag">4 aparelhos</span>
-                    </div>
-                    <div class="muscle-item">
-                        <span>Glúteos</span>
-                        <span class="equipment-tag">5 aparelhos</span>
-                    </div>
-                    <div class="muscle-item">
-                        <span>Panturrilhas</span>
-                        <span class="equipment-tag">3 aparelhos</span>
-                    </div>
+        <div class="group-card">
+            <div class="group-header">
+                <h3>Pernas</h3>
+                <div>
+                    <button class="btn btn-edit btn-sm-custom" onclick="editGroup('Pernas')">
+                        <i class="bi bi-pencil me-1"></i>Editar
+                    </button>
+                    <button class="btn btn-delete btn-sm-custom ms-2" onclick="confirmDeleteGroup('Pernas')">
+                        <i class="bi bi-trash me-1"></i>Excluir
+                    </button>
                 </div>
             </div>
-
-            <div class="group-card">
-                <div class="group-header">
-                    <h3>Peito</h3>
-                    <div>
-                        <button class="btn btn-edit btn-sm-custom" onclick="editGroup('Peito')">
-                            <i class="bi bi-pencil me-1"></i>Editar
-                        </button>
-                        <button class="btn btn-delete btn-sm-custom ms-2" onclick="confirmDeleteGroup('Peito')">
-                            <i class="bi bi-trash me-1"></i>Excluir
-                        </button>
-                    </div>
+            <div class="muscle-list">
+                <div class="muscle-item">
+                    <span>Quadríceps</span>
+                    <span class="equipment-tag">Grupo Principal</span>
                 </div>
-                <div class="muscle-list">
-                    <div class="muscle-item">
-                        <span>Peitoral Maior</span>
-                        <span class="equipment-tag">8 aparelhos</span>
-                    </div>
-                    <div class="muscle-item">
-                        <span>Peitoral Menor</span>
-                        <span class="equipment-tag">3 aparelhos</span>
-                    </div>
+                <div class="muscle-item">
+                    <span>Isquiotibiais</span>
+                    <span class="equipment-tag">Grupo Principal</span>
                 </div>
-            </div>
-
-            <div class="group-card">
-                <div class="group-header">
-                    <h3>Costas</h3>
-                    <div>
-                        <button class="btn btn-edit btn-sm-custom" onclick="editGroup('Costas')">
-                            <i class="bi bi-pencil me-1"></i>Editar
-                        </button>
-                        <button class="btn btn-delete btn-sm-custom ms-2" onclick="confirmDeleteGroup('Costas')">
-                            <i class="bi bi-trash me-1"></i>Excluir
-                        </button>
-                    </div>
+                <div class="muscle-item">
+                    <span>Glúteos</span>
+                    <span class="equipment-tag">Grupo Principal</span>
                 </div>
-                <div class="muscle-list">
-                    <div class="muscle-item">
-                        <span>Latíssimo do Dorso</span>
-                        <span class="equipment-tag">6 aparelhos</span>
-                    </div>
-                    <div class="muscle-item">
-                        <span>Romboides</span>
-                        <span class="equipment-tag">4 aparelhos</span>
-                    </div>
-                    <div class="muscle-item">
-                        <span>Trapézio</span>
-                        <span class="equipment-tag">5 aparelhos</span>
-                    </div>
+                <div class="muscle-item">
+                    <span>Panturrilhas</span>
+                    <span class="equipment-tag">Grupo Principal</span>
                 </div>
             </div>
         </div>
-    </div>
+
+        <div class="group-card">
+            <div class="group-header">
+                <h3>Peito</h3>
+                <div>
+                    <button class="btn btn-edit btn-sm-custom" onclick="editGroup('Peito')">
+                        <i class="bi bi-pencil me-1"></i>Editar
+                    </button>
+                    <button class="btn btn-delete btn-sm-custom ms-2" onclick="confirmDeleteGroup('Peito')">
+                        <i class="bi bi-trash me-1"></i>Excluir
+                    </button>
+                </div>
+            </div>
+            <div class="muscle-list">
+                <div class="muscle-item">
+                    <span>Peitoral Maior</span>
+                    <span class="equipment-tag">Grupo Principal</span>
+                </div>
+                <div class="muscle-item">
+                    <span>Peitoral Menor</span>
+                    <span class="equipment-tag">Grupo Principal</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="group-card">
+            <div class="group-header">
+                <h3>Costas</h3>
+                <div>
+                    <button class="btn btn-edit btn-sm-custom" onclick="editGroup('Costas')">
+                        <i class="bi bi-pencil me-1"></i>Editar
+                    </button>
+                    <button class="btn btn-delete btn-sm-custom ms-2" onclick="confirmDeleteGroup('Costas')">
+                        <i class="bi bi-trash me-1"></i>Excluir
+                    </button>
+                </div>
+            </div>
+            <div class="muscle-list">
+                <div class="muscle-item">
+                    <span>Latíssimo do Dorso</span>
+                    <span class="equipment-tag">Grupo Principal</span>
+                </div>
+                <div class="muscle-item">
+                    <span>Romboides</span>
+                    <span class="equipment-tag">Grupo Principal</span>
+                </div>
+                <div class="muscle-item">
+                    <span>Trapézio</span>
+                    <span class="equipment-tag">Grupo Principal</span>
+                </div>
+            </div>
+        </div>
+
 
     <!-- Modal Novo Grupamento -->
     <div class="modal fade" id="novoGrupamentoModal" tabindex="-1">
@@ -588,6 +587,7 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="../static/js/functional/widgets/muscleGroup.js"></script>
     <script>
         document.getElementById('menuToggle').addEventListener('click', function() {
             const sidebar = document.getElementById('sidebar');
