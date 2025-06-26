@@ -1,5 +1,5 @@
 export function populateUsername(username) {
-    const elements = document.querySelectorAll('#username');
+    const elements = document.querySelectorAll('.username') ;
     elements.forEach(element => {
         element.textContent = element.textContent.replace("@username", username);
         element.textContent = element.textContent.replace("@U", username[0]);
