@@ -67,10 +67,10 @@ function renderExercisesGrouped(exercisesByGroup, musclesByGroup, equipmentsByGr
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <h5 class="card-title mb-0">${ex.exercise_name}</h5>
                                 <div class="action-buttons">
-                                    <button class="btn btn-edit btn-sm-custom" data-id="${ex.exercise_id}">
+                                    <button class="btn btn-edit btn-sm-custom" onclick="editExercise(${ex.exercise_id}, '${ex.exercise_name.replace(/'/g, "\\'")}')">
                                         <i class="bi bi-pencil me-1"></i>Editar
                                     </button>
-                                    <button class="btn btn-delete btn-sm-custom" data-id="${ex.exercise_id}">
+                                    <button class="btn btn-delete btn-sm-custom" onclick="confirmDelete(${ex.exercise_id}, '${ex.exercise_name.replace(/'/g, "\\'")}')">
                                         <i class="bi bi-trash me-1"></i>Excluir
                                     </button>
                                 </div>
@@ -174,9 +174,9 @@ async function createExercise(data) {
 // Função para deletar exercício
 async function deleteExercise(id) {
     try {
-        const response = await authApiClient.delete(`/api/data/exericse/inactivate/${id}`);
+        const response = await authApiClient.delete(`/api/data/exercise/inactivate/${id}`);
         if (response.ok) {
-            console.log("exercicio excluido com sucesso ");
+            console.log("Exercício excluído com sucesso");
         } else {
             console.log('Erro ao excluir exercício');
         }
@@ -185,9 +185,61 @@ async function deleteExercise(id) {
     }
     setTimeout(() => {
         fetchExercises();
-    }, 3000);
-
+    }, 1000);
 }
+
+async function editExercise(id, name) {
+        currentExerciseId = id;
+    currentExerciseName = name;
+
+    // Busca os dados do exercício para preencher o modal
+    try {
+        const response = await authApiClient.get(`/api/data/exercises/${id}`);
+        if (response.ok) {
+            const exercise = response.body;
+            document.getElementById('editExerciseName').value = exercise.exercise_name || '';
+            document.getElementById('editExerciseDescription').value = exercise.description || '';
+            // Se tiver campos de checkbox de músculo/equipamento, marque-os conforme o exercício
+            // Exemplo:
+            // document.querySelectorAll('#editExerciseModal input[name="parteCorpo"]').forEach(cb => cb.checked = exercise.muscles?.includes(cb.value));
+            // document.querySelectorAll('#editExerciseModal input[name="equipamento"]').forEach(cb => cb.checked = exercise.equipments?.includes(cb.value));
+        }
+    } catch (error) {
+        console.error('Erro ao buscar dados do exercício:', error);
+    }
+
+    const modal = new bootstrap.Modal(document.getElementById('editExerciseModal'));
+    modal.show();
+}
+
+// Evento do formulário de edição
+document.getElementById('editExerciseForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const name = document.getElementById('editExerciseName').value;
+    const description = document.getElementById('editExerciseDescription').value;
+    // Pegue os músculos e equipamentos selecionados, se houver
+    // Exemplo:
+    // const muscles = Array.from(document.querySelectorAll('#editExerciseModal input[name="parteCorpo"]:checked')).map(cb => cb.value).join(', ');
+    // const equipments = Array.from(document.querySelectorAll('#editExerciseModal input[name="equipamento"]:checked')).map(cb => cb.value).join(', ');
+
+    try {
+        const response = await authApiClient.put(`/api/data/exercise/update/${currentExerciseId}`, {
+            exercise_name: name,
+            description: description,
+            // muscles,
+            // equipments
+        });
+        if (response.ok) {
+            bootstrap.Modal.getInstance(document.getElementById('editExerciseModal')).hide();
+            fetchExercises();
+        } else {
+            alert('Erro ao atualizar exercício');
+        }
+    } catch (error) {
+        alert('Erro ao atualizar exercício');
+        console.error(error);
+    }
+});
 
 // Evento do botão de salvar exercício
 document.getElementById('btnSubmitdados').addEventListener('click', async () => {
@@ -213,13 +265,6 @@ document.getElementById('btnSubmitdados').addEventListener('click', async () => 
     }
 });
 
-function editExercise(id, name) {
-    currentExerciseId = id;
-    currentExerciseName = name;
-
-    const modal = new bootstrap.Modal(document.getElementById('editExerciseModal'));
-    modal.show();
-}
 
 function confirmDelete(id, name) {
     currentExerciseId = id;
@@ -228,6 +273,18 @@ function confirmDelete(id, name) {
     const modal = new bootstrap.Modal(document.getElementById('deleteExerciseModal'));
     modal.show();
 }
+// Evento do botão de confirmação de exclusão no modal
+const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+if (confirmDeleteBtn) {
+    confirmDeleteBtn.addEventListener('click', async function() {
+        if (typeof currentExerciseId !== 'undefined') {
+            await deleteExercise(currentExerciseId);
+            const modal = bootstrap.Modal.getInstance(document.getElementById('deleteExerciseModal'));
+            if (modal) modal.hide();
+        }
+    });
+}
+
 document.getElementById('addExerciseForm').addEventListener('submit', function(e) {
     e.preventDefault();
     
@@ -236,6 +293,7 @@ document.getElementById('addExerciseForm').addEventListener('submit', function(e
     
     this.reset();
 });
+
 document.getElementById('addExerciseModal').addEventListener('hidden.bs.modal', function() {
     document.getElementById('addExerciseForm').reset();
 });
@@ -244,4 +302,5 @@ document.getElementById('editExerciseModal').addEventListener('hidden.bs.modal',
     document.querySelectorAll('#editExerciseModal input[type="checkbox"]').forEach(cb => cb.checked = false);
     document.getElementById('editExerciseForm').reset();
 });
+
 fetchExercises();

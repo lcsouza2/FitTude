@@ -51,42 +51,27 @@ function createGroupCard(group) {
     const card = document.createElement('div');
     card.className = 'group-card';
     card.dataset.groupName = group.group_name;
-    // Monta a lista de músculos a partir de string separada por vírgula
     let musclesHtml = '';
     if (group.muscles && typeof group.muscles === 'string') {
         const muscleArr = group.muscles.split(',').map(m => m.trim()).filter(Boolean);
         musclesHtml = muscleArr.map(muscleName => `
             <div class="muscle-item">
                 <span>${muscleName}</span>
-                <span class="equipment-tag">0</span>
+                <span class="equipment-tag">Grupo ${group.group_name}</span>
             </div>
         `).join('');
     } else if (Array.isArray(group.muscles) && group.muscles.length > 0) {
         musclesHtml = group.muscles.map(muscle => {
-            // Se muscle.muscle_name for string separada por vírgula, separa
             let names = [];
             if (typeof muscle.muscle_name === 'string') {
                 names = muscle.muscle_name.split(',').map(m => m.trim()).filter(Boolean);
             } else if (muscle.name) {
                 names = [muscle.name];
             }
-            // Conta equipamentos do grupo (equipments) para cada músculo
-            let equipmentCount = 0;
-            if (window.equipmentsGlobal && Array.isArray(window.equipmentsGlobal)) {
-                // Busca todos os equipamentos do grupo
-                const eqs = window.equipmentsGlobal.filter(eq => eq.group_name === group.group_name);
-                // Soma todos os nomes de equipamentos separados por vírgula
-                equipmentCount = eqs.reduce((acc, eq) => {
-                    if (typeof eq.equipment_name === 'string') {
-                        return acc + eq.equipment_name.split(',').map(e => e.trim()).filter(Boolean).length;
-                    }
-                    return acc;
-                }, 0);
-            }
             return names.map(name => `
                 <div class="muscle-item">
                     <span>${name}</span>
-                    <span class="equipment-tag">${equipmentCount}</span>
+                    <span class="equipment-tag">Grupo ${group.group_name}</span>
                 </div>
             `).join('');
         }).join('');
@@ -95,11 +80,11 @@ function createGroupCard(group) {
         <div class="group-header">
             <h3>${group.group_name}</h3>
             <div>
-                <button class="btn btn-outline-light btn-sm btn-edit">
-                    <i class="bi bi-pencil"></i>
+                <button class="btn btn-edit btn-sm-custom" onclick="editGroup('${group.group_name.replace(/'/g, "\\'")}')">
+                    <i class="bi bi-pencil me-1"></i>Editar
                 </button>
-                <button class="btn btn-outline-danger btn-sm ms-2 btn-delete">
-                    <i class="bi bi-trash"></i>
+                <button class="btn btn-delete btn-sm-custom ms-2" onclick="confirmDeleteGroup('${group.group_name.replace(/'/g, "\\'")}')">
+                    <i class="bi bi-trash me-1"></i>Excluir
                 </button>
             </div>
         </div>
