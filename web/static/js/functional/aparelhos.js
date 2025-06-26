@@ -31,7 +31,7 @@ async function fetchEquipments() {
 function renderEquipments(equipments) {
     // Remove todos os cards antigos, mas mantém o header
     const oldCards = mainContent.querySelectorAll('.equipment-card, .text-center.text-muted');
-    oldCards.forEach(card => card.remove());
+    //oldCards.forEach(card => card.remove());
     if (!equipments || equipments.length === 0) {
         mainContent.insertAdjacentHTML('beforeend', '<p class="text-center text-muted">Nenhum aparelho cadastrado.</p>');
         return;
@@ -59,7 +59,6 @@ function renderEquipments(equipments) {
         `;
         mainContent.insertAdjacentHTML('beforeend', cardHtml);
     });
-    // Remove eventos de editar e deletar
 }
 
 // Modal dinâmico para adicionar/editar
