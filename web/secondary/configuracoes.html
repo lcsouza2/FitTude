@@ -240,9 +240,9 @@
         <div class="d-flex align-items-center">
             <div class="bg-primary rounded-circle d-flex justify-content-center align-items-center me-2"
                 style="width: 35px; height: 35px;">
-                <strong id="username">@U</strong>
+                <strong class="username">@U</strong>
             </div>
-            <span id="username" class="text-white me-3 d-none d-md-inline">Oi, @username!</span>
+            <span class="username text-white me-3 d-none d-md-inline">Oi, @username!</span>
             <button id="logoff" class="btn btn-outline-light btn-sm">Sair</button>
         </div>
     </header>
@@ -259,7 +259,6 @@
                 <li onclick="location.href='exercicios'">
                     <i class="bi bi-lightning-fill me-2"></i>Exercícios
                 </li>
-                
                 <li onclick="location.href='grupamentos'">
                     <i class="bi bi-collection me-2"></i>Grupamentos
                 </li>
@@ -282,7 +281,7 @@
                 <form>
                     <div class="mb-3">
                         <label for="userName" class="form-label">Nome</label>
-                        <input type="text" class="form-control" id="username" value="Username">
+                        <input type="text" class="form-control username" value="Username">
                     </div>
                     <div class="mb-3">
                         <label for="userEmail" class="form-label">Email</label>
@@ -342,7 +341,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script type="module" src="../static/js/functional/dashboardFunctions.js"></script>
     <script type="module" src="../static/js/functional/configuracao.js"></script>
-    <script>
+    <!-- <script>
         document.getElementById('menuToggle').addEventListener('click', function() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebarOverlay');
@@ -381,6 +380,6 @@
                 overlay.classList.remove('show');
             }
         });
-    </script>
+    </script> -->
 </body>
 </html>
