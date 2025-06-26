@@ -346,14 +346,13 @@
         </div>
         <div class="d-flex align-items-center">
             <div class="bg-primary rounded-circle d-flex justify-content-center align-items-center me-2"
-                style="width: 35px; height: 35px;">
-                <strong id="username">@U</strong>
+                style="width: 35px; height: 35px; color:white;">
+                <strong class="username">@U</strong>
             </div>
-            <span id="username" class="text-white me-3 d-none d-md-inline">Oi, @username!</span>
-            <button id="logoff" class="btn btn-outline-light btn-sm">Sair</button>
+            <span class="username text-white me-3 d-none d-md-inline">Oi, @username!</span>
+            <button type="button" id="logoff" class="btn btn-outline-light btn-sm">Sair</button>
         </div>
     </header>
-    
     <div class="sidebar" id="sidebar">
         <ul class="sidebar-menu">
             <li onclick="location.href='dashboard'">
@@ -1108,7 +1107,8 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <script>
+    <script type="module" src="../static/js/functional/dashboardFunctions.js"></script>
+    <!-- <script>
         // Mobile menu functionality
         document.getElementById('menuToggle').addEventListener('click', function() {
             const sidebar = document.getElementById('sidebar');
@@ -1453,5 +1453,5 @@
             document.getElementById('username').textContent = username.substring(0, 2).toUpperCase();
             document.querySelector('span.text-white.me-3').textContent = `Oi, ${username}!`;
         });
-    </script>
+    </script> -->
 </body>
