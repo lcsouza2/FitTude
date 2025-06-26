@@ -14,19 +14,20 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.1/font/bootstrap-icons.min.css" rel="stylesheet">
 <body>
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
-    <header class="d-flex justify-content-between align-items-center px-3 px-md-4">
+
+    <header class="d-flex justify-content-between align-items-center px-3 px-md-4 ">
         <div class="d-flex align-items-center">
             <button class="menu-toggle me-3" id="menuToggle">
                 <i class="bi bi-list"></i>
             </button>
             <h1><span class="h1-highlighted">Fit</span>Tude</h1>
         </div>
-        <div class="d-flex align-items-center">
+        <div class="d-flex align-items-center ">
             <div class="bg-primary rounded-circle d-flex justify-content-center align-items-center me-2"
                 style="width: 35px; height: 35px;">
-                <strong id="username">@U</strong>
+                <strong class="username">@U</strong>
             </div>
-            <span id="username" class="text-white me-3 d-none d-md-inline">Oi, @username!</span>
+            <span class="username text-white me-3 d-none d-md-inline">Oi, @username!</span>
             <button id="logoff" class="btn btn-outline-light btn-sm">Sair</button>
         </div>
     </header>
@@ -58,7 +59,7 @@
 
         <div class="main-content">
             <div class="dashboard-header">
-                <h2 id="username" class="has-username"><i class="bi bi-grid-fill text-primary me-2"></i>Bem-vindo ao seu Dashboard, @username!</h2>
+                <h2 class="has-username username"><i class="bi bi-grid-fill text-primary me-2"></i>Bem-vindo ao seu Dashboard, @username!</h2>
                 <button class="button-style">+ Nova Ficha de Treino</button>
             </div>
 
@@ -223,7 +224,7 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <script>
+    <!-- <script>
         document.getElementById('menuToggle').addEventListener('click', function() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebarOverlay');
@@ -262,14 +263,8 @@
                 overlay.classList.remove('show');
             }
         });
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const username = 'User';
-            document.getElementById('usernameIcon').textContent = username.substring(0, 2).toUpperCase();
-            document.getElementById('usernameText').textContent = `Oi, ${username}!`;
-        });
-    </script>
+    </script> -->
     <script type="module" src="../static/js/functional/dashboardFunctions.js"></script>
-    <script src="../static/js/visual/dashboardVisuals.js"></script>
+    <script type="module" src="../static/js/visual/dashboardVisuals.js"></script>
 </body>
 </html>
