@@ -27,6 +27,7 @@ async function fetchExercises() {
             const musclesByGroup = groupByGroupName(musclesResp.body.filter(m => m.active));
             const equipmentsByGroup = groupByGroupName(equipmentsResp.body);
             renderExercisesGrouped(exercisesByGroup, musclesByGroup, equipmentsByGroup);
+            createGlobalVar(exercisesByGroup, equipmentsByGroup, musclesByGroup);
         
         } else {
             console.log('Erro ao buscar exercícios, músculos ou equipamentos');
@@ -67,10 +68,14 @@ function renderExercisesGrouped(exercisesByGroup, musclesByGroup, equipmentsByGr
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <h5 class="card-title mb-0">${ex.exercise_name}</h5>
                                 <div class="action-buttons">
-                                    <button class="btn btn-edit btn-sm-custom" onclick="editExercise(${ex.exercise_id}, '${ex.exercise_name.replace(/'/g, "\\'")}')">
+                                    <button type="button" class="btn btn-edit btn-sm-custom" 
+                                        data-id="${ex.exercise_id}" 
+                                        data-name="${ex.exercise_name.replace(/'/g, "\\'")}">
                                         <i class="bi bi-pencil me-1"></i>Editar
                                     </button>
-                                    <button class="btn btn-delete btn-sm-custom" onclick="confirmDelete(${ex.exercise_id}, '${ex.exercise_name.replace(/'/g, "\\'")}')">
+                                    <button type="button" class="btn btn-delete btn-sm-custom" 
+                                        data-id="${ex.exercise_id}" 
+                                        data-name="${ex.exercise_name.replace(/'/g, "\\'")}">
                                         <i class="bi bi-trash me-1"></i>Excluir
                                     </button>
                                 </div>
@@ -94,17 +99,14 @@ function renderExercisesGrouped(exercisesByGroup, musclesByGroup, equipmentsByGr
         btn.addEventListener('click', async (e) => {
             e.preventDefault();
             const exerciseId = btn.dataset.id;
-            alert(`Editar exercício com ID: ${exerciseId}`);
-            // Aqui vai abrir o modal de edição
+            alert(`Editar exercício com ID: ${exerciseId} e Nome: ${btn.dataset.name}`);
+            editExercise(btn.dataset.name);
         });
     });
     document.querySelectorAll('.btn-delete').forEach(btn => {
         btn.addEventListener('click', async (e) => {
             e.preventDefault();
-            const exerciseId = btn.dataset.id;
-            if (confirm('Deseja excluir este exercício?')) {
-                await deleteExercise(exerciseId);
-            }
+            confirmDelete(btn.dataset.id, btn.dataset.name);
         });
     });
 }
@@ -164,7 +166,7 @@ async function createExercise(data) {
         } catch (error) {
             throw new Error('Erro ao criar músculos:', error);
         }
-
+        
     } catch (error) {
         console.error(error);
     }
@@ -188,22 +190,61 @@ async function deleteExercise(id) {
     }, 1000);
 }
 
-async function editExercise(id, name) {
-        currentExerciseId = id;
-    currentExerciseName = name;
+// Função para confirmar exclusão de exercício
+function confirmDelete(ExerciseId, ExerciseName) {
+    document.getElementById('exerciseToDelete').textContent = ExerciseName;
+    const modal = new bootstrap.Modal(document.getElementById('deleteExerciseModal'));
+    modal.show();
 
-    // Busca os dados do exercício para preencher o modal
+    // Evento do botão de confirmação de exclusão no modal
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+    if (confirmDeleteBtn) {
+        confirmDeleteBtn.addEventListener('click', async function() {
+            if (typeof ExerciseId !== 'undefined') {
+                await deleteExercise(ExerciseId);
+                console.log("deletando o exericio com ID",ExerciseId)
+                const modal = bootstrap.Modal.getInstance(document.getElementById('deleteExerciseModal'));
+                if (modal) modal.hide();
+            }
+        });
+    }
+}
+
+async function editExercise(ExerciseName) {
     try {
-        const response = await authApiClient.get(`/api/data/exercises/${id}`);
-        if (response.ok) {
-            const exercise = response.body;
-            document.getElementById('editExerciseName').value = exercise.exercise_name || '';
-            document.getElementById('editExerciseDescription').value = exercise.description || '';
-            // Se tiver campos de checkbox de músculo/equipamento, marque-os conforme o exercício
-            // Exemplo:
-            // document.querySelectorAll('#editExerciseModal input[name="parteCorpo"]').forEach(cb => cb.checked = exercise.muscles?.includes(cb.value));
-            // document.querySelectorAll('#editExerciseModal input[name="equipamento"]').forEach(cb => cb.checked = exercise.equipments?.includes(cb.value));
+        const exercise = window.exercise[ExerciseName];
+        const equipamento = window.equipment[ExerciseName];
+        const musculos = window.muscles[ExerciseName];
+
+        console.log("Informações [editExercise]:", exercise, "Eq:", equipamento, "Ml:", musculos);
+
+        if (exercise) {
+            document.getElementById('editExerciseName').value = exercise[0].exercise_name || '';
+            document.getElementById('editExerciseDescription').value = exercise[0].description || '';
+        } else {
+            return console.log('Erro ao buscar dados do exercício');
         }
+
+        // Limpa todos os checkboxes antes de marcar
+        document.querySelectorAll('#editExerciseModal input[name="ParteCorpo"]').forEach(cb => cb.checked = false);
+        document.querySelectorAll('#editExerciseModal input[name="equipamento"]').forEach(cb => cb.checked = false);
+
+        // Marca músculos (parteCorpo)
+        if (musculos && musculos[0]?.muscle_name) {
+            const muscleList = musculos[0].muscle_name.split(',').map(m => m.trim());
+            document.querySelectorAll('#editExerciseModal input[name="ParteCorpo"]').forEach(cb => {
+                if (muscleList.includes(cb.value)) cb.checked = true;
+            });
+        }
+
+        // Marca equipamentos
+        if (equipamento && equipamento[0]?.equipment_name) {
+            const equipList = equipamento[0].equipment_name.split(',').map(e => e.trim());
+            document.querySelectorAll('#editExerciseModal input[name="equipamento"]').forEach(cb => {
+                if (equipList.includes(cb.value)) cb.checked = true;
+            });
+        }
+
     } catch (error) {
         console.error('Erro ao buscar dados do exercício:', error);
     }
@@ -221,24 +262,7 @@ document.getElementById('editExerciseForm').addEventListener('submit', async fun
     // Exemplo:
     // const muscles = Array.from(document.querySelectorAll('#editExerciseModal input[name="parteCorpo"]:checked')).map(cb => cb.value).join(', ');
     // const equipments = Array.from(document.querySelectorAll('#editExerciseModal input[name="equipamento"]:checked')).map(cb => cb.value).join(', ');
-
-    try {
-        const response = await authApiClient.put(`/api/data/exercise/update/${currentExerciseId}`, {
-            exercise_name: name,
-            description: description,
-            // muscles,
-            // equipments
-        });
-        if (response.ok) {
-            bootstrap.Modal.getInstance(document.getElementById('editExerciseModal')).hide();
-            fetchExercises();
-        } else {
-            alert('Erro ao atualizar exercício');
-        }
-    } catch (error) {
-        alert('Erro ao atualizar exercício');
-        console.error(error);
-    }
+    
 });
 
 // Evento do botão de salvar exercício
@@ -265,24 +289,10 @@ document.getElementById('btnSubmitdados').addEventListener('click', async () => 
     }
 });
 
-
-function confirmDelete(id, name) {
-    currentExerciseId = id;
-    currentExerciseName = name;
-    document.getElementById('exerciseToDelete').textContent = name;
-    const modal = new bootstrap.Modal(document.getElementById('deleteExerciseModal'));
-    modal.show();
-}
-// Evento do botão de confirmação de exclusão no modal
-const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-if (confirmDeleteBtn) {
-    confirmDeleteBtn.addEventListener('click', async function() {
-        if (typeof currentExerciseId !== 'undefined') {
-            await deleteExercise(currentExerciseId);
-            const modal = bootstrap.Modal.getInstance(document.getElementById('deleteExerciseModal'));
-            if (modal) modal.hide();
-        }
-    });
+function createGlobalVar (exercicio,equipamento,musculos) {
+    window.exercise = exercicio;
+    window.equipment = equipamento;
+    window.muscles = musculos;
 }
 
 document.getElementById('addExerciseForm').addEventListener('submit', function(e) {
