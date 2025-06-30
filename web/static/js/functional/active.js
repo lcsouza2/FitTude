@@ -13,28 +13,30 @@ function adicionarDivisao(valor = '') {
     div.innerHTML = `
         <span class="input-group-text">${letra}</span>
         <input type="text" class="form-control" placeholder="Ex: Peito, Tríceps" value="${valor}">
-        <button class="btn btn-outline-danger" type="button" onclick="removerDivisao(this)">
+        <button class="btn btn-outline-danger btn-remover-divisao" type="button">
             <i class="bi bi-trash"></i>
         </button>
     `;
     divContainer.appendChild(div);
 }
 
-function removerDivisao(button) {
-    if (divContainer.children.length > 1) {
-        button.parentElement.remove();
-        divisaoCounter--;
+divContainer.addEventListener('click', function(event) {
+    if (event.target.closest('.btn-remover-divisao')) {
+        const button = event.target.closest('.btn-remover-divisao');
+        if (divContainer.children.length > 1) {
+            button.parentElement.remove();
+            divisaoCounter--;
 
-        // Reordenar letras
-        const divs = divContainer.querySelectorAll('.input-group');
-        divs.forEach((div, index) => {
-            div.querySelector('.input-group-text').textContent = String.fromCharCode(65 + index); // A, B, C, ...
-        });
-    } else {
-        alert('Pelo menos uma divisão é necessária!');
+            // Reordenar letras
+            const divs = divContainer.querySelectorAll('.input-group');
+            divs.forEach((div, index) => {
+                div.querySelector('.input-group-text').textContent = String.fromCharCode(65 + index); // A, B, C, ...
+            });
+        } else {
+            alert('Pelo menos uma divisão é necessária!');
+        }
     }
-}
-window.removerDivisao = removerDivisao;
+});
 
 // Evento de clique no botão de salvar ficha
 const btnSalvarFicha = document.getElementById("btnSalvarFicha");
@@ -42,7 +44,6 @@ btnSalvarFicha.addEventListener("click", async () => {
     const nome = document.getElementById("fichaNome").value;
     const objetivo = document.getElementById("fichaObjetivo").value;
     const ativa = document.getElementById("fichaAtiva").checked;
-
     const divs = divContainer.querySelectorAll("input[type='text']");
     const divisoes = Array.from(divs).map(div => div.value.trim()).filter(Boolean);
 
@@ -85,30 +86,30 @@ btnSalvarFicha.addEventListener("click", async () => {
 async function carregarFichas() {
     try {
         const container = document.querySelector(".row.g-4");
-        //container.innerHTML = "";
+        //container.innerHTML = "";  Limpa antes de renderizar
 
         const fichasRes = await authApiClient.get("/api/data/workout_plan");
         const splitsRes = await authApiClient.get("/api/data/workout_split");
 
         const fichas = fichasRes.body;
         const splits = splitsRes.body;
-        if (splits & fichas){
+        if (splits && fichas) {
             fichas.forEach(ficha => {
                 const fichaSplits = splits.filter(s => s.workout_plan_id === ficha.workout_plan_id);
-    
+
                 const splitBadges = fichaSplits.map((s, i) => {
                     const letra = String.fromCharCode(65 + i);
                     return `<span class="badge badge-primary">${letra} - ${s.split}</span>`;
                 }).join(" ");
-    
+
                 const status = ficha.active ? 'Ativa' : 'Inativa';
                 const statusClass = ficha.active ? 'success' : 'secondary';
                 const dataCriacao = new Date(ficha.created_at).toLocaleDateString();
-    
+
                 const card = document.createElement('div');
                 card.className = 'col-lg-4 col-md-6';
                 card.innerHTML = `
-                    <div class="card h-100">
+                    <div class="card h-100" data-id="${ficha.workout_plan_id}">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5 class="mb-0">${ficha.workout_plan_name}</h5>
                             <span class="badge bg-${statusClass}">${status}</span>
@@ -125,13 +126,13 @@ async function carregarFichas() {
                         </div>
                         <div class="card-footer bg-transparent">
                             <div class="btn-group w-100" role="group">
-                                <button class="btn btn-primary btn-sm" onclick="verDetalhes(${ficha.workout_plan_id})">
+                                <button class="btn btn-primary btn-sm btn-ver" data-id="${ficha.workout_plan_id}">
                                     <i class="bi bi-eye me-1"></i><span class="d-none d-sm-inline">Ver</span>
                                 </button>
-                                <button class="btn btn-warning btn-sm" onclick="editarFicha(${ficha.workout_plan_id})">
+                                <button class="btn btn-warning btn-sm btn-editar" data-id="${ficha.workout_plan_id}">
                                     <i class="bi bi-pencil me-1"></i><span class="d-none d-sm-inline">Editar</span>
                                 </button>
-                                <button class="btn btn-${ficha.active ? 'secondary' : 'success'} btn-sm" onclick="ativarFicha(${ficha.workout_plan_id})">
+                                <button class="btn btn-${ficha.active ? 'secondary' : 'success'} btn-sm btn-ativar" data-id="${ficha.workout_plan_id}">
                                     <i class="bi bi-${ficha.active ? 'pause' : 'play-fill'} me-1"></i><span class="d-none d-sm-inline">${ficha.active ? 'Desativar' : 'Ativar'}</span>
                                 </button>
                             </div>
@@ -145,6 +146,37 @@ async function carregarFichas() {
         console.error("Erro ao carregar fichas:", err);
         alert("Erro ao carregar fichas.");
     }
+}
+document.querySelector(".row.g-4").addEventListener("click", (event) => {
+    const btnVer = event.target.closest(".btn-ver");
+    const btnEditar = event.target.closest(".btn-editar");
+    const btnAtivar = event.target.closest(".btn-ativar");
+
+    if (btnVer) {
+        verDetalhes(Number(btnVer.dataset.id));
+    } else if (btnEditar) {
+        editarFicha(Number(btnEditar.dataset.id));
+    } else if (btnAtivar) {
+        ativarFicha(Number(btnAtivar.dataset.id));
+    }
+});
+
+function verDetalhes(fichaId) {
+
+    const modal = new bootstrap.Modal(document.getElementById('detalhesModal'));
+    modal.show();
+}
+
+function editarFicha(fichaId) {
+    
+    const modal = new bootstrap.Modal(document.getElementById('editarFichaModal'));
+    modal.show();
+}
+
+function ativarFicha(fichaId) {
+
+    const modal = new bootstrap.Modal(document.getElementById('detalhesModal'));
+    modal.show();
 }
 
 // Evento inicial
