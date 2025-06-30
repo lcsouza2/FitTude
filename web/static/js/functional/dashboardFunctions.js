@@ -2,7 +2,7 @@ import { authApiClient, tokenManager } from '../core/auth.js';
 import { populateUsername } from '../visual/dashboardVisuals.js';
 
 console.log("carregano")
-const token = tokenManager.getSessionToken()? undefined : tokenManager.refreshSessionToken();
+// const token = tokenManager.getSessionToken()? undefined : tokenManager.refreshSessionToken();
 const user_fullname = window.sessionStorage.getItem('user_fullname');
 if (user_fullname ) {
     populateUsername(user_fullname)
@@ -13,6 +13,7 @@ logoffButton.addEventListener('click', function() {
     tokenManager.logout();
 });
 
+// Mobile menu functionality
 document.getElementById('menuToggle').addEventListener('click', function() {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
@@ -29,6 +30,7 @@ document.getElementById('sidebarOverlay').addEventListener('click', function() {
     overlay.classList.remove('show');
 });
 
+// Close sidebar when clicking on menu items on mobile
 const sidebarItems = document.querySelectorAll('.sidebar-menu li');
 sidebarItems.forEach(item => {
     item.addEventListener('click', function() {
@@ -42,6 +44,7 @@ sidebarItems.forEach(item => {
     });
 });
 
+// Responsive adjustments
 window.addEventListener('resize', function() {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');

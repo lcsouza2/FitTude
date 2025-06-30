@@ -158,6 +158,52 @@ function deleteGroup(groupName) {
     };
 }
 
+function editGroup(groupName) {
+    currentGroupName = groupName;
+    document.getElementById('edit_group_name').value = groupName;
+    
+    const modal = new bootstrap.Modal(document.getElementById('editarGrupamentoModal'));
+    modal.show();
+}
+
+function confirmDeleteGroup(groupName) {
+    currentGroupName = groupName;
+    document.getElementById('groupToDelete').textContent = groupName;
+    
+    const modal = new bootstrap.Modal(document.getElementById('confirmarExclusaoModal'));
+    modal.show();
+}
+
+document.getElementById('formNovoGrupamento').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const groupName = document.getElementById('group_name').value;
+    alert(`Novo grupamento "${groupName}" criado com sucesso!`);
+    
+    const modal = bootstrap.Modal.getInstance(document.getElementById('novoGrupamentoModal'));
+    modal.hide();
+    
+    this.reset();
+});
+
+document.getElementById('formEditarGrupamento').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const newGroupName = document.getElementById('edit_group_name').value;
+    alert(`Grupamento "${currentGroupName}" atualizado para "${newGroupName}" com sucesso!`);
+    
+    const modal = bootstrap.Modal.getInstance(document.getElementById('editarGrupamentoModal'));
+    modal.hide();
+});
+
+document.getElementById('novoGrupamentoModal').addEventListener('hidden.bs.modal', function() {
+    document.getElementById('formNovoGrupamento').reset();
+});
+
+document.getElementById('editarGrupamentoModal').addEventListener('hidden.bs.modal', function() {
+    document.getElementById('formEditarGrupamento').reset();
+});
+
 function showMessage(element, message, type) {
     element.className = `alert alert-${type}`;
     element.textContent = message;
@@ -167,5 +213,7 @@ function showMessage(element, message, type) {
         element.classList.add('d-none');
     }, 3000);
 }
+
+
 
 loadMuscleGroups();
