@@ -34,6 +34,7 @@ function removerDivisao(button) {
         alert('Pelo menos uma divisão é necessária!');
     }
 }
+window.removerDivisao = removerDivisao;
 
 // Evento de clique no botão de salvar ficha
 const btnSalvarFicha = document.getElementById("btnSalvarFicha");
