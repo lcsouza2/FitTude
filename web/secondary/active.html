@@ -415,13 +415,13 @@
                     </div>
                     <div class="card-footer bg-transparent">
                         <div class="btn-group w-100" role="group">
-                            <button class="btn btn-primary btn-sm" onclick="verDetalhes(1)">
+                            <button class="btn btn-primary btn-sm">
                                 <i class="bi bi-eye me-1"></i><span class="d-none d-sm-inline">Ver</span>
                             </button>
-                            <button class="btn btn-warning btn-sm" onclick="editarFicha(1)">
+                            <button class="btn btn-warning btn-sm">
                                 <i class="bi bi-pencil me-1"></i><span class="d-none d-sm-inline">Editar</span>
                             </button>
-                            <button class="btn btn-success btn-sm" onclick="iniciarTreino(1, 'B')">
+                            <button class="btn btn-success btn-sm"">
                                 <i class="bi bi-play-fill me-1"></i><span class="d-none d-sm-inline">Treinar</span>
                             </button>
                         </div>
@@ -456,13 +456,13 @@
                     </div>
                     <div class="card-footer bg-transparent">
                         <div class="btn-group w-100" role="group">
-                            <button class="btn btn-primary btn-sm" onclick="verDetalhes(2)">
+                            <button class="btn btn-primary btn-sm">
                                 <i class="bi bi-eye me-1"></i><span class="d-none d-sm-inline">Ver</span>
                             </button>
-                            <button class="btn btn-warning btn-sm" onclick="editarFicha(2)">
+                            <button class="btn btn-warning btn-sm">
                                 <i class="bi bi-pencil me-1"></i><span class="d-none d-sm-inline">Editar</span>
                             </button>
-                            <button class="btn btn-outline-success btn-sm" onclick="ativarFicha(2)">
+                            <button class="btn btn-outline-success btn-sm">
                                 <i class="bi bi-check-circle me-1"></i><span class="d-none d-sm-inline">Ativar</span>
                             </button>
                         </div>
@@ -494,13 +494,13 @@
                     </div>
                     <div class="card-footer bg-transparent">
                         <div class="btn-group w-100" role="group">
-                            <button class="btn btn-primary btn-sm" onclick="verDetalhes(3)">
+                            <button class="btn btn-primary btn-sm">
                                 <i class="bi bi-eye me-1"></i><span class="d-none d-sm-inline">Ver</span>
                             </button>
-                            <button class="btn btn-warning btn-sm" onclick="editarFicha(3)">
+                            <button class="btn btn-warning btn-sm">
                                 <i class="bi bi-pencil me-1"></i><span class="d-none d-sm-inline">Editar</span>
                             </button>
-                            <button class="btn btn-outline-success btn-sm" onclick="ativarFicha(3)">
+                            <button class="btn btn-outline-success btn-sm">
                                 <i class="bi bi-check-circle me-1"></i><span class="d-none d-sm-inline">Ativar</span>
                             </button>
                         </div>
@@ -571,7 +571,7 @@
                             <div class="card">
                                 <div class="card-header d-flex justify-content-between align-items-center">
                                     <h5 class="mb-0" id="exercicioAtual">Supino Reto</h5>
-                                    <button class="btn btn-outline-primary btn-sm" onclick="verDemonstracao()">
+                                    <button class="btn btn-outline-primary btn-sm">
                                         <i class="bi bi-play-circle me-1"></i>Demonstração
                                     </button>
                                 </div>
@@ -601,7 +601,7 @@
                                                 <input type="number" class="form-control form-control-sm" placeholder="Reps" min="1">
                                             </div>
                                             <div class="col-3">
-                                                <button class="btn btn-success btn-sm w-100" onclick="confirmarSerie(this)">
+                                                <button class="btn btn-success btn-sm w-100">
                                                     <i class="bi bi-check"></i>
                                                 </button>
                                             </div>
@@ -609,10 +609,10 @@
                                     </div>
                                     
                                     <div class="d-flex justify-content-between mt-3">
-                                        <button class="btn btn-outline-primary" onclick="adicionarSerie()">
+                                        <button class="btn btn-outline-primary">
                                             <i class="bi bi-plus me-1"></i>Adicionar Série
                                         </button>
-                                        <button class="btn btn-primary" onclick="proximoExercicio()">
+                                        <button class="btn btn-primary">
                                             <i class="bi bi-arrow-right me-1"></i>Próximo Exercício
                                         </button>
                                     </div>
@@ -630,13 +630,13 @@
                                 <div class="card-body text-center">
                                     <div class="display-4 text-primary mb-2" id="timerDescanso">01:30</div>
                                     <div class="btn-group w-100 mb-2">
-                                        <button class="btn btn-success btn-sm" onclick="iniciarTimer()">
+                                        <button class="btn btn-success btn-sm">
                                             <i class="bi bi-play-fill"></i>
                                         </button>
-                                        <button class="btn btn-warning btn-sm" onclick="pausarTimer()">
+                                        <button class="btn btn-warning btn-sm">
                                             <i class="bi bi-pause-fill"></i>
                                         </button>
-                                        <button class="btn btn-danger btn-sm" onclick="resetarTimer()">
+                                        <button class="btn btn-danger btn-sm">
                                             <i class="bi bi-arrow-clockwise"></i>
                                         </button>
                                     </div>
@@ -675,10 +675,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="pausarTreino()">
+                    <button type="button" class="btn btn-secondary">
                         <i class="bi bi-pause me-2"></i>Pausar Treino
                     </button>
-                    <button type="button" class="btn btn-danger" onclick="finalizarTreino()">
+                    <button type="button" class="btn btn-danger">
                         <i class="bi bi-stop me-2"></i>Finalizar Treino
                     </button>
                 </div>
@@ -701,11 +701,11 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Nome da Ficha</label>
-                                <input type="text" class="form-control" placeholder="Ex: Hipertrofia 2025" required>
+                                <input id="fichaNome" type="text" class="form-control" placeholder="Ex: Hipertrofia 2025" required>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Objetivo</label>
-                                <select class="form-select" required>
+                                <select id="fichaObjetivo" class="form-select" required>
                                     <option value="">Selecione...</option>
                                     <option value="hipertrofia">Hipertrofia</option>
                                     <option value="forca">Ganho de Força</option>
@@ -717,22 +717,22 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Divisões de Treino</label>
-                            <div id="divisoes">
+                            <div class="divisoes-container">
                                 <div class="input-group mb-2">
                                     <span class="input-group-text">A</span>
                                     <input type="text" class="form-control" placeholder="Ex: Peito, Tríceps">
-                                    <button class="btn btn-outline-danger" type="button" onclick="removerDivisao(this)">
+                                    <button class="btn btn-outline-danger" type="button">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </div>
                             </div>
-                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="adicionarDivisao()">
+                            <button id="btnAdicionarDivisao" type="button" class="btn btn-outline-primary btn-sm" >
                                 <i class="bi bi-plus me-1"></i>Adicionar Divisão
                             </button>
                         </div>
                         <div class="mb-3">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="ativarFicha" checked>
+                                <input id="fichaAtiva" class="form-check-input" type="checkbox" id="ativarFicha" checked>
                                 <label class="form-check-label" for="ativarFicha">
                                     Ativar esta ficha imediatamente
                                 </label>
@@ -742,7 +742,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" onclick="salvarNovaFicha()">
+                    <button type="button" class="btn btn-primary" id="btnSalvarFicha">
                         <i class="bi bi-save me-2"></i>Salvar Ficha
                     </button>
                 </div>
@@ -936,7 +936,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                    <button type="button" class="btn btn-warning" onclick="editarFicha(1)">
+                    <button type="button" class="btn btn-warning" ">
                         <i class="bi bi-pencil me-2"></i>Editar Ficha
                     </button>
                 </div>
@@ -1008,7 +1008,7 @@
                                                             <td><input type="text" class="form-control form-control-sm" value="8-10" style="width: 80px;"></td>
                                                             <td><input type="text" class="form-control form-control-sm" value="90s" style="width: 70px;"></td>
                                                             <td>
-                                                                <button class="btn btn-danger btn-sm" onclick="removerExercicio(this)">
+                                                                <button class="btn btn-danger btn-sm" >
                                                                     <i class="bi bi-trash"></i>
                                                                 </button>
                                                             </td>
@@ -1019,7 +1019,7 @@
                                                             <td><input type="text" class="form-control form-control-sm" value="10-12" style="width: 80px;"></td>
                                                             <td><input type="text" class="form-control form-control-sm" value="75s" style="width: 70px;"></td>
                                                             <td>
-                                                                <button class="btn btn-danger btn-sm" onclick="removerExercicio(this)">
+                                                                <button class="btn btn-danger btn-sm" >
                                                                     <i class="bi bi-trash"></i>
                                                                 </button>
                                                             </td>
@@ -1027,7 +1027,7 @@
                                                     </tbody>
                                                 </table>
                                             </div>
-                                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="adicionarExercicio('exerciciosA')">
+                                            <button type="button" class="btn btn-outline-primary btn-sm">
                                                 <i class="bi bi-plus me-1"></i>Adicionar Exercício
                                             </button>
                                         </div>
@@ -1064,7 +1064,7 @@
                                                             <td><input type="text" class="form-control form-control-sm" value="8-12" style="width: 80px;"></td>
                                                             <td><input type="text" class="form-control form-control-sm" value="90s" style="width: 70px;"></td>
                                                             <td>
-                                                                <button class="btn btn-danger btn-sm" onclick="removerExercicio(this)">
+                                                                <button class="btn btn-danger btn-sm" >
                                                                     <i class="bi bi-trash"></i>
                                                                 </button>
                                                             </td>
@@ -1072,7 +1072,7 @@
                                                     </tbody>
                                                 </table>
                                             </div>
-                                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="adicionarExercicio('exerciciosB')">
+                                            <button type="button" class="btn btn-outline-primary btn-sm">
                                                 <i class="bi bi-plus me-1"></i>Adicionar Exercício
                                             </button>
                                         </div>
@@ -1095,10 +1095,10 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-danger" onclick="excluirFicha()">
+                    <button type="button" class="btn btn-danger">
                         <i class="bi bi-trash me-2"></i>Excluir Ficha
                     </button>
-                    <button type="button" class="btn btn-success" onclick="salvarEdicaoFicha()">
+                    <button type="button" class="btn btn-success">
                         <i class="bi bi-save me-2"></i>Salvar Alterações
                     </button>
                 </div>
@@ -1108,350 +1108,5 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script type="module" src="../static/js/functional/dashboardFunctions.js"></script>
-    <!-- <script>
-        // Mobile menu functionality
-        document.getElementById('menuToggle').addEventListener('click', function() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            
-            sidebar.classList.toggle('show');
-            overlay.classList.toggle('show');
-        });
-
-        document.getElementById('sidebarOverlay').addEventListener('click', function() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            
-            sidebar.classList.remove('show');
-            overlay.classList.remove('show');
-        });
-
-        // Close sidebar when clicking on menu items on mobile
-        const sidebarItems = document.querySelectorAll('.sidebar-menu li');
-        sidebarItems.forEach(item => {
-            item.addEventListener('click', function() {
-                if (window.innerWidth <= 991.98) {
-                    const sidebar = document.getElementById('sidebar');
-                    const overlay = document.getElementById('sidebarOverlay');
-                    
-                    sidebar.classList.remove('show');
-                    overlay.classList.remove('show');
-                }
-            });
-        });
-
-        // Responsive adjustments
-        window.addEventListener('resize', function() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            
-            if (window.innerWidth > 991.98) {
-                sidebar.classList.remove('show');
-                overlay.classList.remove('show');
-            }
-        });
-
-        // Nova ficha functions
-        let divisaoCounter = 1;
-        const letras = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
-
-        function adicionarDivisao() {
-            if (divisaoCounter >= letras.length) {
-                alert('Máximo de divisões atingido!');
-                return;
-            }
-            
-            const divisoesContainer = document.getElementById('divisoes');
-            const newDiv = document.createElement('div');
-            newDiv.className = 'input-group mb-2';
-            newDiv.innerHTML = `
-                <span class="input-group-text">${letras[divisaoCounter]}</span>
-                <input type="text" class="form-control" placeholder="Ex: Pernas, Glúteos">
-                <button class="btn btn-outline-danger" type="button" onclick="removerDivisao(this)">
-                    <i class="bi bi-trash"></i>
-                </button>
-            `;
-            divisoesContainer.appendChild(newDiv);
-            divisaoCounter++;
-        }
-
-        function removerDivisao(button) {
-            const divisoesContainer = document.getElementById('divisoes');
-            if (divisoesContainer.children.length > 1) {
-                button.parentElement.remove();
-                divisaoCounter--;
-                
-                // Reorder letters
-                const divs = divisoesContainer.querySelectorAll('.input-group');
-                divs.forEach((div, index) => {
-                    div.querySelector('.input-group-text').textContent = letras[index];
-                });
-            } else {
-                alert('Pelo menos uma divisão é necessária!');
-            }
-        }
-
-        function salvarNovaFicha() {
-            // Here you would implement the save logic
-            alert('Ficha salva com sucesso!');
-            const modal = bootstrap.Modal.getInstance(document.getElementById('novaFichaModal'));
-            modal.hide();
-        }
-
-        // Ver detalhes function
-        function verDetalhes(fichaId) {
-            // Populate modal with ficha details based on fichaId
-            const modal = new bootstrap.Modal(document.getElementById('detalhesModal'));
-            modal.show();
-        }
-
-        // Editar ficha function
-        function editarFicha(fichaId) {
-            // Close details modal if open
-            const detalhesModal = bootstrap.Modal.getInstance(document.getElementById('detalhesModal'));
-            if (detalhesModal) {
-                detalhesModal.hide();
-            }
-            
-            // Open edit modal
-            const editModal = new bootstrap.Modal(document.getElementById('editarFichaModal'));
-            editModal.show();
-        }
-
-        // Adicionar exercício function
-        function adicionarExercicio(tbodyId) {
-            const tbody = document.getElementById(tbodyId);
-            const newRow = document.createElement('tr');
-            newRow.innerHTML = `
-                <td><input type="text" class="form-control form-control-sm" placeholder="Nome do exercício"></td>
-                <td><input type="number" class="form-control form-control-sm" value="3" style="width: 60px;"></td>
-                <td><input type="text" class="form-control form-control-sm" value="10-12" style="width: 80px;"></td>
-                <td><input type="text" class="form-control form-control-sm" value="60s" style="width: 70px;"></td>
-                <td>
-                    <button class="btn btn-danger btn-sm" onclick="removerExercicio(this)">
-                        <i class="bi bi-trash"></i>
-                    </button>
-                </td>
-            `;
-            tbody.appendChild(newRow);
-        }
-
-        // Remover exercício function
-        function removerExercicio(button) {
-            button.closest('tr').remove();
-        }
-
-        // Salvar edição function
-        function salvarEdicaoFicha() {
-            alert('Alterações salvas com sucesso!');
-            const modal = bootstrap.Modal.getInstance(document.getElementById('editarFichaModal'));
-            modal.hide();
-        }
-
-        // Excluir ficha function
-        function excluirFicha() {
-            if (confirm('Tem certeza que deseja excluir esta ficha? Esta ação não pode ser desfeita.')) {
-                alert('Ficha excluída com sucesso!');
-                const modal = bootstrap.Modal.getInstance(document.getElementById('editarFichaModal'));
-                modal.hide();
-            }
-        }
-
-        // Ativar ficha function
-        function ativarFicha(fichaId) {
-            if (confirm('Deseja ativar esta ficha? A ficha atual será desativada.')) {
-                alert('Ficha ativada com sucesso!');
-                location.reload();
-            }
-        }
-
-        // Treino functionality
-        let timerInterval;
-        let tempoDescanso = 90;
-        let tempoTreino = 0;
-        let exercicioAtualIndex = 0;
-        let serieAtual = 1;
-
-        function iniciarTreino(fichaId, divisao) {
-            document.getElementById('treinoTitulo').textContent = `Divisão ${divisao} - Peito e Tríceps`;
-            document.getElementById('treinoProgresso').textContent = '1/4 exercícios';
-            
-            // Iniciar contador de tempo do treino
-            const inicioTreino = Date.now();
-            setInterval(() => {
-                const agora = Date.now();
-                const tempoDecorrido = Math.floor((agora - inicioTreino) / 1000);
-                const minutos = Math.floor(tempoDecorrido / 60);
-                const segundos = tempoDecorrido % 60;
-                document.getElementById('treinoTempo').textContent = 
-                    `${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
-            }, 1000);
-            
-            const modal = new bootstrap.Modal(document.getElementById('treinoModal'));
-            modal.show();
-        }
-
-        function adicionarSerie() {
-            serieAtual++;
-            const container = document.getElementById('seriesContainer');
-            const newSerie = document.createElement('div');
-            newSerie.className = 'row g-2 mb-2 serie-row';
-            newSerie.innerHTML = `
-                <div class="col-3">
-                    <label class="form-label text-white small">Série ${serieAtual}</label>
-                </div>
-                <div class="col-3">
-                    <input type="number" class="form-control form-control-sm" placeholder="Peso (kg)" min="0" step="0.5">
-                </div>
-                <div class="col-3">
-                    <input type="number" class="form-control form-control-sm" placeholder="Reps" min="1">
-                </div>
-                <div class="col-3">
-                    <button class="btn btn-success btn-sm w-100" onclick="confirmarSerie(this)">
-                        <i class="bi bi-check"></i>
-                    </button>
-                </div>
-            `;
-            container.appendChild(newSerie);
-        }
-
-        function confirmarSerie(button) {
-            const row = button.closest('.serie-row');
-            const peso = row.querySelector('input[placeholder="Peso (kg)"]').value;
-            const reps = row.querySelector('input[placeholder="Reps"]').value;
-            
-            if (peso && reps) {
-                button.innerHTML = '<i class="bi bi-check-circle-fill text-success"></i>';
-                button.disabled = true;
-                row.querySelectorAll('input').forEach(input => input.disabled = true);
-                iniciarTimer();
-            } else {
-                alert('Preencha peso e repetições!');
-            }
-        }
-
-        function proximoExercicio() {
-            exercicioAtualIndex++;
-            if (exercicioAtualIndex < 4) {
-                // Atualizar exercício atual
-                const exercicios = ['Supino Reto', 'Supino Inclinado', 'Crucifixo', 'Mergulho'];
-                document.getElementById('exercicioAtual').textContent = exercicios[exercicioAtualIndex];
-                document.getElementById('treinoProgresso').textContent = `${exercicioAtualIndex + 1}/4 exercícios`;
-                
-                // Reset séries
-                document.getElementById('seriesContainer').innerHTML = `
-                    <div class="row g-2 mb-2 serie-row">
-                        <div class="col-3">
-                            <label class="form-label text-white small">Série 1</label>
-                        </div>
-                        <div class="col-3">
-                            <input type="number" class="form-control form-control-sm" placeholder="Peso (kg)" min="0" step="0.5">
-                        </div>
-                        <div class="col-3">
-                            <input type="number" class="form-control form-control-sm" placeholder="Reps" min="1">
-                        </div>
-                        <div class="col-3">
-                            <button class="btn btn-success btn-sm w-100" onclick="confirmarSerie(this)">
-                                <i class="bi bi-check"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-                serieAtual = 1;
-                
-                // Atualizar lista
-                const items = document.querySelectorAll('#listaExercicios .list-group-item');
-                items.forEach((item, index) => {
-                    item.classList.remove('active');
-                    const icon = item.querySelector('i');
-                    if (index < exercicioAtualIndex) {
-                        icon.className = 'bi bi-check-circle-fill text-success';
-                    } else if (index === exercicioAtualIndex) {
-                        item.classList.add('active');
-                        icon.className = 'bi bi-arrow-right text-primary';
-                    } else {
-                        icon.className = 'bi bi-circle text-muted';
-                    }
-                });
-            } else {
-                alert('Treino concluído! Parabéns! 🎉');
-                finalizarTreino();
-            }
-        }
-
-        function iniciarTimer() {
-            clearInterval(timerInterval);
-            let tempo = tempoDescanso;
-            
-            timerInterval = setInterval(() => {
-                tempo--;
-                const minutos = Math.floor(tempo / 60);
-                const segundos = tempo % 60;
-                document.getElementById('timerDescanso').textContent = 
-                    `${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
-                
-                if (tempo <= 0) {
-                    clearInterval(timerInterval);
-                    // Vibrar se suportado
-                    if (navigator.vibrate) {
-                        navigator.vibrate([200, 100, 200, 100, 200]);
-                    }
-                    alert('Tempo de descanso finalizado!');
-                }
-            }, 1000);
-        }
-
-        function pausarTimer() {
-            clearInterval(timerInterval);
-        }
-
-        function resetarTimer() {
-            clearInterval(timerInterval);
-            const minutos = Math.floor(tempoDescanso / 60);
-            const segundos = tempoDescanso % 60;
-            document.getElementById('timerDescanso').textContent = 
-                `${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
-        }
-
-        function ajustarTimer(valor) {
-            tempoDescanso = parseInt(valor);
-            resetarTimer();
-        }
-
-        function verDemonstracao() {
-            alert('Abrindo demonstração do exercício...');
-            // Aqui você implementaria a demonstração
-        }
-
-        function pausarTreino() {
-            if (confirm('Deseja pausar o treino? O progresso será salvo.')) {
-                const modal = bootstrap.Modal.getInstance(document.getElementById('treinoModal'));
-                modal.hide();
-            }
-        }
-
-        function finalizarTreino() {
-            if (confirm('Deseja finalizar o treino? O progresso será salvo.')) {
-                clearInterval(timerInterval);
-                const modal = bootstrap.Modal.getInstance(document.getElementById('treinoModal'));
-                modal.hide();
-                alert('Treino finalizado e salvo com sucesso! 💪');
-            }
-        }
-
-        // Logoff function
-        document.getElementById('logoff').addEventListener('click', function() {
-            if (confirm('Deseja realmente sair?')) {
-                // Implement logout logic
-                alert('Logout realizado!');
-            }
-        });
-
-        // Set username
-        document.addEventListener('DOMContentLoaded', function() {
-            const username = 'User'; // This would come from your backend
-            document.getElementById('username').textContent = username.substring(0, 2).toUpperCase();
-            document.querySelector('span.text-white.me-3').textContent = `Oi, ${username}!`;
-        });
-    </script> -->
+    <script type="module" src="../static/js/functional/active.js"></script>
 </body>
