@@ -52,6 +52,7 @@ btnSalvarFicha.addEventListener("click", async () => {
     }
 
     try {
+        console.log("Nome:",nome,"objetivo:",objetivo,"ativa:",ativa)
         const planoRes = await authApiClient.post("/api/data/workout_plan/new", {
             workout_plan_name: nome,
             workout_plan_goal: objetivo,
