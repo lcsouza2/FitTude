@@ -13,46 +13,46 @@ const passwordRequirements = document.querySelector('.password-requirements');
 
 function setPasswordRequirementsVisible(passwordContainer) {
     passwordContainer.classList.add('active');
-
-    passwordgoContainer.animate([
+    passwordContainer.classList.add('visible');
+    passwordContainer.style.display = 'block';
+    passwordContainer.animate([
         {width: '0%', height: '0px'},
-        {width: '100%', height: '100%   '}
+        {width: '100%', height: '100%'}
     ], {
-        duration: 500,
+        duration: 300,
         easing: 'ease',
         fill: 'forwards'
     });
 }
 
 function setPasswordRequirementsHidden(passwordContainer) {
-
     passwordContainer.animate([
-            {width: '100%', height: '100%'},
-            {width: '0%', height: '0px'}
-        ], {
-            duration: 500,
-            easing: 'ease',
-            fill: 'forwards'
-      });
-
-    passwordContainer.classList.remove('visible');
+        {width: '100%', height: '100%'},
+        {width: '0%', height: '0px'}
+    ], {
+        duration: 300,
+        easing: 'ease',
+        fill: 'forwards'
+    });
+    setTimeout(() => {
+        passwordContainer.classList.remove('active');
+        passwordContainer.classList.remove('visible');
+        passwordContainer.style.display = 'none';
+    }, 300);
 }
 
 senhaInput.addEventListener('focus', function() {
-        setPasswordRequirementsVisible(passwordContainer);
+    setPasswordRequirementsVisible(passwordContainer);
 
-        requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
         passwordRequirements.classList.add('visible');
     });
 });
 
 senhaInput.addEventListener('blur', function() {
-    setPasswordRequirementsHidden( passwordContainer);
+    setPasswordRequirementsHidden(passwordContainer);
 
-    setTimeout(() => {
-        passwordContainer.classList.remove('active');
-    }, 300); 
-
+    passwordRequirements.classList.remove('visible');
 });
 
 senhaInput.addEventListener('input', function() {
@@ -63,25 +63,25 @@ senhaInput.addEventListener('input', function() {
     } else {
         requirements.length.classList.remove('valid');
     }
-    
+
     if(/[A-Z]/.test(senha)) {
         requirements.uppercase.classList.add('valid');
     } else {
         requirements.uppercase.classList.remove('valid');
     }
-    
+
     if(/[a-z]/.test(senha)) {
         requirements.lowercase.classList.add('valid');
     } else {
         requirements.lowercase.classList.remove('valid');
     }
-    
+
     if(/[0-9]/.test(senha)) {
         requirements.number.classList.add('valid');
     } else {
         requirements.number.classList.remove('valid');
     }
-    
+
     if(/[!@#$%^&*(),.?":{}|<>/]/.test(senha)) {
         requirements.special.classList.add('valid');
     } else {
