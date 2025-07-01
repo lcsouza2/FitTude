@@ -157,7 +157,7 @@ document.querySelector(".row.g-4").addEventListener("click", (event) => {
     } else if (btnEditar) {
         editarFicha(Number(btnEditar.dataset.id));
     } else if (btnAtivar) {
-        ativarFicha(Number(btnAtivar.dataset.id));
+    //ativar no banco 
     }
 });
 
