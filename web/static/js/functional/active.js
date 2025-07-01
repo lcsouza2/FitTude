@@ -144,7 +144,6 @@ async function carregarFichas() {
         }
     } catch (err) {
         console.error("Erro ao carregar fichas:", err);
-        alert("Erro ao carregar fichas.");
     }
 }
 document.querySelector(".row.g-4").addEventListener("click", (event) => {
