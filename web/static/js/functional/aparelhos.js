@@ -20,10 +20,10 @@ async function fetchEquipments() {
         if (response.ok) {
             renderEquipments(response.body);
         } else {
-            alert('Erro ao buscar aparelhos');
+            return;
         }
     } catch (error) {
-        alert('Erro ao buscar aparelhos');
+       console.log('Erro ao buscar aparelhos');
     }
 }
 
