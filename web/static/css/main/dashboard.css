@@ -475,3 +475,148 @@ header h1 {
         grid-template-columns: 1fr;
     }
 }
+
+.modal-content {
+    background-color: rgba(40, 40, 40, 0.95);
+    color: #ffffff;
+    border: none;
+    border-radius: 15px;
+}
+.modal-title {
+    color: #ffffff;
+}
+.card-header {
+    background-color: rgba(81, 15, 235, 0.8);
+    border-bottom: none;
+    border-radius: 15px 15px 0 0 !important;
+    color: white;
+    font-weight: 600;
+}
+.btn-primary {
+    background-color: #510feb;
+    border-color: #510feb;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    color: #ffffff;
+}
+.btn-primary:hover {
+    background-color: #3d0bc6;
+    border-color: #3d0bc6;
+    transform: scale(1.05);
+    color: #ffffff;
+}
+.form-control, .form-select {
+    background-color: rgba(60, 60, 60, 0.8);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #ffffff;
+}
+.form-control:focus, .form-select:focus {
+    background-color: rgba(60, 60, 60, 0.9);
+    border-color: #510feb;
+    color: #ffffff;
+    box-shadow: 0 0 0 0.2rem rgba(81, 15, 235, 0.25);
+}
+.form-control::placeholder {
+    color: #cccccc;
+}
+.table {
+    color: #ffffff;
+}
+.table-dark {
+    --bs-table-bg: rgba(40, 40, 40, 0.8);
+    --bs-table-color: #ffffff;
+}
+.accordion-button {
+    background-color: rgba(60, 60, 60, 0.8);
+    color: #ffffff;
+    border: none;
+}
+.accordion-button:focus {
+    box-shadow: 0 0 0 0.2rem rgba(81, 15, 235, 0.25);
+}
+.accordion-button:not(.collapsed) {
+    background-color: rgba(81, 15, 235, 0.8);
+    color: #ffffff;
+}
+.accordion-item {
+    background-color: transparent;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+.accordion-body {
+    background-color: rgba(40, 40, 40, 0.8);
+    color: #ffffff;
+}
+.input-group-text {
+    background-color: rgba(81, 15, 235, 0.8);
+    border-color: rgba(255,255,255,0.2);
+    color: #ffffff;
+}
+.btn-close-white {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+.card {
+    background-color: rgba(60, 60, 60, 0.9);
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    color: #ffffff;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+}
+
+.accordion-button {
+    background-color: rgba(60, 60, 60, 0.8);
+    color: #ffffff;
+    border: none;
+}
+.accordion-button:focus {
+    box-shadow: 0 0 0 0.2rem rgba(81, 15, 235, 0.25);
+}
+.accordion-button:not(.collapsed) {
+    background-color: rgba(81, 15, 235, 0.8);
+    color: #ffffff;
+}
+.accordion-item {
+    background-color: transparent;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+.accordion-body {
+    background-color: rgba(40, 40, 40, 0.8);
+    color: #ffffff;
+}
+
+.table {
+    color: #ffffff;
+}
+.table-dark {
+    --bs-table-bg: rgba(40, 40, 40, 0.8);
+    --bs-table-color: #ffffff;
+}
+
+
+.form-control, .form-select {
+    background-color: rgba(60, 60, 60, 0.8);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #ffffff;
+}
+.form-control:focus, .form-select:focus {
+    background-color: rgba(60, 60, 60, 0.9);
+    border-color: #510feb;
+    color: #ffffff;
+    box-shadow: 0 0 0 0.2rem rgba(81, 15, 235, 0.25);
+}
+.form-control::placeholder {
+    color: #cccccc;
+}
+
+.badge-primary {
+    background-color: #510feb;
+}
+
+.btn-close-white {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
