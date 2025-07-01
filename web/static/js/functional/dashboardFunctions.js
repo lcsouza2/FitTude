@@ -2,7 +2,7 @@ import { authApiClient, tokenManager } from '../core/auth.js';
 import { populateUsername } from '../visual/dashboardVisuals.js';
 
 console.log("carregano")
-// const token = tokenManager.getSessionToken()? undefined : tokenManager.refreshSessionToken();
+const token = tokenManager.getSessionToken()? undefined : tokenManager.refreshSessionToken();
 const user_fullname = window.sessionStorage.getItem('user_fullname');
 if (user_fullname ) {
     populateUsername(user_fullname)
