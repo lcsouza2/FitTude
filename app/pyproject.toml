@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "FitTude"
+name = "Overload"
 version = "0.1.0"
 description = "App para acompanhar a rotina de treinos"
 authors = ["Luiz Souza <lcsouzagarcia@gmail.com>"]
@@ -14,25 +14,25 @@ include = "tests"
 
 [tool.poetry.dependencies]
 python = "^3.12"
-fastapi = {extras = ["standard"], version = "^0.115.6"}
-sqlalchemy = "^2.0.36"
-redis = "^5.2.1"
-asyncpg = "^0.30.0"
-argon2-cffi = "^23.1.0"
-pyjwt = "^2.10.1"
-psycopg2-binary = "^2.9.10"
-fastapi-mail = "^1.4.2"
-pytest-asyncio = "^0.26.0"
-email-validator = "^2.2.0"
+fastapi = {extras = ["standard"], version = "^0.139.0"}
+sqlalchemy = "^2.0.51"
+redis = "^8.0.1"
+asyncpg = "^0.31.0"
+argon2-cffi = "^25.1.0"
+pyjwt = "^2.13.0"
+psycopg2-binary = "^2.9.12"
+fastapi-mail = "^1.6.5"
+pytest-asyncio = "^1.4.0"
+email-validator = "^2.3.0"
 
- 
+
 [tool.poetry.group.dev.dependencies]
 taskipy = "^1.14.1"
-ruff = "^0.8.6"
-pytest = "^8.3.5"
-pytest-asyncio = "^0.26.0"
+ruff = "^0.15.20"
+pytest = "^9.1.1"
+pytest-asyncio = "^1.4.0"
 pytest-tornasync = "^0.6.0.post2"
-aiosqlite = "^0.21.0"
+aiosqlite = "^0.22.1"
 
 [build-system]
 requires = ["poetry-core"]
