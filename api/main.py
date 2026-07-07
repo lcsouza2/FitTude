@@ -1,0 +1,28 @@
+from fastapi import Depends, FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from api.src.security.security import verify_request_limit
+from api.src.routes.data_delete_routes import DATA_DELETE_API
+from api.src.routes.data_get_routes import DATA_GET_API
+from api.src.routes.data_post_routes import DATA_POST_API
+from api.src.routes.data_put_routes import DATA_PUT_API
+from api.src.routes.user_routes import USER_ROUTER
+
+MAIN_APP = FastAPI(debug=True)
+
+# Apply rate limiting to all routes
+MAIN_APP.include_router(USER_ROUTER, dependencies=[Depends(verify_request_limit)])
+MAIN_APP.include_router(DATA_PUT_API, dependencies=[Depends(verify_request_limit)])
+MAIN_APP.include_router(DATA_DELETE_API, dependencies=[Depends(verify_request_limit)])
+MAIN_APP.include_router(DATA_GET_API, dependencies=[Depends(verify_request_limit)])
+MAIN_APP.include_router(DATA_POST_API, dependencies=[Depends(verify_request_limit)])
+
+
+MAIN_APP.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://127.0.0.1:8001", "http://localhost:8001"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["Authorization"]
+)
