@@ -1,6 +1,6 @@
-# FitTude
+# OVERLOAD
 
-FitTude is a comprehensive workout tracking application built with FastAPI that helps users manage their fitness routines, track exercises, and monitor progress.
+OVERLOAD is a comprehensive workout tracking application built with FastAPI that helps users manage their fitness routines, track exercises, and monitor progress.
 
 ## Features
 
@@ -9,7 +9,7 @@ FitTude is a comprehensive workout tracking application built with FastAPI that 
 - Rate limiting and security measures
 - Workout plan management
 - Exercise tracking with sets and reps
-- Equipment and muscle group organization 
+- Equipment and muscle group organization
 - Progress reporting
 - Caching with Redis
 - PostgreSQL database storage
@@ -31,12 +31,12 @@ FitTude is a comprehensive workout tracking application built with FastAPI that 
 1. Clone the repository:
 ```bash
 git clone <repository-url>
-cd FitTude
+cd OVERLOAD
 ```
 
 ## Directory Structure
 
-FitTude/
+OVERLOAD/
 ├── app/
 │   ├── core/          - Core functionality
 │   ├── database/      - Database models and migrations

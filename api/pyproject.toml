@@ -1,0 +1,50 @@
+[tool.poetry]
+name = "OVERLOAD"
+version = "0.1.0"
+description = "App para acompanhar a rotina de treinos"
+authors = ["Luiz Souza <lcsouzagarcia@gmail.com>"]
+readme = "README.md"
+
+[[tool.poetry.packages]]
+include = "app"
+
+[[tool.poetry.packages]]
+include = "tests"
+
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = {extras = ["standard"], version = "^0.139.0"}
+sqlalchemy = "^2.0.51"
+redis = "^8.0.1"
+asyncpg = "^0.31.0"
+argon2-cffi = "^25.1.0"
+pyjwt = "^2.13.0"
+psycopg2-binary = "^2.9.12"
+fastapi-mail = "^1.6.5"
+pytest-asyncio = "^1.4.0"
+email-validator = "^2.3.0"
+
+
+[tool.poetry.group.dev.dependencies]
+taskipy = "^1.14.1"
+ruff = "^0.15.20"
+pytest = "^9.1.1"
+pytest-asyncio = "^1.4.0"
+pytest-tornasync = "^0.6.0.post2"
+aiosqlite = "^0.22.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.taskipy.tasks]
+format = "ruff format"
+lint = "ruff check"
+run_test = "fastapi dev app/main.py --app MAIN_APP"
+run_prod = "fastapi run app/main.py --app MAIN_APP"
+
+
+[tool.ruff.lint]
+select = ["I", "E", "F", "W", "C"]
