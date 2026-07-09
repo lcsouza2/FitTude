@@ -1556,6 +1556,18 @@ pygments = ">=2.7.2"
 dev = ["argcomplete", "attrs (>=19.2)", "hypothesis (>=3.56)", "mock", "requests", "setuptools", "xmlschema"]
 
 [[package]]
+name = "pytest-async"
+version = "0.1.1"
+description = "pytest-async - Run your coroutine in event loop without decorator"
+optional = false
+python-versions = ">=3.6"
+groups = ["main"]
+files = [
+    {file = "pytest_async-0.1.1-py3-none-any.whl", hash = "sha256:11cc41eef82592951d56c2bb9b0e6ab21b2f0f00663e78d95694a80d965be930"},
+    {file = "pytest_async-0.1.1.tar.gz", hash = "sha256:0d6ffd3ebac2f3aa47d606dbae1984750268a89dc8caf4a908ba61c60299cdfd"},
+]
+
+[[package]]
 name = "pytest-asyncio"
 version = "1.4.0"
 description = "Pytest support for asyncio"
@@ -2457,7 +2469,7 @@ description = "Fast implementation of asyncio event loop on top of libuv"
 optional = false
 python-versions = ">=3.8.1"
 groups = ["main"]
-markers = "sys_platform != \"win32\" and sys_platform != \"cygwin\" and platform_python_implementation != \"PyPy\""
+markers = "platform_python_implementation != \"PyPy\" and sys_platform != \"win32\" and sys_platform != \"cygwin\""
 files = [
     {file = "uvloop-0.22.1-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:ef6f0d4cc8a9fa1f6a910230cd53545d9a14479311e87e3cb225495952eb672c"},
     {file = "uvloop-0.22.1-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:7cd375a12b71d33d46af85a3343b35d98e8116134ba404bd657b3b1d15988792"},
@@ -2709,4 +2721,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.12"
-content-hash = "53a9e99d008753e58e93244a6ec42e0747f0a2fbcf560ab80bc669747c57c3b1"
+content-hash = "a9f9450cb3c9c3ba5c4d68387b7a6274f5f629a037183b8884639a26f92c3917"
