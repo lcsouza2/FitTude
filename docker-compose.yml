@@ -2,7 +2,7 @@ services:
   backend:
     container_name: overload-backend
     build:
-      context: ./app
+      context: ./api
       dockerfile: Dockerfile
     depends_on:
       - db
