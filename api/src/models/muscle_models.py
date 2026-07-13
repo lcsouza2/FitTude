@@ -1,7 +1,7 @@
 
 from datetime import datetime
 
-from sqlalchemy import ForeignKey, UniqueConstraint
+from sqlalchemy import ForeignKey, Integer, String, UniqueConstraint
 
 from api.src.models.base_models import BaseOrmModel
 from sqlalchemy.orm import Mapped, mapped_column
@@ -13,18 +13,20 @@ from api.src.utils.constraints import DatabaseConstraints
 class Muscle:
     __tablename__ = "muscle"
     __table_args__ = (
-        UniqueConstraint("muscle_name", "group_name", name=DatabaseConstraints.Muscle.UNIQUE)
+        UniqueConstraint("muscle_name", "group_name", name=DatabaseConstraints.Muscle.UNIQUE),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True, init=False)
     group_name: Mapped[str] = mapped_column(
+        String,
         ForeignKey("muscle_group.group_name", name=DatabaseConstraints.Muscle.FK_MUSCLE_GROUP)
     )
     user_id: Mapped[int] = mapped_column(
+        Integer,
         ForeignKey("user.user_id", name=DatabaseConstraints.Muscle.FK_USER),
         nullable=True
     )
     muscle_name: Mapped[str] = mapped_column()
     deleted: Mapped[bool] = mapped_column(default=False)
-    created_at: Mapped[datetime] = mapped_column(default=datetime.now, nullable=False, init=False)
+    created_at: Mapped[datetime] = mapped_column(default_factory=datetime.now, nullable=False, init=False)
     deleted_at: Mapped[datetime] = mapped_column(default=None, nullable=True)
