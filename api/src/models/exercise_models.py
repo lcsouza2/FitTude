@@ -17,5 +17,5 @@ class Exercise:
     exercise_name: Mapped[str] = mapped_column()
     description: Mapped[str] = mapped_column(default=None, nullable=True)
     deleted: Mapped[bool] = mapped_column(default=False)
-    created_at: Mapped[datetime] = mapped_column(default=datetime.now, nullable=False, init=False)
+    created_at: Mapped[datetime] = mapped_column(default_factory=datetime.now, nullable=False, init=False)
     deleted_at: Mapped[datetime] = mapped_column(default=None, nullable=True)
