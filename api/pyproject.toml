@@ -45,7 +45,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.taskipy.tasks]
 format = "ruff format"
 lint = "ruff check"
-test = "docker exec -t overload-backend pytest -v --maxfail=1"
+test = "docker exec -t overload-backend pytest -vxs"
 
 
 [tool.ruff.lint]
