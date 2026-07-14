@@ -45,8 +45,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.taskipy.tasks]
 format = "ruff format"
 lint = "ruff check"
-run_test = "fastapi dev app/main.py --app MAIN_APP"
-run_prod = "fastapi run app/main.py --app MAIN_APP"
+test = "docker exec -t overload-backend pytest -v --disable-warnings --maxfail=1"
 
 
 [tool.ruff.lint]
