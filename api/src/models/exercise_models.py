@@ -10,9 +10,9 @@ class Exercise:
     __tablename__ = "exercise"
     ___table_args__ = (UniqueConstraint("exercise_name", "user_id", name=DatabaseConstraints.Exercise.UNIQUE),)
 
-    exercise_id: Mapped[int] = mapped_column(primary_key=True, init=False)
+    id: Mapped[int] = mapped_column(primary_key=True, init=False)
     user_id: Mapped[int] = mapped_column(
-        ForeignKey("user.user_id", name=DatabaseConstraints.Exercise.FK_USER), nullable=True
+        ForeignKey("user.id", name=DatabaseConstraints.Exercise.FK_USER), nullable=True
     )
     exercise_name: Mapped[str] = mapped_column()
     description: Mapped[str] = mapped_column(default=None, nullable=True)

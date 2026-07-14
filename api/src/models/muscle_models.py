@@ -23,7 +23,7 @@ class Muscle:
     )
     user_id: Mapped[int] = mapped_column(
         Integer,
-        ForeignKey("user.user_id", name=DatabaseConstraints.Muscle.FK_USER),
+        ForeignKey("user.id", name=DatabaseConstraints.Muscle.FK_USER),
         nullable=True
     )
     muscle_name: Mapped[str] = mapped_column()

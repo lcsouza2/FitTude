@@ -12,9 +12,9 @@ class Equipment:
         Index(DatabaseConstraints.Equipment.IDX_EQUIPMENT_NAME, "equipment_name"),
     )
 
-    equipment_id: Mapped[int] = mapped_column(primary_key=True, init=False)
+    id: Mapped[int] = mapped_column(primary_key=True, init=False)
     user_id: Mapped[int] = mapped_column(
-        ForeignKey("user.user_id", name=DatabaseConstraints.Equipment.FK_USER), nullable=True
+        ForeignKey("user.id", name=DatabaseConstraints.Equipment.FK_USER), nullable=True
     )
     group_name: Mapped[str] = mapped_column(
         ForeignKey("muscle_group.group_name", name=DatabaseConstraints.Equipment.FK_MUSCLE_GROUP)

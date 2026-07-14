@@ -10,8 +10,8 @@ class WorkoutPlan:
     __tablename__ = "workout_plan"
     __table_args__ = (UniqueConstraint("workout_plan_name", "user_id", name=DatabaseConstraints.WorkoutPlan.UNIQUE),)
 
-    workout_plan_id: Mapped[int] = mapped_column(primary_key=True, init=False)
-    user_id: Mapped[int] = mapped_column(ForeignKey("user.user_id", name=DatabaseConstraints.WorkoutPlan.FK_USER))
+    id: Mapped[int] = mapped_column(primary_key=True, init=False)
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id", name=DatabaseConstraints.WorkoutPlan.FK_USER))
     workout_plan_name: Mapped[str] = mapped_column()
     workout_plan_goal: Mapped[str]
     deleted: Mapped[bool] = mapped_column(default=False)
