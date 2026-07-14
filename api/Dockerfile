@@ -18,9 +18,9 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 RUN addgroup -g 1000 appgroup && \
     adduser -u 1000 -G appgroup -D appuser
 
-RUN mkdir /app && chown appuser:appgroup /app
+RUN mkdir /api && chown appuser:appgroup /api
 
-WORKDIR /app
+WORKDIR /api
 
 COPY --from=builder /usr/local/lib/python3.13/site-packages /usr/local/lib/python3.13/site-packages
 COPY --from=builder /usr/local/bin /usr/local/bin
