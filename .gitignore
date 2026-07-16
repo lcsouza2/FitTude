@@ -10,3 +10,7 @@ __pycache__
 *.pyd
 *.db
 *.vscode
+*node_modules
+*.expo
+*.android
+**expo-env*
