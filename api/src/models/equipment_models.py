@@ -12,14 +12,14 @@ class Equipment:
         Index(DatabaseConstraints.Equipment.IDX_EQUIPMENT_NAME, "equipment_name"),
     )
 
-    equipment_id: Mapped[int] = mapped_column(primary_key=True, init=False)
+    id: Mapped[int] = mapped_column(primary_key=True, init=False)
     user_id: Mapped[int] = mapped_column(
-        ForeignKey("user.user_id", name=DatabaseConstraints.Equipment.FK_USER), nullable=True
+        ForeignKey("user.id", name=DatabaseConstraints.Equipment.FK_USER), nullable=True
     )
     group_name: Mapped[str] = mapped_column(
         ForeignKey("muscle_group.group_name", name=DatabaseConstraints.Equipment.FK_MUSCLE_GROUP)
         )
     equipment_name: Mapped[str] = mapped_column()
     deleted: Mapped[bool] = mapped_column(default=False)
-    created_at: Mapped[datetime] = mapped_column(default=datetime.now, nullable=False, init=False)
+    created_at: Mapped[datetime] = mapped_column(default_factory=datetime.now, nullable=False, init=False)
     deleted_at: Mapped[datetime] = mapped_column(default=None, nullable=True)

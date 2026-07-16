@@ -9,5 +9,5 @@ class MuscleGroup:
     user_id: Mapped[int] = mapped_column()
     group_name: Mapped[str] = mapped_column(primary_key=True)
     deleted: Mapped[bool] = mapped_column(default=False)
-    created_at: Mapped[datetime] = mapped_column(default=datetime.now, nullable=False, init=False)
+    created_at: Mapped[datetime] = mapped_column(default_factory=datetime.now, nullable=False, init=False)
     deleted_at: Mapped[datetime] = mapped_column(default=None, nullable=True)

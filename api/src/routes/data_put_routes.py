@@ -111,7 +111,7 @@ async def update_muscle(
         table=db_mapping.Muscle,
         entity_name="Muscle",
         where_clause=and_(
-            db_mapping.Muscle.muscle_id == muscle_id,
+            db_mapping.Muscle.id == muscle_id,
             db_mapping.Muscle.user_id == user_id,
         ),
         values_mapping=exclude_falsy_from_dict(updates.model_dump(exclude_none=True)),
@@ -132,7 +132,7 @@ async def update_muscle(
                 "message": "Referenced user not found",
             },
         ],
-        returning_column=db_mapping.Muscle.muscle_id,
+        returning_column=db_mapping.Muscle.id,
     )
 
 
@@ -146,7 +146,7 @@ async def update_equipment(
         table=db_mapping.Equipment,
         entity_name="Equipment",
         where_clause=and_(
-            db_mapping.Equipment.equipment_id == equipment_id,
+            db_mapping.Equipment.id == equipment_id,
             db_mapping.Equipment.user_id == user_id,
         ),
         values_mapping=exclude_falsy_from_dict(updates.model_dump(exclude_none=True)),
@@ -167,7 +167,7 @@ async def update_equipment(
                 "message": "Referenced user not found",
             },
         ],
-        returning_column=db_mapping.Equipment.equipment_id,
+        returning_column=db_mapping.Equipment.id,
     )
 
 
@@ -181,7 +181,7 @@ async def update_exercise(
         table=db_mapping.Exercise,
         entity_name="Exercise",
         where_clause=and_(
-            db_mapping.Exercise.exercise_id == exercise_id,
+            db_mapping.Exercise.id == exercise_id,
             db_mapping.Exercise.user_id == user_id,
         ),
         values_mapping=exclude_falsy_from_dict(updates.model_dump(exclude_none=True)),
@@ -207,7 +207,7 @@ async def update_exercise(
                 "message": "Referenced user not found",
             },
         ],
-        returning_column=db_mapping.Exercise.exercise_id,
+        returning_column=db_mapping.Exercise.id,
     )
 
 
@@ -221,7 +221,7 @@ async def update_workout_plan(
         table=db_mapping.WorkoutPlan,
         entity_name="Workout Plan",
         where_clause=and_(
-            db_mapping.WorkoutPlan.workout_plan_id == plan_id,
+            db_mapping.WorkoutPlan.id == plan_id,
             db_mapping.WorkoutPlan.user_id == user_id,
         ),
         values_mapping=exclude_falsy_from_dict(updates.model_dump(exclude_none=True)),
@@ -237,7 +237,7 @@ async def update_workout_plan(
                 "message": "Referenced user not found",
             },
         ],
-        returning_column=db_mapping.WorkoutPlan.workout_plan_id,
+        returning_column=db_mapping.WorkoutPlan.id,
     )
 
 
@@ -251,12 +251,12 @@ async def update_split_exercise(
         db_mapping.SplitExercise.exercise_id == updates.exercise_id,
         db_mapping.SplitExercise.execution_order == updates.current_execution_order,
         db_mapping.WorkoutPlan.user_id == user_id,
-        db_mapping.WorkoutPlan.workout_plan_id == updates.workout_plan_id,
+        db_mapping.WorkoutPlan.id == updates.workout_plan_id,
         # Joins
         db_mapping.SplitExercise.workout_plan_id
         == db_mapping.WorkoutSplit.workout_plan_id,
         db_mapping.WorkoutSplit.workout_plan_id
-        == db_mapping.WorkoutPlan.workout_plan_id,
+        == db_mapping.WorkoutPlan.id,
     )
 
     update_values = updates.model_dump(
@@ -285,5 +285,5 @@ async def update_split_exercise(
                 "message": "Referenced workout split not found",
             },
         ],
-        returning_column=db_mapping.WorkoutPlan.workout_plan_id,
+        returning_column=db_mapping.WorkoutPlan.id,
     )

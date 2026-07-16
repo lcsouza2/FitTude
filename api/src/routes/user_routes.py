@@ -217,7 +217,7 @@ async def handle_register_confirm_req(
             created_user = await session.execute(
                 insert(db_mapping.User)
                 .values(user_data)
-                .returning(db_mapping.User.user_id)
+                .returning(db_mapping.User.id)
             )
 
         except exc.IntegrityError as e:
@@ -269,7 +269,7 @@ async def handle_user_login_req(
 
     async with session:
         result = await session.execute(
-            select(db_mapping.User.user_id, db_mapping.User.password, db_mapping.User.name).where(
+            select(db_mapping.User.id, db_mapping.User.password, db_mapping.User.name).where(
                 db_mapping.User.email == user.email,
             )
         )
@@ -282,7 +282,7 @@ async def handle_user_login_req(
             raise InvalidCredentials("Invalid password")
 
         session_token, refresh_token = await _generate_auth_tokens(
-            user_id=found.user_id,
+            user_id=found.id,
             token_service=token_service,
             long_session=user.keep_login,
         )

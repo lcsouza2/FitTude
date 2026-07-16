@@ -10,8 +10,8 @@ class WorkoutSplit:
 
     split: Mapped[str] = mapped_column(primary_key=True)
     workout_plan_id: Mapped[int] = mapped_column(
-        ForeignKey("workout_plan.workout_plan_id", name=DatabaseConstraints.WorkoutSplit.FK_WORKOUT_PLAN), primary_key=True
+        ForeignKey("workout_plan.id", name=DatabaseConstraints.WorkoutSplit.FK_WORKOUT_PLAN), primary_key=True
     )
     deleted: Mapped[bool] = mapped_column(default=False)
-    created_at: Mapped[datetime] = mapped_column(default=datetime.now, nullable=False, init=False)
+    created_at: Mapped[datetime] = mapped_column(default_factory=datetime.now, nullable=False, init=False)
     deleted_at: Mapped[datetime] = mapped_column(default=None, nullable=True)

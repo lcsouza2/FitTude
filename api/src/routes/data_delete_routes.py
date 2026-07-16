@@ -81,11 +81,11 @@ async def inactivate_muscle(
     muscle_id: int, user_id: int = Depends(TokenService.validate_token)
 ):
     where = and_(
-        db_mapping.Muscle.muscle_id == muscle_id,
+        db_mapping.Muscle.id == muscle_id,
         db_mapping.Muscle.user_id == user_id,
     )
 
-    returning = db_mapping.Muscle.muscle_id
+    returning = db_mapping.Muscle.id
 
     await _execute_inactivate_entity(
         table=db_mapping.Muscle,
@@ -100,11 +100,11 @@ async def inactivate_equipment(
     equipment_id: int, user_id: int = Depends(TokenService.validate_token)
 ):
     where = and_(
-        db_mapping.Equipment.equipment_id == equipment_id,
+        db_mapping.Equipment.id == equipment_id,
         db_mapping.Equipment.user_id == user_id,
     )
 
-    returning = db_mapping.Equipment.equipment_id
+    returning = db_mapping.Equipment.id
 
     await _execute_inactivate_entity(
         table=db_mapping.Equipment,
@@ -119,11 +119,11 @@ async def inactivate_exercise(
     exercise_id: int, user_id: int = Depends(TokenService.validate_token)
 ):
     where = and_(
-        db_mapping.Exercise.exercise_id == exercise_id,
+        db_mapping.Exercise.id == exercise_id,
         db_mapping.Exercise.user_id == user_id,
     )
 
-    returning = db_mapping.Exercise.exercise_id
+    returning = db_mapping.Exercise.id
 
     await _execute_inactivate_entity(
         table=db_mapping.Exercise,
@@ -138,11 +138,11 @@ async def inactivate_workout_sheet(
     sheet_id: int, user_id: int = Depends(TokenService.validate_token)
 ):
     where = and_(
-        db_mapping.WorkoutPlan.workout_plan_id == sheet_id,
+        db_mapping.WorkoutPlan.id == sheet_id,
         db_mapping.WorkoutPlan.user_id == user_id,
     )
 
-    returning = db_mapping.WorkoutPlan.workout_plan_id
+    returning = db_mapping.WorkoutPlan.id
 
     await _execute_inactivate_entity(
         table=db_mapping.WorkoutPlan,
@@ -159,11 +159,11 @@ async def inactivate_workout_split(
     where = and_(
         db_mapping.WorkoutSplit.split == split,
         db_mapping.WorkoutSplit.workout_plan_id
-        == db_mapping.WorkoutPlan.workout_plan_id,
+        == db_mapping.WorkoutPlan.id,
         db_mapping.WorkoutPlan.user_id == user_id,
     )
 
-    returning = db_mapping.WorkoutPlan.workout_plan_id
+    returning = db_mapping.WorkoutPlan.id
 
     await _execute_inactivate_entity(
         table=db_mapping.WorkoutSplit,
@@ -183,15 +183,15 @@ async def inactivate_division_exercise(
         db_mapping.SplitExercise.exercise_id == exercise.exercise_id,
         db_mapping.SplitExercise.execution_order == exercise.execution_order,
         db_mapping.WorkoutPlan.user_id == user_id,
-        db_mapping.WorkoutPlan.workout_plan_id == exercise.workout_plan_id,
+        db_mapping.WorkoutPlan.id == exercise.workout_plan_id,
         # Joins
         db_mapping.SplitExercise.workout_plan_id
         == db_mapping.WorkoutSplit.workout_plan_id,
         db_mapping.WorkoutSplit.workout_plan_id
-        == db_mapping.WorkoutPlan.workout_plan_id,
+        == db_mapping.WorkoutPlan.id,
     )
 
-    returning = db_mapping.WorkoutPlan.workout_plan_id
+    returning = db_mapping.WorkoutPlan.id
 
     await _execute_inactivate_entity(
         table=db_mapping.SplitExercise,
@@ -211,15 +211,15 @@ async def inactivate_split_exercise(
         db_mapping.SplitExercise.exercise_id == exercise.exercise_id,
         db_mapping.SplitExercise.execution_order == exercise.execution_order,
         db_mapping.WorkoutPlan.user_id == user_id,
-        db_mapping.WorkoutPlan.workout_plan_id == exercise.workout_plan_id,
+        db_mapping.WorkoutPlan.id == exercise.workout_plan_id,
         # Joins
         db_mapping.SplitExercise.workout_plan_id
         == db_mapping.WorkoutSplit.workout_plan_id,
         db_mapping.WorkoutSplit.workout_plan_id
-        == db_mapping.WorkoutPlan.workout_plan_id,
+        == db_mapping.WorkoutPlan.id,
     )
 
-    returning = db_mapping.WorkoutPlan.workout_plan_id
+    returning = db_mapping.WorkoutPlan.id
 
     await _execute_inactivate_entity(
         table=db_mapping.SplitExercise,
@@ -239,9 +239,9 @@ async def delete_workout_report(
         db_mapping.WorkoutPlan.user_id == user_id,
         # Joins
         db_mapping.SetReport.workout_report_id
-        == db_mapping.WorkoutReport.workout_report_id,
+        == db_mapping.WorkoutReport.id,
         db_mapping.WorkoutReport.workout_plan_id
-        == db_mapping.WorkoutPlan.workout_plan_id,
+        == db_mapping.WorkoutPlan.id,
     )
 
     await _execute_delete(
@@ -253,16 +253,16 @@ async def delete_workout_report(
 
     # Then delete the workout report
     where_report = and_(
-        db_mapping.WorkoutReport.workout_report_id == report_id,
+        db_mapping.WorkoutReport.id == report_id,
         db_mapping.WorkoutPlan.user_id == user_id,
         # Join
         db_mapping.WorkoutReport.workout_plan_id
-        == db_mapping.WorkoutPlan.workout_plan_id,
+        == db_mapping.WorkoutPlan.id,
     )
 
     await _execute_delete(
         table=db_mapping.WorkoutReport,
         where_clause=where_report,
-        returning_column=db_mapping.WorkoutReport.workout_report_id,
+        returning_column=db_mapping.WorkoutReport.id,
         entity_name="Workout Report",
     )
