@@ -1,15 +1,10 @@
+from datetime import datetime
+
 import jwt
 from fastapi import Depends, Request, Response
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from fastsecurity import HTTPAuthorizationCredentials, HTTPBearer
 
-from api.src.config import Config
-from api.src.exceptions import (
-    InvalidToken,
-    MissingToken,
-    SessionExpired,
-    UnknownAuthError,
-)
-from api.src.utils import actual_datetime
+from src.config import SETTINGS
 
 
 class TokenService:
@@ -18,11 +13,11 @@ class TokenService:
     def __init__(self, request: Request, response: Response):
         self.request = request
         self.response = response
-        self.session_key = Config.get_jwt_session_key()
-        self.refresh_key = Config.get_jwt_refresh_key()
-        self.algorithm = Config.JWT_ALGORITHM
-        self.session_expires = Config.JWT_ACCESS_TOKEN_EXPIRES
-        self.refresh_expires = Config.JWT_REFRESH_TOKEN_EXPIRES
+        self.session_key = SETTINGS.JWT_SESSION_KEY
+        self.refresh_key = SETTINGS.JWT_REFRESH_KEY
+        self.algorithm = SETTINGS.JWT_ALGORITHM
+        self.session_expires = SETTINGS.JWT_ACCESS_TOKEN_EXPIRES
+        self.refresh_expires = SETTINGS.JWT_REFRESH_TOKEN_EXPIRES
 
     async def generate_refresh_token(self, id: int) -> str:
         """
@@ -34,7 +29,7 @@ class TokenService:
         """
 
         return jwt.encode(
-            payload={"sub": str(id), "exp": self.refresh_expires + actual_datetime()},
+            payload={"sub": str(id), "exp": self.refresh_expires + datetime.now()},
             key=self.refresh_key,
             algorithm=self.algorithm,
         )
@@ -51,7 +46,7 @@ class TokenService:
         return jwt.encode(
             payload={
                 "sub": str(id),
-                "exp": self.session_expires + actual_datetime(),
+                "exp": self.session_expires + datetime.now(),
             },
             key=self.session_key,
             algorithm=self.algorithm,
@@ -68,8 +63,8 @@ class TokenService:
         response.set_cookie(
             key="refresh_token",
             value=token,
-            max_age=Config.JWT_REFRESH_COOKIE_MAX_AGE,  # 7 dias em segundos
-            expires=actual_datetime() + self.refresh_expires,
+            max_age=SETTINGS.JWT_REFRESH_COOKIE_MAX_AGE,  # 7 dias em segundos
+            expires=datetime.now() + self.refresh_expires,
             httponly=True,
             samesite="none",
             secure=True,
@@ -91,7 +86,7 @@ class TokenService:
         if token:
             return token
         else:
-            raise MissingToken("Refresh token não encontrado")
+            raise Exception("Refresh token não encontrado")
 
     def delete_refresh_token_cookie(self, response: Response):
         """
@@ -123,10 +118,10 @@ class TokenService:
             decoded = jwt.decode(token, self.refresh_key, algorithms=self.algorithm)
 
         except jwt.exceptions.ExpiredSignatureError:
-            raise SessionExpired()
+            raise Exception("Refresh token expirado")
 
         except jwt.exceptions.InvalidTokenError:
-            raise InvalidToken()
+            raise Exception("Refresh token inválido")
 
         else:
             token = await self.generate_session_token(decoded["sub"])
@@ -157,17 +152,17 @@ class TokenService:
         try:
             decoded = jwt.decode(
                 token,
-                key=Config.get_jwt_session_key(),
-                algorithms=Config.JWT_ALGORITHM,
+                key=SETTINGS.JWT_SESSION_KEY,
+                algorithms=SETTINGS.JWT_ALGORITHM,
             )
 
         except jwt.exceptions.ExpiredSignatureError:
-            raise SessionExpired()
+            raise Exception("Session token expirado")
 
         except jwt.exceptions.InvalidTokenError:
-            raise InvalidToken()
+            raise Exception("Session token inválido")
 
         except jwt.DecodeError:
-            raise UnknownAuthError()
+            raise Exception("Erro ao decodificar o token")
         else:
             return int(decoded["sub"])

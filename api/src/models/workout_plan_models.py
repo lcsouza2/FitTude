@@ -1,9 +1,9 @@
-from api.src.models.base_models import BaseOrmModel
+from src.models.base_models import BaseOrmModel
 from sqlalchemy import ForeignKey, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 from datetime import datetime
 
-from api.src.utils.constraints import DatabaseConstraints
+from src.utils.constraints import DatabaseConstraints
 
 @BaseOrmModel.registry.mapped_as_dataclass
 class WorkoutPlan:

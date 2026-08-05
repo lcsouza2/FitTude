@@ -4,7 +4,6 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useAppColors } from '../hooks/use-app-colors';
 import CustomHeader from '@/shared/components/CustomHeader';
 import '../global.css';
-
 export default function RootLayout() {
   const colors = useAppColors();
 

@@ -1,7 +1,7 @@
 import pytest
-from api.tests.factories.muscle_factory import MuscleFactory
-from api.src.repository.muscle_repository import MuscleRepository
-from api.src.models import MuscleGroup
+from tests.factories.muscle_factory import MuscleFactory
+from src.repository.muscle_repository import MuscleRepository
+from src.models import MuscleGroup
 
 @pytest.mark.asyncio
 async def test_get_muscle_by_id_returns_muscle(mock_async_session):

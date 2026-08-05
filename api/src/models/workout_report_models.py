@@ -1,5 +1,5 @@
-from api.src.utils.constraints import DatabaseConstraints
-from api.src.models.base_models import BaseOrmModel
+from src.utils.constraints import DatabaseConstraints
+from src.models.base_models import BaseOrmModel
 from sqlalchemy.orm import Mapped, mapped_column
 from datetime import date
 from sqlalchemy import ForeignKeyConstraint

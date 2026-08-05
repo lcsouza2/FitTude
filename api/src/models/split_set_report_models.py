@@ -1,6 +1,6 @@
-from api.src.models.base_models import BaseOrmModel
+from src.models.base_models import BaseOrmModel
 from sqlalchemy.orm import Mapped, mapped_column
-from api.src.utils.constraints import DatabaseConstraints
+from src.utils.constraints import DatabaseConstraints
 from sqlalchemy import ForeignKey
 
 

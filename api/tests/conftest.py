@@ -2,9 +2,9 @@ import asyncio
 import pytest
 import pytest_asyncio
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from api.src.models.base_models import BaseOrmModel
+from src.models.base_models import BaseOrmModel
 from typing import AsyncGenerator
-from api.src.config import SETTINGS
+from src.config import SETTINGS
 
 engine = create_async_engine(SETTINGS.POSTGRES_TEST_URL, echo=False)
 

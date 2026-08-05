@@ -27,6 +27,7 @@ email-validator = "^2.3.0"
 pytest = "^9.1.1"
 pytest-async = "^0.1.1"
 polyfactory = "^3.3.0"
+alembic = "^1.18.5"
 
 
 [tool.poetry.group.dev.dependencies]

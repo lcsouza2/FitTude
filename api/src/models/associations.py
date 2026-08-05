@@ -1,6 +1,6 @@
 from sqlalchemy import String, Table, Column, Integer, ForeignKey, ForeignKeyConstraint
-from api.src.models.base_models import BaseOrmModel
-from api.src.utils.constraints import DatabaseConstraints
+from src.models.base_models import BaseOrmModel
+from src.utils.constraints import DatabaseConstraints
 
 assoc_exercise_muscle = Table(
     "exercise_muscle",

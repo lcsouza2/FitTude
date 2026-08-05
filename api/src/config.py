@@ -81,5 +81,6 @@ class _Settings(BaseSettings):
     DEFAULT_PAGE_SIZE: int = 20
     MAX_PAGE_SIZE: int = 50
 
-SETTINGS = _Settings()
-__all__ = ["SETTINGS"]
+Settings = _Settings
+SETTINGS = Settings()
+__all__ = ["SETTINGS", "Settings"]

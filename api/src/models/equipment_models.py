@@ -1,7 +1,7 @@
-from api.src.models.base_models import BaseOrmModel
+from src.models.base_models import BaseOrmModel
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import ForeignKey, Index, UniqueConstraint
-from api.src.utils.constraints import DatabaseConstraints
+from src.utils.constraints import DatabaseConstraints
 from datetime import datetime
 
 @BaseOrmModel.registry.mapped_as_dataclass

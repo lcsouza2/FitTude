@@ -1,4 +1,4 @@
-from api.src.models import Muscle
+from src.models import Muscle
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import insert, select, select
 

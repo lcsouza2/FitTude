@@ -3,10 +3,10 @@ from datetime import datetime
 
 from sqlalchemy import ForeignKey, Integer, String, UniqueConstraint
 
-from api.src.models.base_models import BaseOrmModel
+from src.models.base_models import BaseOrmModel
 from sqlalchemy.orm import Mapped, mapped_column
 
-from api.src.utils.constraints import DatabaseConstraints
+from src.utils.constraints import DatabaseConstraints
 
 
 @BaseOrmModel.registry.mapped_as_dataclass

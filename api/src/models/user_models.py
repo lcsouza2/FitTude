@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from api.src.models.base_models import BaseOrmModel
+from src.models.base_models import BaseOrmModel
 from sqlalchemy.orm import Mapped, mapped_column
 
 @BaseOrmModel.registry.mapped_as_dataclass

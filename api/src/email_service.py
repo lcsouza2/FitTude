@@ -5,8 +5,8 @@ from fastapi_mail.errors import ConnectionErrors
 from jinja2 import Environment, FileSystemLoader
 from pydantic import EmailStr
 
-from api.src.config import Config
-from api.src.exceptions import MailServiceError
+from src.config import Config
+from src.exceptions import MailServiceError
 
 
 class EmailClient:

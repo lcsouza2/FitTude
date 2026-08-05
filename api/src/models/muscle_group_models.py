@@ -1,4 +1,4 @@
-from api.src.models.base_models import BaseOrmModel
+from src.models.base_models import BaseOrmModel
 from sqlalchemy.orm import Mapped, mapped_column
 from datetime import datetime
 
@@ -6,7 +6,7 @@ from datetime import datetime
 class MuscleGroup:
     __tablename__ = "muscle_group"
 
-    user_id: Mapped[int] = mapped_column()
+    user_id: Mapped[int] = mapped_column(primary_key=True)
     group_name: Mapped[str] = mapped_column(primary_key=True)
     deleted: Mapped[bool] = mapped_column(default=False)
     created_at: Mapped[datetime] = mapped_column(default_factory=datetime.now, nullable=False, init=False)

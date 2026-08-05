@@ -1,18 +1,12 @@
 import random
 import string
-from datetime import datetime, timezone
 from functools import wraps
 from json import dumps, loads
 from sqlalchemy.engine.row import Row
 from typing import Callable, Any
+from src.config import SETTINGS
 
-from api.src.config import Config
-from api.src.connections import redis_connection
-
-
-def actual_datetime():
-    return datetime.now(timezone.utc).replace(microsecond=0)
-
+from src.connections import redis_connection
 
 def exclude_falsy_from_dict(payload: dict):
     return {
@@ -37,7 +31,7 @@ def serialize_sqlalchemy_result(obj: Any) -> dict:
     return obj
 
 
-def cached_operation(timeout: int = Config.CACHE_DEFAULT_TIMEOUT):
+def cached_operation(timeout: int = SETTINGS.CACHE_DEFAULT_TIMEOUT):
     def decorator(
         func: Callable,
     ):
