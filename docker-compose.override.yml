@@ -1,4 +1,15 @@
 services:
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    command: ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "80"]
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    ports:
+      - "80:80"
+
   backend:
     user: root
     command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
